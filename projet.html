@@ -1,0 +1,892 @@
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ChamberConnect DRC</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+  </head>
+  <body class="min-h-screen bg-white text-neutral-900 antialiased selection:bg-[#E71D36]/10 selection:text-[#E71D36]" style="font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji';">
+    <!-- App Shell -->
+    <header class="sticky top-0 z-40 bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-neutral-200">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex h-16 items-center justify-between">
+          <!-- Logo + Primary Nav -->
+          <div class="flex items-center gap-6">
+            <button aria-label="Switch to Home" onclick="switchView('home')" class="flex items-center gap-2 rounded-md px-2 py-1.5 hover:bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E71D36]">
+              <div class="flex h-8 w-8 items-center justify-center rounded-md bg-[#E71D36] text-white text-sm font-semibold tracking-tight" style="letter-spacing:-0.02em;">CC</div>
+              <span class="hidden sm:inline text-sm font-semibold tracking-tight" style="letter-spacing:-0.02em;">ChamberConnect DRC</span>
+            </button>
+            <nav class="hidden md:flex items-center gap-1">
+              <button onclick="switchView('home')" data-toplink="home" class="toplink px-3 py-2 rounded-md text-sm font-medium text-neutral-700 hover:text-neutral-900 hover:bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E71D36]">Home</button>
+              <button onclick="switchView('dashboard')" data-toplink="dashboard" class="toplink px-3 py-2 rounded-md text-sm font-medium text-neutral-700 hover:text-neutral-900 hover:bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E71D36]">Dashboard</button>
+              <button onclick="switchView('chamber')" data-toplink="chamber" class="toplink px-3 py-2 rounded-md text-sm font-medium text-neutral-700 hover:text-neutral-900 hover:bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E71D36]">Chamber Profile</button>
+            </nav>
+          </div>
+
+          <!-- Global Search -->
+          <div class="flex-1 mx-4 hidden md:block">
+            <div class="relative">
+              <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-400">
+                <i data-lucide="search" class="h-4 w-4"></i>
+              </span>
+              <input type="text" placeholder="Search chambers, events, members..." class="w-full rounded-md border border-neutral-200 bg-white pl-9 pr-3 py-2 text-sm text-neutral-800 placeholder:text-neutral-400 shadow-sm focus:border-[#E71D36] focus:ring-2 focus:ring-[#E71D36]/20">
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex items-center gap-1">
+            <button class="relative rounded-md p-2 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E71D36]" aria-label="Notifications">
+              <i data-lucide="bell" class="h-5 w-5"></i>
+              <span class="absolute -top-0.5 -right-0.5 inline-flex h-2.5 w-2.5 items-center justify-center rounded-full bg-[#E71D36]"></span>
+            </button>
+            <button class="rounded-md p-2 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E71D36]" aria-label="Messages">
+              <i data-lucide="message-circle" class="h-5 w-5"></i>
+            </button>
+            <button onclick="openModal('signin-modal')" class="ml-2 rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm font-medium text-neutral-900 hover:bg-neutral-50 hover:border-neutral-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E71D36]">Log In</button>
+            <button class="rounded-md bg-[#E71D36] px-3 py-2 text-sm font-semibold text-white hover:bg-[#cf1a30] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E71D36]/50">Join</button>
+          </div>
+        </div>
+      </div>
+      <!-- Secondary Nav for small screens -->
+      <div class="md:hidden border-t border-neutral-200">
+        <div class="mx-auto max-w-7xl px-4 py-2 flex items-center gap-2">
+          <button onclick="switchView('home')" data-toplink="home" class="toplink inline-flex items-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-medium text-neutral-700 hover:bg-neutral-100">Home</button>
+          <button onclick="switchView('dashboard')" data-toplink="dashboard" class="toplink inline-flex items-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-medium text-neutral-700 hover:bg-neutral-100">Dashboard</button>
+          <button onclick="switchView('chamber')" data-toplink="chamber" class="toplink inline-flex items-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-medium text-neutral-700 hover:bg-neutral-100">Chamber Profile</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
+      <!-- HOME -->
+      <section id="home" data-view="" class="space-y-14">
+        <!-- Hero -->
+        <div class="overflow-hidden rounded-2xl border border-neutral-200 shadow-sm">
+          <div class="relative isolate">
+            <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&amp;w=1600&amp;auto=format&amp;fit=crop" alt="" class="h-[460px] w-full object-cover">
+            <div class="absolute inset-0 bg-neutral-900/50"></div>
+            <div class="relative z-10 flex h-[460px] items-center">
+              <div class="max-w-2xl p-8 sm:p-12">
+                <div class="mb-3 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white ring-1 ring-white/20 backdrop-blur">
+                  <i data-lucide="shield-check" class="h-4 w-4 text-white"></i>
+                  Accredited Chamber of Commerce
+                </div>
+                <h1 class="text-white text-4xl sm:text-5xl font-semibold tracking-tight" style="letter-spacing:-0.02em;">Connect, Collaborate, and Grow with ChamberConnect DRC.</h1>
+                <p class="mt-3 text-neutral-200 text-base">A trusted hub for businesses to access news, events, and networking opportunities across the region.</p>
+                <div class="mt-6 flex flex-wrap gap-3">
+                  <button onclick="switchView('dashboard')" class="inline-flex items-center gap-2 rounded-md bg-[#E71D36] px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[#cf1a30] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70">
+                    <i data-lucide="compass" class="h-4 w-4"></i>
+                    Explore Chambers
+                  </button>
+                  <button onclick="openModal('signin-modal')" class="inline-flex items-center gap-2 rounded-md bg-white/10 px-4 py-2.5 text-sm font-semibold text-white ring-1 ring-white/30 hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70">
+                    <i data-lucide="user-plus" class="h-4 w-4"></i>
+                    Join Now
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- News & Updates -->
+        <section aria-labelledby="news-title" class="space-y-6">
+          <div class="flex items-center justify-between">
+            <h2 id="news-title" class="text-2xl font-semibold tracking-tight" style="letter-spacing:-0.02em;">Latest News &amp; Updates</h2>
+            <a href="#" class="text-sm font-medium text-[#E71D36] hover:underline">View all</a>
+          </div>
+          <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <!-- Card 1 -->
+            <article class="rounded-xl border border-neutral-200 bg-white shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+              <img src="https://images.unsplash.com/photo-1550948390-6eb7fa773072?q=80&amp;w=1600&amp;auto=format&amp;fit=crop" alt="" class="h-40 w-full object-cover">
+              <div class="p-5">
+                <h3 class="text-base font-semibold leading-snug">DRC Exports Surge as New Trade Policies Take Effect</h3>
+                <p class="mt-2 text-sm text-neutral-600">Government-backed incentives are boosting exports across key sectors...</p>
+                <div class="mt-3">
+                  <a href="#" class="inline-flex items-center gap-1 text-sm font-medium text-[#E71D36] hover:underline">
+                    Read more
+                    <i data-lucide="arrow-right" class="h-4 w-4"></i>
+                  </a>
+                </div>
+              </div>
+            </article>
+            <!-- Card 2 -->
+            <article class="rounded-xl border border-neutral-200 bg-white shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+              <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&amp;w=1600&amp;auto=format&amp;fit=crop" alt="" class="h-40 w-full object-cover">
+              <div class="p-5">
+                <h3 class="text-base font-semibold leading-snug">Entrepreneurship Week: Workshops Announced</h3>
+                <p class="mt-2 text-sm text-neutral-600">From funding to export-readiness: practical sessions to scale your business...</p>
+                <div class="mt-3">
+                  <a href="#" class="inline-flex items-center gap-1 text-sm font-medium text-[#E71D36] hover:underline">
+                    Read more
+                    <i data-lucide="arrow-right" class="h-4 w-4"></i>
+                  </a>
+                </div>
+              </div>
+            </article>
+            <!-- Card 3 -->
+            <article class="rounded-xl border border-neutral-200 bg-white shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+              <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&amp;w=1600&amp;auto=format&amp;fit=crop" alt="" class="h-40 w-full object-cover">
+              <div class="p-5">
+                <h3 class="text-base font-semibold leading-snug">Market Outlook: Q4 Forecasts Signal Steady Growth</h3>
+                <p class="mt-2 text-sm text-neutral-600">Analysts expect stabilizing supply chains to drive consistent performance...</p>
+                <div class="mt-3">
+                  <a href="#" class="inline-flex items-center gap-1 text-sm font-medium text-[#E71D36] hover:underline">
+                    Read more
+                    <i data-lucide="arrow-right" class="h-4 w-4"></i>
+                  </a>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- Partners -->
+        <section aria-labelledby="partners-title" class="space-y-6">
+          <div class="flex items-center justify-between">
+            <h2 id="partners-title" class="text-2xl font-semibold tracking-tight" style="letter-spacing:-0.02em;">Our Valued Partners</h2>
+            <span class="text-xs text-neutral-500">Building credibility through collaboration</span>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+            <!-- Letter logos -->
+            <div class="rounded-lg border border-neutral-200 bg-white p-4 text-center">
+              <span class="mx-auto inline-flex h-10 w-10 items-center justify-center rounded-md bg-neutral-100 text-neutral-900 text-sm font-semibold tracking-tight" style="letter-spacing:-0.02em;">AL</span>
+              <div class="mt-2 text-sm font-medium">Alto Labs</div>
+            </div>
+            <div class="rounded-lg border border-neutral-200 bg-white p-4 text-center">
+              <span class="mx-auto inline-flex h-10 w-10 items-center justify-center rounded-md bg-neutral-100 text-neutral-900 text-sm font-semibold tracking-tight" style="letter-spacing:-0.02em;">NV</span>
+              <div class="mt-2 text-sm font-medium">Novix</div>
+            </div>
+            <div class="rounded-lg border border-neutral-200 bg-white p-4 text-center">
+              <span class="mx-auto inline-flex h-10 w-10 items-center justify-center rounded-md bg-neutral-100 text-neutral-900 text-sm font-semibold tracking-tight" style="letter-spacing:-0.02em;">PR</span>
+              <div class="mt-2 text-sm font-medium">Prax</div>
+            </div>
+            <div class="rounded-lg border border-neutral-200 bg-white p-4 text-center">
+              <span class="mx-auto inline-flex h-10 w-10 items-center justify-center rounded-md bg-neutral-100 text-neutral-900 text-sm font-semibold tracking-tight" style="letter-spacing:-0.02em;">SE</span>
+              <div class="mt-2 text-sm font-medium">Seren</div>
+            </div>
+            <div class="rounded-lg border border-neutral-200 bg-white p-4 text-center">
+              <span class="mx-auto inline-flex h-10 w-10 items-center justify-center rounded-md bg-neutral-100 text-neutral-900 text-sm font-semibold tracking-tight" style="letter-spacing:-0.02em;">UX</span>
+              <div class="mt-2 text-sm font-medium">UXON</div>
+            </div>
+            <div class="rounded-lg border border-neutral-200 bg-white p-4 text-center">
+              <span class="mx-auto inline-flex h-10 w-10 items-center justify-center rounded-md bg-neutral-100 text-neutral-900 text-sm font-semibold tracking-tight" style="letter-spacing:-0.02em;">KO</span>
+              <div class="mt-2 text-sm font-medium">Kora</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Testimonials -->
+        <section aria-labelledby="testimonials-title" class="space-y-6">
+          <h2 id="testimonials-title" class="text-2xl font-semibold tracking-tight" style="letter-spacing:-0.02em;">What Our Members Say</h2>
+          <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <!-- Testimonial -->
+            <figure class="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm">
+              <blockquote class="text-sm text-neutral-700">“The platform helped us meet distributors within weeks. The events calendar is a game-changer.”</blockquote>
+              <figcaption class="mt-4 flex items-center gap-3">
+                <img class="h-9 w-9 rounded-full object-cover" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&amp;w=400&amp;auto=format&amp;fit=crop" alt="">
+                <div>
+                  <div class="text-sm font-semibold">Amina K.</div>
+                  <div class="text-xs text-neutral-500">Founder, Kivu Agro</div>
+                </div>
+              </figcaption>
+            </figure>
+            <figure class="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm">
+              <blockquote class="text-sm text-neutral-700">“Networking has never been this efficient. We booked two deals after the last forum.”</blockquote>
+              <figcaption class="mt-4 flex items-center gap-3">
+                <img class="h-9 w-9 rounded-full object-cover" src="https://images.unsplash.com/photo-1527980965255-d3b416303d12?q=80&amp;w=400&amp;auto=format&amp;fit=crop" alt="">
+                <div>
+                  <div class="text-sm font-semibold">Jean P.</div>
+                  <div class="text-xs text-neutral-500">COO, Lumumba Logistics</div>
+                </div>
+              </figcaption>
+            </figure>
+            <figure class="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm">
+              <blockquote class="text-sm text-neutral-700">“A trusted hub for small businesses to scale and connect with investors.”</blockquote>
+              <figcaption class="mt-4 flex items-center gap-3">
+                <img class="h-9 w-9 rounded-full object-cover" src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&amp;w=400&amp;auto=format&amp;fit=crop" alt="">
+                <div>
+                  <div class="text-sm font-semibold">Chantal M.</div>
+                  <div class="text-xs text-neutral-500">CEO, KinTech Labs</div>
+                </div>
+              </figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <!-- Final CTA -->
+        <section class="rounded-2xl border border-neutral-200 bg-white p-8 shadow-sm">
+          <div class="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h3 class="text-xl sm:text-2xl font-semibold tracking-tight" style="letter-spacing:-0.02em;">Join ChamberConnect DRC Today</h3>
+              <p class="mt-1 text-sm text-neutral-600">Accelerate your growth with events, resources, and trusted connections.</p>
+            </div>
+            <button onclick="openModal('signin-modal')" class="inline-flex items-center gap-2 rounded-md bg-[#E71D36] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#cf1a30] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E71D36]/50">
+              <i data-lucide="rocket" class="h-4 w-4"></i>
+              Get Started
+            </button>
+          </div>
+        </section>
+      </section>
+
+      <!-- DASHBOARD -->
+      <section id="dashboard" data-view="" class="hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <!-- Sidebar -->
+          <aside class="lg:col-span-3">
+            <div class="sticky top-[88px] space-y-4">
+              <nav class="rounded-xl border border-neutral-200 bg-white shadow-sm p-2">
+                <button class="dash-link active w-full flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-neutral-800 hover:bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E71D36]">
+                  <i data-lucide="home" class="h-5 w-5 text-[#E71D36]"></i> Home
+                </button>
+                <button class="dash-link w-full flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E71D36]">
+                  <i data-lucide="users" class="h-5 w-5"></i> My Network
+                </button>
+                <button class="dash-link w-full flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E71D36]">
+                  <i data-lucide="briefcase" class="h-5 w-5"></i> Jobs
+                </button>
+                <button class="dash-link w-full flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E71D36]">
+                  <i data-lucide="message-square" class="h-5 w-5"></i> Messaging
+                </button>
+                <button class="dash-link w-full flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E71D36]">
+                  <i data-lucide="bell" class="h-5 w-5"></i> Notifications
+                </button>
+              </nav>
+
+              <div class="rounded-xl border border-neutral-200 bg-white p-4 shadow-sm">
+                <div class="flex items-center gap-2 text-sm text-neutral-600">
+                  <i data-lucide="shield" class="h-4 w-4 text-[#E71D36]"></i>
+                  Verified Business Network
+                </div>
+              </div>
+            </div>
+          </aside>
+
+          <!-- Main Content -->
+          <section class="lg:col-span-6 space-y-6">
+            <!-- Context search -->
+            <div class="rounded-xl border border-neutral-200 bg-white shadow-sm p-4">
+              <div class="relative">
+                <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-400">
+                  <i data-lucide="search" class="h-4 w-4"></i>
+                </span>
+                <input type="text" placeholder="Search events, posts, people..." class="w-full rounded-md border border-neutral-200 bg-white pl-9 pr-3 py-2 text-sm text-neutral-800 placeholder:text-neutral-400 focus:border-[#E71D36] focus:ring-2 focus:ring-[#E71D36]/20">
+              </div>
+            </div>
+
+            <!-- Events Tabs -->
+            <div class="rounded-xl border border-neutral-200 bg-white shadow-sm">
+              <div class="flex items-center justify-between border-b border-neutral-200 px-4 py-3">
+                <div class="flex items-center gap-1">
+                  <button onclick="switchEventsTab('upcoming')" data-events-tab="upcoming" class="events-tab active inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium text-neutral-900 hover:bg-neutral-100">
+                    <i data-lucide="calendar" class="h-4 w-4 text-[#E71D36]"></i> Upcoming Events
+                  </button>
+                  <button onclick="switchEventsTab('past')" data-events-tab="past" class="events-tab inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium text-neutral-600 hover:bg-neutral-100">
+                    <i data-lucide="history" class="h-4 w-4"></i> Past Events
+                  </button>
+                </div>
+                <button class="inline-flex items-center gap-2 rounded-md bg-[#E71D36] px-3.5 py-2 text-sm font-semibold text-white hover:bg-[#cf1a30] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E71D36]/40">
+                  <i data-lucide="plus" class="h-4 w-4"></i>
+                  Post an Event
+                </button>
+              </div>
+
+              <!-- Upcoming Events -->
+              <div data-events-panel="upcoming" class="p-4 space-y-4">
+                <!-- Event Card -->
+                <article class="overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-sm hover:shadow-md transition-shadow">
+                  <div class="grid sm:grid-cols-3 gap-0">
+                    <img src="https://images.unsplash.com/photo-1621619856624-42fd193a0661?w=1080&amp;q=80" alt="" class="h-40 w-full object-cover sm:col-span-1">
+                    <div class="sm:col-span-2 p-4">
+                      <div class="flex items-center justify-between">
+                        <span class="inline-flex items-center gap-1.5 rounded-full bg-neutral-100 px-2.5 py-1 text-xs font-medium text-neutral-800">
+                          <i data-lucide="building-2" class="h-3.5 w-3.5"></i>
+                          Kinshasa Chamber
+                        </span>
+                        <button onclick="toggleBookmark(this)" class="rounded-full p-1.5 text-neutral-600 hover:bg-neutral-100 hover:text-[#E71D36]" aria-label="Favorite">
+                          <i data-lucide="heart" class="h-4 w-4"></i>
+                        </button>
+                      </div>
+                      <h3 class="mt-2 text-base font-semibold tracking-tight" style="letter-spacing:-0.01em;">Cross-Border Trade Forum 2025</h3>
+                      <p class="mt-1 text-sm text-neutral-600">Discuss policy updates, logistics, and financing with regional leaders.</p>
+                      <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-neutral-600">
+                        <span class="inline-flex items-center gap-1"><i data-lucide="calendar" class="h-3.5 w-3.5"></i> Nov 28, 2025</span>
+                        <span class="inline-flex items-center gap-1"><i data-lucide="map-pin" class="h-3.5 w-3.5"></i> Kinshasa</span>
+                        <span class="inline-flex items-center gap-1 text-teal-600"><i data-lucide="badge-check" class="h-3.5 w-3.5"></i> Verified</span>
+                      </div>
+                      <div class="mt-4 flex flex-wrap gap-2">
+                        <button class="inline-flex items-center gap-2 rounded-md bg-[#E71D36] px-3 py-2 text-sm font-semibold text-white hover:bg-[#cf1a30] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E71D36]/40">
+                          <i data-lucide="ticket" class="h-4 w-4"></i>
+                          Register
+                        </button>
+                        <button class="inline-flex items-center gap-2 rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm font-medium text-neutral-900 hover:bg-neutral-50">
+                          <i data-lucide="calendar-clock" class="h-4 w-4"></i>
+                          Booked
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+
+                <!-- Event Card -->
+                <article class="overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-sm hover:shadow-md transition-shadow">
+                  <div class="grid sm:grid-cols-3 gap-0">
+                    <img src="https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&amp;w=1600&amp;auto=format&amp;fit=crop" alt="" class="h-40 w-full object-cover sm:col-span-1">
+                    <div class="sm:col-span-2 p-4">
+                      <div class="flex items-center justify-between">
+                        <span class="inline-flex items-center gap-1.5 rounded-full bg-neutral-100 px-2.5 py-1 text-xs font-medium text-neutral-800">
+                          <i data-lucide="building-2" class="h-3.5 w-3.5"></i>
+                          Goma Business Council
+                        </span>
+                        <button onclick="toggleBookmark(this)" class="rounded-full p-1.5 text-neutral-600 hover:bg-neutral-100 hover:text-[#E71D36]" aria-label="Favorite">
+                          <i data-lucide="heart" class="h-4 w-4"></i>
+                        </button>
+                      </div>
+                      <h3 class="mt-2 text-base font-semibold tracking-tight" style="letter-spacing:-0.01em;">SME Finance Bootcamp</h3>
+                      <p class="mt-1 text-sm text-neutral-600">Hands-on sessions on loans, grants, and investor readiness.</p>
+                      <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-neutral-600">
+                        <span class="inline-flex items-center gap-1"><i data-lucide="calendar" class="h-3.5 w-3.5"></i> Dec 10, 2025</span>
+                        <span class="inline-flex items-center gap-1"><i data-lucide="map-pin" class="h-3.5 w-3.5"></i> Goma</span>
+                        <span class="inline-flex items-center gap-1 text-emerald-600"><i data-lucide="circle-dollar-sign" class="h-3.5 w-3.5"></i> Limited Seats</span>
+                      </div>
+                      <div class="mt-4 flex flex-wrap gap-2">
+                        <button class="inline-flex items-center gap-2 rounded-md bg-[#E71D36] px-3 py-2 text-sm font-semibold text-white hover:bg-[#cf1a30]">
+                          <i data-lucide="ticket" class="h-4 w-4"></i>
+                          Register
+                        </button>
+                        <button class="inline-flex items-center gap-2 rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm font-medium text-neutral-900 hover:bg-neutral-50">
+                          <i data-lucide="calendar-clock" class="h-4 w-4"></i>
+                          Book
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              </div>
+
+              <!-- Past Events -->
+              <div data-events-panel="past" class="hidden p-4 space-y-4">
+                <!-- Past Event Card -->
+                <article class="overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-sm hover:shadow-md transition-shadow">
+                  <div class="grid sm:grid-cols-3 gap-0">
+                    <img src="https://images.unsplash.com/photo-1475721027785-f74eccf877e2?q=80&amp;w=1600&amp;auto=format&amp;fit=crop" alt="" class="h-40 w-full object-cover sm:col-span-1">
+                    <div class="sm:col-span-2 p-4">
+                      <div class="flex items-center justify-between">
+                        <span class="inline-flex items-center gap-1.5 rounded-full bg-neutral-100 px-2.5 py-1 text-xs font-medium text-neutral-800">
+                          <i data-lucide="building-2" class="h-3.5 w-3.5"></i>
+                          Lubumbashi Chamber
+                        </span>
+                        <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700 border border-emerald-100">
+                          <i data-lucide="check-circle2" class="h-3.5 w-3.5"></i>
+                          Completed
+                        </span>
+                      </div>
+                      <h3 class="mt-2 text-base font-semibold tracking-tight" style="letter-spacing:-0.01em;">Mining &amp; Infrastructure Roundtable</h3>
+                      <p class="mt-1 text-sm text-neutral-600">Key insights from industry experts and policy makers.</p>
+                      <div class="mt-4">
+                        <button class="inline-flex items-center gap-2 rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm font-medium text-neutral-900 hover:bg-neutral-50">
+                          <i data-lucide="file-text" class="h-4 w-4"></i>
+                          View Details
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              </div>
+            </div>
+          </section>
+
+          <!-- Your Chambers -->
+          <aside class="lg:col-span-3">
+            <div class="sticky top-[88px] space-y-4">
+              <div class="rounded-xl border border-neutral-200 bg-white shadow-sm">
+                <div class="flex items-center justify-between px-4 py-3 border-b border-neutral-200">
+                  <h3 class="text-sm font-semibold tracking-tight" style="letter-spacing:-0.01em;">Your Chambers</h3>
+                  <button class="text-xs font-medium text-[#E71D36] hover:underline">Manage</button>
+                </div>
+                <ul class="divide-y divide-neutral-200">
+                  <li class="flex items-center justify-between px-4 py-3">
+                    <div class="flex items-center gap-3">
+                      <span class="text-xl">🇨🇩</span>
+                      <div>
+                        <div class="text-sm font-medium">Kinshasa Chamber</div>
+                        <div class="text-xs text-neutral-500">12,340 members</div>
+                      </div>
+                    </div>
+                    <button onclick="toggleBookmark(this)" class="rounded-full p-1.5 text-neutral-600 hover:bg-neutral-100 hover:text-[#E71D36]" aria-label="Favorite"><i data-lucide="heart" class="h-4 w-4"></i></button>
+                  </li>
+                  <li class="flex items-center justify-between px-4 py-3">
+                    <div class="flex items-center gap-3">
+                      <span class="text-xl">🇷🇼</span>
+                      <div>
+                        <div class="text-sm font-medium">Rwanda Business Hub</div>
+                        <div class="text-xs text-neutral-500">6,210 members</div>
+                      </div>
+                    </div>
+                    <button onclick="toggleBookmark(this)" class="rounded-full p-1.5 text-neutral-600 hover:bg-neutral-100 hover:text-[#E71D36]" aria-label="Favorite"><i data-lucide="heart" class="h-4 w-4"></i></button>
+                  </li>
+                  <li class="flex items-center justify-between px-4 py-3">
+                    <div class="flex items-center gap-3">
+                      <span class="text-xl">🇿🇦</span>
+                      <div>
+                        <div class="text-sm font-medium">Southern Africa Council</div>
+                        <div class="text-xs text-neutral-500">9,820 members</div>
+                      </div>
+                    </div>
+                    <button onclick="toggleBookmark(this)" class="rounded-full p-1.5 text-neutral-600 hover:bg-neutral-100 hover:text-[#E71D36]" aria-label="Favorite"><i data-lucide="heart" class="h-4 w-4"></i></button>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="rounded-xl border border-neutral-200 bg-white shadow-sm p-4">
+                <div class="flex items-center gap-2">
+                  <i data-lucide="headset" class="h-4 w-4 text-[#E71D36]"></i>
+                  <div class="text-sm">
+                    Need help? <button class="text-[#E71D36] font-medium hover:underline">Chat with us</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- CHAMBER PROFILE -->
+      <section id="chamber" data-view="" class="hidden">
+        <!-- Banner -->
+        <div class="overflow-hidden rounded-2xl border border-neutral-200 shadow-sm">
+          <div class="relative">
+            <img src="https://images.unsplash.com/photo-1642615835477-d303d7dc9ee9?w=1080&amp;q=80" alt="" class="h-56 w-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-black/0"></div>
+            <div class="absolute bottom-4 left-4 right-4">
+              <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+                <div>
+                  <h2 class="text-white text-3xl font-semibold tracking-tight" style="letter-spacing:-0.02em;">Kinshasa Chamber of Commerce</h2>
+                  <div class="mt-1 flex items-center gap-3 text-sm text-neutral-200">
+                    <span class="inline-flex items-center gap-1"><i data-lucide="map-pin" class="h-4 w-4"></i> Kinshasa, DRC</span>
+                    <span class="inline-flex items-center gap-1"><i data-lucide="users" class="h-4 w-4"></i> 12,340 members</span>
+                    <span class="inline-flex items-center gap-1"><i data-lucide="shield-check" class="h-4 w-4"></i> Accredited</span>
+                  </div>
+                </div>
+                <div class="flex gap-2">
+                  <button class="inline-flex items-center gap-2 rounded-md border border-white/60 bg-white/10 px-3 py-2 text-sm font-semibold text-white backdrop-blur hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60">
+                    <i data-lucide="share-2" class="h-4 w-4"></i>
+                    Share
+                  </button>
+                  <button class="inline-flex items-center gap-2 rounded-md bg-[#E71D36] px-3 py-2 text-sm font-semibold text-white hover:bg-[#cf1a30]">
+                    <i data-lucide="heart" class="h-4 w-4"></i>
+                    Follow
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sub Nav -->
+        <div class="mt-6 rounded-xl border border-neutral-200 bg-white shadow-sm">
+          <div class="flex flex-wrap items-center gap-1 border-b border-neutral-200 px-4 py-2">
+            <button onclick="switchChamberTab('overview')" data-chamber-link="overview" class="cham-link active inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium text-neutral-900 hover:bg-neutral-100">
+              <i data-lucide="layout-dashboard" class="h-4 w-4 text-[#E71D36]"></i> Overview
+            </button>
+            <button onclick="switchChamberTab('events')" data-chamber-link="events" class="cham-link inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium text-neutral-600 hover:bg-neutral-100">
+              <i data-lucide="calendar" class="h-4 w-4"></i> Events
+            </button>
+            <button onclick="switchChamberTab('members')" data-chamber-link="members" class="cham-link inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium text-neutral-600 hover:bg-neutral-100">
+              <i data-lucide="users" class="h-4 w-4"></i> Members
+            </button>
+            <button onclick="switchChamberTab('partners')" data-chamber-link="partners" class="cham-link inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium text-neutral-600 hover:bg-neutral-100">
+              <i data-lucide="handshake" class="h-4 w-4"></i> Partners
+            </button>
+          </div>
+
+          <!-- Overview -->
+          <div data-chamber-tab="overview" class="p-4 sm:p-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+              <!-- Left -->
+              <div class="lg:col-span-7 space-y-6">
+                <section class="space-y-2">
+                  <h3 class="text-lg font-semibold tracking-tight" style="letter-spacing:-0.01em;">About the Chamber</h3>
+                  <p class="text-sm text-neutral-700">The Kinshasa Chamber of Commerce connects enterprises with opportunities across the DRC and beyond. We provide access to policy insights, market intelligence, and curated networking to catalyze sustainable growth.</p>
+                  <ul class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-neutral-700">
+                    <li class="inline-flex items-center gap-2"><i data-lucide="check" class="h-4 w-4 text-emerald-600"></i> Export-readiness programs</li>
+                    <li class="inline-flex items-center gap-2"><i data-lucide="check" class="h-4 w-4 text-emerald-600"></i> Policy and regulatory briefings</li>
+                    <li class="inline-flex items-center gap-2"><i data-lucide="check" class="h-4 w-4 text-emerald-600"></i> Investor matchmaking</li>
+                    <li class="inline-flex items-center gap-2"><i data-lucide="check" class="h-4 w-4 text-emerald-600"></i> Sector-specific events</li>
+                  </ul>
+                </section>
+
+                <section class="space-y-3">
+                  <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-semibold tracking-tight" style="letter-spacing:-0.01em;">Upcoming Events</h3>
+                    <button class="text-sm font-medium text-[#E71D36] hover:underline">See all</button>
+                  </div>
+                  <div class="grid sm:grid-cols-2 gap-4">
+                    <!-- Teaser -->
+                    <a href="#" class="group relative overflow-hidden rounded-lg border border-neutral-200 hover:border-neutral-300">
+                      <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&amp;w=1600&amp;auto=format&amp;fit=crop" alt="" class="h-32 w-full object-cover">
+                      <div class="absolute inset-0 bg-neutral-900/40"></div>
+                      <div class="absolute inset-x-0 bottom-0 p-3">
+                        <div class="text-white text-sm font-semibold">Investor Breakfast</div>
+                        <div class="text-xs text-neutral-200">Dec 2 • Gombe</div>
+                      </div>
+                    </a>
+                    <a href="#" class="group relative overflow-hidden rounded-lg border border-neutral-200 hover:border-neutral-300">
+                      <img src="https://images.unsplash.com/photo-1516387938699-a93567ec168e?q=80&amp;w=1600&amp;auto=format&amp;fit=crop" alt="" class="h-32 w-full object-cover">
+                      <div class="absolute inset-0 bg-neutral-900/40"></div>
+                      <div class="absolute inset-x-0 bottom-0 p-3">
+                        <div class="text-white text-sm font-semibold">Trade Compliance 101</div>
+                        <div class="text-xs text-neutral-200">Dec 14 • Online</div>
+                      </div>
+                    </a>
+                  </div>
+                </section>
+              </div>
+
+              <!-- Right -->
+              <div class="lg:col-span-5 space-y-6">
+                <section class="rounded-xl border border-neutral-200 bg-white p-4 shadow-sm">
+                  <h3 class="text-sm font-semibold tracking-tight" style="letter-spacing:-0.01em;">Contact &amp; Address</h3>
+                  <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                    <div class="space-y-2">
+                      <div class="inline-flex items-center gap-2 text-neutral-700"><i data-lucide="mail" class="h-4 w-4 text-neutral-500"></i> hello@kinchamber.org</div>
+                      <div class="inline-flex items-center gap-2 text-neutral-700"><i data-lucide="phone" class="h-4 w-4 text-neutral-500"></i> +243 800 000 000</div>
+                    </div>
+                    <div class="space-y-2">
+                      <div class="inline-flex items-center gap-2 text-neutral-700"><i data-lucide="map-pin" class="h-4 w-4 text-neutral-500"></i> 42 Avenue de la Paix, Gombe</div>
+                      <div class="inline-flex items-center gap-2 text-neutral-700"><i data-lucide="globe" class="h-4 w-4 text-neutral-500"></i> kinchamber.org</div>
+                    </div>
+                  </div>
+                  <div class="mt-4 flex items-center gap-3">
+                    <button class="inline-flex items-center gap-2 rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm font-medium hover:bg-neutral-50">
+                      <i data-lucide="map" class="h-4 w-4"></i>
+                      Get Directions
+                    </button>
+                    <div class="inline-flex items-center gap-2 rounded-full bg-neutral-100 px-3 py-1 text-xs text-neutral-800">
+                      <i data-lucide="shield-check" class="h-4 w-4 text-[#E71D36]"></i>
+                      Accredited
+                    </div>
+                  </div>
+                </section>
+
+                <section class="rounded-xl border border-neutral-200 bg-white p-4 shadow-sm">
+                  <h3 class="text-sm font-semibold tracking-tight" style="letter-spacing:-0.01em;">Follow Us</h3>
+                  <div class="mt-3 flex items-center gap-2">
+                    <a href="#" class="inline-flex h-9 w-9 items-center justify-center rounded-md border border-neutral-200 hover:bg-neutral-50" aria-label="LinkedIn"><i data-lucide="linkedin" class="h-5 w-5"></i></a>
+                    <a href="#" class="inline-flex h-9 w-9 items-center justify-center rounded-md border border-neutral-200 hover:bg-neutral-50" aria-label="Twitter"><i data-lucide="twitter" class="h-5 w-5"></i></a>
+                    <a href="#" class="inline-flex h-9 w-9 items-center justify-center rounded-md border border-neutral-200 hover:bg-neutral-50" aria-label="Facebook"><i data-lucide="facebook" class="h-5 w-5"></i></a>
+                  </div>
+                </section>
+
+                <section class="rounded-xl border border-neutral-200 bg-white p-4 shadow-sm">
+                  <div class="flex items-center justify-between">
+                    <h3 class="text-sm font-semibold tracking-tight" style="letter-spacing:-0.01em;">Partner Companies</h3>
+                    <button class="text-xs font-medium text-[#E71D36] hover:underline">All partners</button>
+                  </div>
+                  <div class="mt-3 grid grid-cols-3 gap-3">
+                    <div class="rounded-lg border border-neutral-200 p-3 text-center">
+                      <span class="mx-auto inline-flex h-9 w-9 items-center justify-center rounded-md bg-neutral-100 text-neutral-900 text-xs font-semibold tracking-tight" style="letter-spacing:-0.02em;">AL</span>
+                      <div class="mt-1 text-xs">Alto Labs</div>
+                    </div>
+                    <div class="rounded-lg border border-neutral-200 p-3 text-center">
+                      <span class="mx-auto inline-flex h-9 w-9 items-center justify-center rounded-md bg-neutral-100 text-neutral-900 text-xs font-semibold tracking-tight" style="letter-spacing:-0.02em;">NV</span>
+                      <div class="mt-1 text-xs">Novix</div>
+                    </div>
+                    <div class="rounded-lg border border-neutral-200 p-3 text-center">
+                      <span class="mx-auto inline-flex h-9 w-9 items-center justify-center rounded-md bg-neutral-100 text-neutral-900 text-xs font-semibold tracking-tight" style="letter-spacing:-0.02em;">PR</span>
+                      <div class="mt-1 text-xs">Prax</div>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </div>
+
+          <!-- Events tab -->
+          <div data-chamber-tab="events" class="hidden p-4 sm:p-6">
+            <div class="grid gap-5 sm:grid-cols-2">
+              <article class="rounded-xl border border-neutral-200 bg-white shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+                <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&amp;w=1600&amp;auto=format&amp;fit=crop" class="h-40 w-full object-cover" alt="">
+                <div class="p-4">
+                  <h4 class="text-base font-semibold tracking-tight" style="letter-spacing:-0.01em;">Export Finance Clinic</h4>
+                  <p class="mt-1 text-sm text-neutral-600">1:1 sessions with trade finance experts.</p>
+                  <div class="mt-3 flex items-center gap-3 text-xs text-neutral-600">
+                    <span class="inline-flex items-center gap-1"><i data-lucide="calendar" class="h-3.5 w-3.5"></i> Jan 12</span>
+                    <span class="inline-flex items-center gap-1"><i data-lucide="clock" class="h-3.5 w-3.5"></i> 10:00 AM</span>
+                    <span class="inline-flex items-center gap-1"><i data-lucide="map-pin" class="h-3.5 w-3.5"></i> Gombe</span>
+                  </div>
+                  <div class="mt-4">
+                    <button class="inline-flex items-center gap-2 rounded-md bg-[#E71D36] px-3 py-2 text-sm font-semibold text-white hover:bg-[#cf1a30]"><i data-lucide="ticket" class="h-4 w-4"></i> Register</button>
+                  </div>
+                </div>
+              </article>
+              <article class="rounded-xl border border-neutral-200 bg-white shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+                <img src="https://images.unsplash.com/photo-1506784983877-45594efa4cbe?q=80&amp;w=1600&amp;auto=format&amp;fit=crop" class="h-40 w-full object-cover" alt="">
+                <div class="p-4">
+                  <h4 class="text-base font-semibold tracking-tight" style="letter-spacing:-0.01em;">Regulatory Update Webinar</h4>
+                  <p class="mt-1 text-sm text-neutral-600">Compliance essentials for Q1.</p>
+                  <div class="mt-3 flex items-center gap-3 text-xs text-neutral-600">
+                    <span class="inline-flex items-center gap-1"><i data-lucide="calendar" class="h-3.5 w-3.5"></i> Jan 26</span>
+                    <span class="inline-flex items-center gap-1"><i data-lucide="clock" class="h-3.5 w-3.5"></i> 2:00 PM</span>
+                    <span class="inline-flex items-center gap-1"><i data-lucide="video" class="h-3.5 w-3.5"></i> Online</span>
+                  </div>
+                  <div class="mt-4">
+                    <button class="inline-flex items-center gap-2 rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm font-medium hover:bg-neutral-50"><i data-lucide="eye" class="h-4 w-4"></i> View Details</button>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <!-- Members tab -->
+          <div data-chamber-tab="members" class="hidden p-4 sm:p-6">
+            <div class="rounded-xl border border-neutral-200 bg-white shadow-sm overflow-hidden">
+              <div class="border-b border-neutral-200 px-4 py-3 flex items-center justify-between">
+                <h3 class="text-sm font-semibold tracking-tight" style="letter-spacing:-0.01em;">Active Members</h3>
+                <div class="relative">
+                  <input type="text" placeholder="Search members" class="w-48 rounded-md border border-neutral-200 bg-white pl-3 pr-9 py-1.5 text-xs focus:border-[#E71D36] focus:ring-2 focus:ring-[#E71D36]/20">
+                  <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 text-neutral-400">
+                    <i data-lucide="search" class="h-3.5 w-3.5"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="min-w-full text-sm">
+                  <thead class="bg-neutral-50 text-neutral-600">
+                    <tr>
+                      <th class="px-4 py-2 text-left font-medium">Company</th>
+                      <th class="px-4 py-2 text-left font-medium">Contact</th>
+                      <th class="px-4 py-2 text-left font-medium">Email</th>
+                      <th class="px-4 py-2 text-left font-medium">Phone</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-neutral-200">
+                    <tr class="hover:bg-neutral-50">
+                      <td class="px-4 py-2">Kivu Agro</td>
+                      <td class="px-4 py-2">Amina K.</td>
+                      <td class="px-4 py-2 text-[#E71D36]">amina@kivuagro.com</td>
+                      <td class="px-4 py-2">+243 800 111 222</td>
+                    </tr>
+                    <tr class="hover:bg-neutral-50">
+                      <td class="px-4 py-2">Lumumba Logistics</td>
+                      <td class="px-4 py-2">Jean P.</td>
+                      <td class="px-4 py-2 text-[#E71D36]">jean@lumlog.com</td>
+                      <td class="px-4 py-2">+243 800 333 444</td>
+                    </tr>
+                    <tr class="hover:bg-neutral-50">
+                      <td class="px-4 py-2">KinTech Labs</td>
+                      <td class="px-4 py-2">Chantal M.</td>
+                      <td class="px-4 py-2 text-[#E71D36]">cm@kintechlabs.io</td>
+                      <td class="px-4 py-2">+243 800 555 666</td>
+                    </tr>
+                    <tr class="hover:bg-neutral-50">
+                      <td class="px-4 py-2">Goma Textiles</td>
+                      <td class="px-4 py-2">Isaac N.</td>
+                      <td class="px-4 py-2 text-[#E71D36]">isaac@gomatex.co</td>
+                      <td class="px-4 py-2">+243 800 777 888</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Partners tab -->
+          <div data-chamber-tab="partners" class="hidden p-4 sm:p-6">
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+              <div class="rounded-lg border border-neutral-200 bg-white p-4 text-center hover:bg-neutral-50">
+                <span class="mx-auto inline-flex h-10 w-10 items-center justify-center rounded-md bg-neutral-100 text-neutral-900 text-sm font-semibold tracking-tight" style="letter-spacing:-0.02em;">AL</span>
+                <div class="mt-2 text-sm">Alto Labs</div>
+              </div>
+              <div class="rounded-lg border border-neutral-200 bg-white p-4 text-center hover:bg-neutral-50">
+                <span class="mx-auto inline-flex h-10 w-10 items-center justify-center rounded-md bg-neutral-100 text-neutral-900 text-sm font-semibold tracking-tight" style="letter-spacing:-0.02em;">NV</span>
+                <div class="mt-2 text-sm">Novix</div>
+              </div>
+              <div class="rounded-lg border border-neutral-200 bg-white p-4 text-center hover:bg-neutral-50">
+                <span class="mx-auto inline-flex h-10 w-10 items-center justify-center rounded-md bg-neutral-100 text-neutral-900 text-sm font-semibold tracking-tight" style="letter-spacing:-0.02em;">PR</span>
+                <div class="mt-2 text-sm">Prax</div>
+              </div>
+              <div class="rounded-lg border border-neutral-200 bg-white p-4 text-center hover:bg-neutral-50">
+                <span class="mx-auto inline-flex h-10 w-10 items-center justify-center rounded-md bg-neutral-100 text-neutral-900 text-sm font-semibold tracking-tight" style="letter-spacing:-0.02em;">SE</span>
+                <div class="mt-2 text-sm">Seren</div>
+              </div>
+              <div class="rounded-lg border border-neutral-200 bg-white p-4 text-center hover:bg-neutral-50">
+                <span class="mx-auto inline-flex h-10 w-10 items-center justify-center rounded-md bg-neutral-100 text-neutral-900 text-sm font-semibold tracking-tight" style="letter-spacing:-0.02em;">KO</span>
+                <div class="mt-2 text-sm">Kora</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-neutral-200 bg-white">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+          <div class="flex items-center gap-3">
+            <div class="flex h-8 w-8 items-center justify-center rounded-md bg-[#E71D36] text-white text-sm font-semibold tracking-tight" style="letter-spacing:-0.02em;">CC</div>
+            <div>
+              <div class="text-sm font-semibold tracking-tight" style="letter-spacing:-0.02em;">ChamberConnect DRC</div>
+              <div class="text-xs text-neutral-500">Trusted by accredited chambers</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-6 text-sm">
+            <a href="#" class="text-neutral-700 hover:text-neutral-900">About</a>
+            <a href="#" class="text-neutral-700 hover:text-neutral-900">Events</a>
+            <a href="#" class="text-neutral-700 hover:text-neutral-900">Partners</a>
+            <a href="#" class="text-neutral-700 hover:text-neutral-900">Support</a>
+          </div>
+        </div>
+        <div class="mt-6 flex items-center justify-between border-t border-neutral-200 pt-6">
+          <p class="text-xs text-neutral-500">© 2025 ChamberConnect DRC. All rights reserved.</p>
+          <div class="flex items-center gap-3">
+            <a href="#" class="inline-flex h-8 w-8 items-center justify-center rounded-md border border-neutral-200 hover:bg-neutral-50" aria-label="LinkedIn"><i data-lucide="linkedin" class="h-4 w-4"></i></a>
+            <a href="#" class="inline-flex h-8 w-8 items-center justify-center rounded-md border border-neutral-200 hover:bg-neutral-50" aria-label="Twitter"><i data-lucide="twitter" class="h-4 w-4"></i></a>
+            <a href="#" class="inline-flex h-8 w-8 items-center justify-center rounded-md border border-neutral-200 hover:bg-neutral-50" aria-label="Facebook"><i data-lucide="facebook" class="h-4 w-4"></i></a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Chat Widget -->
+    <button class="fixed bottom-4 right-4 inline-flex items-center gap-2 rounded-full bg-[#E71D36] px-4 py-2.5 text-sm font-semibold text-white shadow-lg hover:bg-[#cf1a30] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E71D36]/50">
+      <i data-lucide="message-circle" class="h-4 w-4"></i>
+      Chat with us
+    </button>
+
+    <!-- Sign-in Modal -->
+    <div id="signin-modal" class="invisible pointer-events-none fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div class="absolute inset-0 bg-black/40 opacity-0 transition-opacity" onclick="closeModal('signin-modal')"></div>
+      <div class="relative w-full max-w-md translate-y-6 opacity-0 transition-all">
+        <div class="rounded-xl border border-neutral-200 bg-white p-6 shadow-2xl">
+          <div class="flex items-start justify-between">
+            <div>
+              <h3 class="text-lg font-semibold tracking-tight" style="letter-spacing:-0.01em;">Welcome back</h3>
+              <p class="mt-1 text-sm text-neutral-600">Access your business hub</p>
+            </div>
+            <button onclick="closeModal('signin-modal')" class="rounded-md p-1 text-neutral-500 hover:bg-neutral-100" aria-label="Close"><i data-lucide="x" class="h-5 w-5"></i></button>
+          </div>
+          <form class="mt-4 space-y-3">
+            <div>
+              <label class="text-xs font-medium text-neutral-700">Email</label>
+              <input type="email" class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#E71D36] focus:ring-2 focus:ring-[#E71D36]/20" placeholder="you@company.com">
+            </div>
+            <div>
+              <div class="flex items-center justify-between">
+                <label class="text-xs font-medium text-neutral-700">Password</label>
+                <a href="#" class="text-xs font-medium text-[#E71D36] hover:underline">Forgot?</a>
+              </div>
+              <input type="password" class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#E71D36] focus:ring-2 focus:ring-[#E71D36]/20" placeholder="••••••••">
+            </div>
+            <button type="button" class="w-full rounded-md bg-[#E71D36] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#cf1a30]">Log In</button>
+          </form>
+          <div class="my-4 flex items-center gap-3">
+            <div class="h-px w-full bg-neutral-200"></div>
+            <span class="text-xs text-neutral-500">or</span>
+            <div class="h-px w-full bg-neutral-200"></div>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <button class="inline-flex items-center justify-center gap-2 rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm font-medium hover:bg-neutral-50">
+              <i data-lucide="mail" class="h-4 w-4"></i> Google
+            </button>
+            <button class="inline-flex items-center justify-center gap-2 rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm font-medium hover:bg-neutral-50">
+              <i data-lucide="facebook" class="h-4 w-4"></i> Facebook
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Initialize icons
+      document.addEventListener('DOMContentLoaded', () => {
+        lucide.createIcons({ attrs: { 'stroke-width': 1.5 } });
+        setActiveToplink('home');
+      });
+
+      // View switcher
+      function switchView(id) {
+        document.querySelectorAll('[data-view]').forEach(s => s.classList.add('hidden'));
+        const el = document.getElementById(id);
+        if (el) el.classList.remove('hidden');
+        setActiveToplink(id);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      function setActiveToplink(id) {
+        document.querySelectorAll('[data-toplink]').forEach(btn => {
+          if (btn.getAttribute('data-toplink') === id) {
+            btn.classList.add('bg-neutral-100','text-neutral-900');
+          } else {
+            btn.classList.remove('bg-neutral-100','text-neutral-900');
+          }
+        });
+      }
+
+      // Events tabs
+      function switchEventsTab(target) {
+        document.querySelectorAll('[data-events-panel]').forEach(p => {
+          p.classList.toggle('hidden', p.getAttribute('data-events-panel') !== target);
+        });
+        document.querySelectorAll('[data-events-tab]').forEach(t => {
+          const active = t.getAttribute('data-events-tab') === target;
+          t.classList.toggle('text-neutral-900', active);
+          t.classList.toggle('text-neutral-600', !active);
+          t.querySelector('i')?.classList.toggle('text-[#E71D36]', active);
+        });
+      }
+
+      // Chamber tabs
+      function switchChamberTab(target) {
+        document.querySelectorAll('[data-chamber-tab]').forEach(p => {
+          p.classList.toggle('hidden', p.getAttribute('data-chamber-tab') !== target);
+        });
+        document.querySelectorAll('[data-chamber-link]').forEach(t => {
+          const active = t.getAttribute('data-chamber-link') === target;
+          t.classList.toggle('text-neutral-900', active);
+          t.classList.toggle('text-neutral-600', !active);
+          t.querySelector('i')?.classList.toggle('text-[#E71D36]', active);
+        });
+      }
+
+      // Favorite toggle
+      function toggleBookmark(btn) {
+        const icon = btn.querySelector('i');
+        const pressed = btn.getAttribute('aria-pressed') === 'true';
+        btn.setAttribute('aria-pressed', String(!pressed));
+        if (!pressed) {
+          btn.classList.add('text-[#E71D36]');
+          icon.setAttribute('data-lucide', 'heart');
+          btn.innerHTML = '<i data-lucide="heart" class="h-4 w-4 fill-[#E71D36] text-[#E71D36]"></i>';
+        } else {
+          btn.classList.remove('text-[#E71D36]');
+          btn.innerHTML = '<i data-lucide="heart" class="h-4 w-4"></i>';
+        }
+        lucide.createIcons({ attrs: { 'stroke-width': 1.5 } });
+      }
+
+      // Modal
+      function openModal(id) {
+        const root = document.getElementById(id);
+        if (!root) return;
+        root.classList.remove('invisible','pointer-events-none');
+        const overlay = root.children[0];
+        const panelWrap = root.children[1];
+        requestAnimationFrame(() => {
+          overlay.classList.remove('opacity-0');
+          panelWrap.classList.remove('opacity-0','translate-y-6');
+        });
+      }
+      function closeModal(id) {
+        const root = document.getElementById(id);
+        if (!root) return;
+        const overlay = root.children[0];
+        const panelWrap = root.children[1];
+        overlay.classList.add('opacity-0');
+        panelWrap.classList.add('opacity-0','translate-y-6');
+        setTimeout(() => root.classList.add('invisible','pointer-events-none'), 150);
+      }
+    </script>
+  
+</body></html>
