@@ -49,5 +49,6 @@ class Kernel extends HttpKernel
         'locale' => \App\Http\Middleware\SetLocale::class, // Alias pour le middleware de langue
         'chamber.manager' => \App\Http\Middleware\EnsureChamberManager::class,
         'admin' => \App\Http\Middleware\EnsureAdmin::class,
+        'admin.privileges' => \App\Http\Middleware\EnsureAdminPrivileges::class,
     ];
 }

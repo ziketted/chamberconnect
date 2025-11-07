@@ -49,7 +49,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'is_admin' => 'boolean',
+            'is_admin' => 'integer',
         ];
     }
 
@@ -61,5 +61,60 @@ class User extends Authenticatable implements MustVerifyEmail
     public function managesChamber(Chamber $chamber): bool
     {
         return $this->chambers()->where('chamber_id', $chamber->id)->wherePivot('role', 'manager')->exists();
+    }
+
+    // Constantes pour les rôles
+    const ROLE_USER = 0;           // Utilisateur normal
+    const ROLE_SUPER_ADMIN = 1;    // Super administrateur
+    const ROLE_CHAMBER_MANAGER = 2; // Gestionnaire de chambre
+
+    /**
+     * Vérifie si l'utilisateur est un super administrateur
+     */
+    public function isSuperAdmin(): bool
+    {
+        return $this->is_admin === self::ROLE_SUPER_ADMIN;
+    }
+
+    /**
+     * Vérifie si l'utilisateur est un gestionnaire de chambre
+     */
+    public function isChamberManager(): bool
+    {
+        return $this->is_admin === self::ROLE_CHAMBER_MANAGER;
+    }
+
+    /**
+     * Vérifie si l'utilisateur est un utilisateur normal
+     */
+    public function isRegularUser(): bool
+    {
+        return $this->is_admin === self::ROLE_USER;
+    }
+
+    /**
+     * Vérifie si l'utilisateur a des privilèges administratifs (super admin ou gestionnaire)
+     */
+    public function hasAdminPrivileges(): bool
+    {
+        return $this->isSuperAdmin() || $this->isChamberManager();
+    }
+
+    /**
+     * Obtient les chambres que l'utilisateur peut gérer
+     */
+    public function managedChambers()
+    {
+        if ($this->isSuperAdmin()) {
+            // Super admin peut gérer toutes les chambres
+            return Chamber::query();
+        }
+        
+        if ($this->isChamberManager()) {
+            // Gestionnaire peut gérer ses chambres assignées
+            return $this->chambers()->wherePivot('role', 'manager');
+        }
+        
+        return Chamber::whereRaw('1 = 0'); // Aucune chambre pour les utilisateurs normaux
     }
 }

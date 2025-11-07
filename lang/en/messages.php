@@ -18,6 +18,12 @@ return [
     'create_chamber' => 'Create Chamber',
     'administration' => 'Administration',
     'logout' => 'Logout',
+    
+    // Admin
+    'super_admin_dashboard' => 'Super Admin Dashboard',
+    'manage_chambers' => 'Manage Chambers',
+    'manage_users' => 'Manage Users',
+    'chamber_management' => 'Chamber Management',
 
     // Auth
     'login' => 'Log In',

@@ -24,11 +24,15 @@ class Chamber extends Model
         'verified',
         'social_links',
         'description',
+        'state_number',
+        'certification_date',
+        'certification_notes',
     ];
 
     protected $casts = [
         'verified' => 'boolean',
         'social_links' => 'array',
+        'certification_date' => 'date',
     ];
 
     public function getRouteKeyName(): string

@@ -22,12 +22,29 @@ class ChamberMemberController extends Controller
 
         $user = User::where('email', $data['email'])->first();
         if (!$user) {
-            return back()->withErrors(['email' => 'User not found']);
+            return back()->withErrors(['email' => 'Utilisateur non trouvé avec cet email']);
         }
 
-        $chamber->members()->syncWithoutDetaching([$user->id => ['role' => $data['role']]]);
+        // Vérifier si l'utilisateur est déjà membre
+        $existingMember = $chamber->members()->where('user_id', $user->id)->first();
+        if ($existingMember) {
+            return back()->withErrors(['email' => 'Cet utilisateur est déjà membre de cette chambre']);
+        }
 
-        return redirect()->route('chamber.show', $chamber)->with('status', 'Member added');
+        // Ajouter le membre avec le statut approprié
+        $status = 'approved'; // Les membres ajoutés par un gestionnaire sont automatiquement approuvés
+        
+        $chamber->members()->attach($user->id, [
+            'role' => $data['role'],
+            'status' => $status
+        ]);
+
+        // Si le rôle est manager, mettre à jour le rôle global de l'utilisateur
+        if ($data['role'] === 'manager') {
+            $user->update(['is_admin' => User::ROLE_CHAMBER_MANAGER]);
+        }
+
+        return redirect()->route('chamber.show', $chamber)->with('success', 'Membre ajouté avec succès');
     }
 
     public function join(Request $request, Chamber $chamber)
@@ -54,5 +71,32 @@ class ChamberMemberController extends Controller
     {
         $pending = $chamber->members()->wherePivot('status', 'pending')->get();
         return view('chambers.members.pending', compact('chamber', 'pending'));
+    }
+
+    /**
+     * API pour rechercher des utilisateurs par email
+     */
+    public function searchUsers(Request $request)
+    {
+        $query = $request->get('q', '');
+        
+        if (strlen($query) < 2) {
+            return response()->json([]);
+        }
+
+        $users = User::where('email', 'LIKE', "%{$query}%")
+            ->orWhere('name', 'LIKE', "%{$query}%")
+            ->limit(10)
+            ->get(['id', 'name', 'email'])
+            ->map(function ($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'display' => $user->name . ' (' . $user->email . ')'
+                ];
+            });
+
+        return response()->json($users);
     }
 }

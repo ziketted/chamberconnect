@@ -47,8 +47,8 @@ class ChamberController extends Controller
         $chamber->save();
 
         // assign creator as manager
-        $request->user()->loadMissing('id');
-        $chamber->members()->attach($request->user()->id, ['role' => 'manager']);
+        $user = $request->user();
+        $chamber->members()->attach($user->id, ['role' => 'manager', 'status' => 'approved']);
 
         return redirect()->route('chamber.show', $chamber)->with('status', 'Chamber created');
     }

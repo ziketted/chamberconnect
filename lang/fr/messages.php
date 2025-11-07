@@ -18,6 +18,12 @@ return [
     'create_chamber' => 'Créer une chambre',
     'administration' => 'Administration',
     'logout' => 'Se déconnecter',
+    
+    // Admin
+    'super_admin_dashboard' => 'Tableau de bord Super Admin',
+    'manage_chambers' => 'Gérer les chambres',
+    'manage_users' => 'Gérer les utilisateurs',
+    'chamber_management' => 'Gestion des chambres',
 
     // Auth
     'login' => 'Connexion',

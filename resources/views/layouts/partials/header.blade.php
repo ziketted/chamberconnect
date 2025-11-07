@@ -118,16 +118,32 @@
                                         <i data-lucide="user" class="inline h-4 w-4 mr-2"></i>
                                         {{ __('messages.profile') }}
                                     </a>
-                                    @if(Auth::user()->is_admin)
+                                    @if(Auth::user()->isSuperAdmin())
+                                        <a href="{{ route('admin.dashboard') }}" 
+                                            class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100">
+                                            <i data-lucide="shield-check" class="inline h-4 w-4 mr-2"></i>
+                                            Administration
+                                        </a>
                                         <a href="{{ route('chambers.create') }}" 
                                             class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100">
                                             <i data-lucide="plus" class="inline h-4 w-4 mr-2"></i>
                                             {{ __('messages.create_chamber') }}
                                         </a>
-                                        <a href="{{ route('admin.chambers.admins') }}" 
+                                        <a href="{{ route('admin.chambers') }}" 
                                             class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100">
-                                            <i data-lucide="settings" class="inline h-4 w-4 mr-2"></i>
-                                            {{ __('messages.administration') }}
+                                            <i data-lucide="building" class="inline h-4 w-4 mr-2"></i>
+                                            Gérer les chambres
+                                        </a>
+                                        <a href="{{ route('admin.users') }}" 
+                                            class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100">
+                                            <i data-lucide="users" class="inline h-4 w-4 mr-2"></i>
+                                            Gérer les utilisateurs
+                                        </a>
+                                    @elseif(Auth::user()->isChamberManager())
+                                        <a href="{{ route('dashboard') }}" 
+                                            class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100">
+                                            <i data-lucide="briefcase" class="inline h-4 w-4 mr-2"></i>
+                                            Gestion des chambres
                                         </a>
                                     @endif
                                     <hr class="my-1">
