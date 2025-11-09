@@ -10,7 +10,7 @@
                 <p class="mt-2 text-gray-600">Gérez toutes les chambres de commerce et leurs paramètres</p>
             </div>
             <a href="{{ route('chambers.create') }}"
-                class="bg-[#073066] text-white px-4 py-2 rounded-lg hover:bg-[#052347] transition-colors flex items-center">
+                class="bg-[#E71D36] text-white px-4 py-2 rounded-lg hover:bg-[#cf1a30] transition-colors flex items-center">
                 <i data-lucide="plus" class="h-4 w-4 mr-2"></i>
                 Créer une chambre
             </a>
@@ -119,28 +119,19 @@
     <!-- Chambres Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @forelse($chambers as $chamber)
-        <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 cursor-pointer chamber-card relative"
+        <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 cursor-pointer chamber-card"
             data-chamber-id="{{ $chamber->id }}"
             onclick="window.location.href='{{ route('admin.chambers.manage', $chamber) }}'">
 
             <!-- Header de la carte -->
             <div class="relative">
                 @if($chamber->cover_image_path)
-                <!-- Image avec overlay dégradé pour améliorer la lisibilité -->
-                <div class="relative overflow-hidden rounded-t-lg">
-                    <img class="w-full h-32 object-cover" src="{{ asset('storage/' . $chamber->cover_image_path) }}"
-                        alt="{{ $chamber->name }}">
-                    <!-- Dégradé overlay pour améliorer la lisibilité du badge et créer une séparation -->
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-black/10"></div>
-                    <!-- Bordure inférieure pour séparer de la zone blanche -->
-                    <div
-                        class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent">
-                    </div>
-                </div>
+                <img class="w-full h-32 object-cover rounded-t-lg"
+                    src="{{ asset('storage/' . $chamber->cover_image_path) }}" alt="{{ $chamber->name }}">
                 @else
                 <!-- Fallback avec dégradé et icône maison -->
                 <div
-                    class="w-full h-32 bg-gradient-to-r from-gray-400 to-gray-600 rounded-t-lg flex items-center justify-start pl-6 overflow-hidden">
+                    class="w-full h-32 bg-gradient-to-r from-gray-400 to-gray-600 rounded-t-lg flex items-center justify-start pl-6">
                     <div class="flex items-center space-x-3">
                         <div class="bg-white bg-opacity-20 rounded-full p-2">
                             <i data-lucide="home" class="h-6 w-6 text-white"></i>
@@ -154,43 +145,43 @@
                 </div>
                 @endif
 
-                <!-- Statut badge avec meilleur contraste -->
-                <div class="absolute top-3 right-3 z-10">
+                <!-- Statut badge -->
+                <div class="absolute top-3 right-3">
                     @if($chamber->verified && $chamber->state_number)
                     <span
-                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-600 text-white shadow-lg border border-green-500">
+                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 shadow-sm">
                         <i data-lucide="shield-check" class="h-3 w-3 mr-1"></i>
                         Certifiée
                     </span>
                     @else
                     <span
-                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-500 text-white shadow-lg border border-yellow-400">
+                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 shadow-sm">
                         <i data-lucide="clock" class="h-3 w-3 mr-1"></i>
                         En attente
                     </span>
                     @endif
                 </div>
-            </div>
 
-            <!-- Logo positionné au niveau de la carte (pas du header) pour éviter l'overflow -->
-            <div class="absolute top-24 left-6 z-20">
-                @if($chamber->logo_path)
-                <img class="h-12 w-12 rounded-full border-4 border-white shadow-xl object-cover"
-                    src="{{ asset('storage/' . $chamber->logo_path) }}" alt="{{ $chamber->name }}">
-                @else
-                <div
-                    class="h-12 w-12 rounded-full border-4 border-white shadow-xl bg-white flex items-center justify-center">
-                    <div class="text-center">
-                        <i data-lucide="building-2" class="h-4 w-4 text-gray-600 mx-auto mb-0.5"></i>
-                        <span class="text-xs text-gray-700 font-bold">{{ strtoupper(substr($chamber->name, 0, 2))
-                            }}</span>
+                <!-- Logo -->
+                <div class="absolute -bottom-6 left-6">
+                    @if($chamber->logo_path)
+                    <img class="h-12 w-12 rounded-full border-4 border-white shadow-lg object-cover"
+                        src="{{ asset('storage/' . $chamber->logo_path) }}" alt="{{ $chamber->name }}">
+                    @else
+                    <div
+                        class="h-12 w-12 rounded-full border-4 border-white shadow-lg bg-gray-100 flex items-center justify-center">
+                        <div class="text-center">
+                            <i data-lucide="building-2" class="h-5 w-5 text-gray-500 mx-auto mb-0.5"></i>
+                            <span class="text-xs text-gray-600 font-medium">{{ strtoupper(substr($chamber->name, 0, 2))
+                                }}</span>
+                        </div>
                     </div>
+                    @endif
                 </div>
-                @endif
             </div>
 
             <!-- Contenu de la carte -->
-            <div class="pt-8 pb-6 px-6 relative">
+            <div class="pt-8 pb-6 px-6">
                 <div class="mb-4">
                     <h3 class="text-lg font-semibold text-gray-900 mb-1">{{ $chamber->name }}</h3>
                     <p class="text-sm text-gray-500 flex items-center">
@@ -245,7 +236,7 @@
                 <p class="mt-1 text-sm text-gray-500">Commencez par créer une nouvelle chambre de commerce.</p>
                 <div class="mt-6">
                     <a href="{{ route('chambers.create') }}"
-                        class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#073066] hover:bg-[#052347]">
+                        class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#E71D36] hover:bg-[#cf1a30]">
                         <i data-lucide="plus" class="h-4 w-4 mr-2"></i>
                         Créer une chambre
                     </a>

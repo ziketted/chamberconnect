@@ -11,7 +11,7 @@
                 <p class="mt-1 text-xs text-neutral-600">Contrôlez la portée et les actions.</p>
                 <div class="mt-3 flex flex-wrap gap-2">
                     @if(Auth::user()->isSuperAdmin())
-                        <span class="inline-flex items-center rounded-md bg-red-100 px-2 py-1 text-xs font-medium text-red-800">
+                        <span class="inline-flex items-center rounded-md bg-[#b81010]/10 px-2 py-1 text-xs font-medium text-[#b81010]">
                             <i data-lucide="shield" class="mr-1 h-3 w-3"></i>
                             Super Admin
                         </span>
@@ -19,7 +19,7 @@
                             Accès global aux chambres
                         </span>
                     @elseif(Auth::user()->isChamberManager())
-                        <span class="inline-flex items-center rounded-md bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">
+                        <span class="inline-flex items-center rounded-md bg-[#fcb357]/10 px-2 py-1 text-xs font-medium text-[#fcb357]">
                             <i data-lucide="briefcase" class="mr-1 h-3 w-3"></i>
                             Gestionnaire de chambre
                         </span>
@@ -46,7 +46,7 @@
                 <div class="mt-4 flex flex-col gap-2">
                     @if(Route::has('admin.dashboard'))
                         <a href="{{ route('admin.dashboard') }}"
-                            class="inline-flex items-center gap-2 rounded-md bg-[#E71D36] px-3 py-2 text-sm font-semibold text-white hover:bg-[#cf1a30]">
+                            class="inline-flex items-center gap-2 rounded-md bg-[#073066] px-3 py-2 text-sm font-semibold text-white hover:bg-[#052347]">
                             <i data-lucide="shield-check" class="h-4 w-4"></i> 
                             Administration
                         </a>
@@ -62,7 +62,7 @@
                 @elseif(Auth::user()->isChamberManager())
                 <div class="mt-4 flex flex-col gap-2">
                     <a href="{{ route('chamber-manager.dashboard') }}"
-                        class="inline-flex items-center gap-2 rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700">
+                        class="inline-flex items-center gap-2 rounded-md bg-[#fcb357] px-3 py-2 text-sm font-semibold text-white hover:bg-[#f5a742]">
                         <i data-lucide="briefcase" class="h-4 w-4"></i> 
                         Tableau de bord gestionnaire
                     </a>
@@ -125,7 +125,7 @@
                                     <span
                                         class="opacity-0 duration-100 ease-out absolute inset-0 flex h-full w-full items-center justify-center transition-opacity"
                                         aria-hidden="true">
-                                        <i data-lucide="check" class="h-3 w-3 text-[#E71D36]"></i>
+                                        <i data-lucide="check" class="h-3 w-3 text-[#073066]"></i>
                                     </span>
                                 </span>
                             </button>
@@ -180,7 +180,7 @@
                 <img src="https://ui-avatars.com/api/?name=User" alt="" class="h-10 w-10 rounded-full object-cover">
                 <div class="flex-1">
                     <input type="text" placeholder="Annoncer un forum, atelier, participation..."
-                        class="w-full rounded-md border border-neutral-200 bg-neutral-50 px-4 py-2 text-sm placeholder:text-neutral-500 focus:border-[#E71D36] focus:ring-2 focus:ring-[#E71D36]/20">
+                        class="w-full rounded-md border border-neutral-200 bg-neutral-50 px-4 py-2 text-sm placeholder:text-neutral-500 focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20">
                 </div>
             </div>
             <div class="mt-3 flex gap-2">
@@ -219,24 +219,24 @@
                         </div>
                         @if(auth()->user()->isSuperAdmin())
                             @if($chamber->verified && $chamber->state_number)
-                                <!-- Chambre certifiée avec numéro d'état -->
+                                <!-- Chambre agréée avec numéro d'état -->
                                 <div class="flex flex-col items-end gap-1">
                                     <span class="inline-flex items-center gap-1.5 rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-800">
                                         <i data-lucide="check-circle" class="h-3 w-3"></i>
-                                        Certifiée
+                                        Agréée
                                     </span>
                                     <span class="text-xs text-gray-600">N° État: {{ $chamber->state_number }}</span>
                                 </div>
                             @else
-                                <!-- Chambre non certifiée - bouton pour ouvrir le modal -->
+                                <!-- Chambre non agréée - bouton pour ouvrir le modal -->
                                 <button type="button" onclick="openCertificationModal('{{ $chamber->slug }}')" 
                                     class="inline-flex items-center gap-1.5 rounded-full bg-orange-100 px-2.5 py-1 text-xs font-medium text-orange-800 hover:bg-orange-200">
                                     <i data-lucide="shield-check" class="h-3 w-3"></i>
-                                    Certifier la chambre
+                                    Agréer la chambre
                                 </button>
                             @endif
                         @else
-                            <span class="inline-flex items-center gap-1.5 rounded-full bg-[#E71D36]/10 px-2.5 py-1 text-xs font-medium text-[#E71D36]">
+                            <span class="inline-flex items-center gap-1.5 rounded-full bg-[#073066]/10 px-2.5 py-1 text-xs font-medium text-[#073066]">
                                 Chambre
                             </span>
                         @endif
@@ -284,7 +284,7 @@
                                 {{ $chamber->members_count }} {{ $chamber->members_count > 1 ? 'membres' : 'membre' }}
                             </span>
                         @else
-                            <button class="inline-flex items-center gap-2 rounded-md bg-[#E71D36] px-3 py-2 text-sm font-semibold text-white hover:bg-[#cf1a30]">
+                            <button class="inline-flex items-center gap-2 rounded-md bg-[#073066] px-3 py-2 text-sm font-semibold text-white hover:bg-[#052347]">
                                 S'inscrire
                             </button>
                         @endif
@@ -304,7 +304,7 @@
                 <p class="text-sm text-gray-500 mb-4">Il n'y a pas encore de chambres de commerce enregistrées.</p>
                 @if(auth()->user()->isSuperAdmin())
                     <a href="{{ route('chambers.create') }}" 
-                        class="inline-flex items-center gap-2 rounded-md bg-[#E71D36] px-4 py-2 text-sm font-semibold text-white hover:bg-[#cf1a30]">
+                        class="inline-flex items-center gap-2 rounded-md bg-[#073066] px-4 py-2 text-sm font-semibold text-white hover:bg-[#052347]">
                         <i data-lucide="plus" class="h-4 w-4"></i>
                         Créer la première chambre
                     </a>
@@ -315,7 +315,7 @@
     </main>
 </div>
 
-<!-- Modal de certification pour super admin -->
+<!-- Modal d'agrément pour super admin -->
 @if(auth()->user()->isSuperAdmin())
 <div id="certificationModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
     <div class="flex min-h-screen items-center justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
@@ -333,7 +333,7 @@
                         </div>
                         <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
                             <h3 class="text-lg font-medium leading-6 text-gray-900" id="modal-title">
-                                Certifier la chambre
+                                Agréer la chambre
                             </h3>
                             <div class="mt-4 space-y-4">
                                 <div>
@@ -342,17 +342,17 @@
                                     </label>
                                     <input type="text" name="state_number" id="state_number" required
                                         placeholder="Ex: CCI-DK-2024-002"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#E71D36] focus:ring-[#E71D36] sm:text-sm">
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#073066] focus:ring-[#073066] sm:text-sm">
                                     <p class="mt-1 text-xs text-gray-500">Format recommandé: CCI-[VILLE]-[ANNÉE]-[NUMÉRO]</p>
                                 </div>
                                 
                                 <div>
                                     <label for="certification_date" class="block text-sm font-medium text-gray-700">
-                                        Date de certification
+                                        Date d'agrément
                                     </label>
                                     <input type="date" name="certification_date" id="certification_date" required
                                         value="{{ date('Y-m-d') }}"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#E71D36] focus:ring-[#E71D36] sm:text-sm">
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#073066] focus:ring-[#073066] sm:text-sm">
                                 </div>
                                 
                                 <div>
@@ -360,8 +360,8 @@
                                         Notes (optionnel)
                                     </label>
                                     <textarea name="notes" id="notes" rows="3"
-                                        placeholder="Commentaires sur la certification..."
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#E71D36] focus:ring-[#E71D36] sm:text-sm"></textarea>
+                                        placeholder="Commentaires sur l'agrément..."
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#073066] focus:ring-[#073066] sm:text-sm"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -370,7 +370,7 @@
                 <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                     <button type="submit"
                         class="inline-flex w-full justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm">
-                        Certifier la chambre
+                        Agréer la chambre
                     </button>
                     <button type="button" onclick="closeCertificationModal()"
                         class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
@@ -394,7 +394,7 @@
         });
     });
 
-    // Fonctions pour le modal de certification
+    // Fonctions pour le modal d'agrément
     window.openCertificationModal = function(chamberSlug) {
         console.log('Opening modal for:', chamberSlug);
         const modal = document.getElementById('certificationModal');

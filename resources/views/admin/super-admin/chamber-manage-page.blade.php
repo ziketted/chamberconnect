@@ -14,16 +14,16 @@
           <h1 class="text-2xl font-bold text-gray-900">Gestion de {{ $chamber->name }}</h1>
         </div>
 
-        <!-- Badge de certification -->
+        <!-- Badge d'agrément -->
         <div class="flex items-center space-x-3">
           @if($chamber->verified && $chamber->state_number)
-          <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-[#fcb357]/10 text-[#fcb357]">
             <i data-lucide="shield-check" class="h-4 w-4 mr-2"></i>
-            Certifiée
+            Agréée
           </span>
           @else
           <span
-            class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
+            class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-[#b81010]/10 text-[#b81010]">
             <i data-lucide="clock" class="h-4 w-4 mr-2"></i>
             En attente
           </span>
@@ -34,7 +34,7 @@
 
     <!-- Messages de succès/erreur -->
     @if(session('success'))
-    <div class="mb-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">
+    <div class="mb-6 bg-[#fcb357]/10 border border-[#fcb357]/20 text-[#fcb357] px-4 py-3 rounded-lg">
       <div class="flex items-center">
         <i data-lucide="check-circle" class="h-5 w-5 mr-2"></i>
         {{ session('success') }}
@@ -43,7 +43,7 @@
     @endif
 
     @if(session('error'))
-    <div class="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+    <div class="mb-6 bg-[#b81010]/10 border border-[#b81010]/20 text-[#b81010] px-4 py-3 rounded-lg">
       <div class="flex items-center">
         <i data-lucide="alert-circle" class="h-5 w-5 mr-2"></i>
         {{ session('error') }}
@@ -61,10 +61,67 @@
             <div class="flex items-center justify-between mb-6">
               <h2 class="text-xl font-semibold text-gray-900">Informations de la chambre</h2>
               <a href="{{ route('chamber.show', $chamber) }}" target="_blank"
-                class="text-blue-600 hover:text-blue-800 flex items-center text-sm">
+                class="text-[#073066] hover:text-[#052347] flex items-center text-sm">
                 <i data-lucide="external-link" class="h-4 w-4 mr-1"></i>
                 Voir la page publique
               </a>
+            </div>
+
+            <!-- Images de la chambre -->
+            <div class="mb-8">
+              <!-- Image de couverture -->
+              <div class="mb-6">
+                <dt class="text-sm font-medium text-gray-500 mb-2">Image de couverture</dt>
+                <div class="relative h-48 rounded-lg overflow-hidden">
+                  @if($chamber->cover_image_path)
+                    <img src="{{ asset('storage/' . $chamber->cover_image_path) }}" 
+                         alt="Image de couverture de {{ $chamber->name }}"
+                         class="w-full h-full object-cover">
+                  @else
+                    <!-- Fallback avec dégradé et icône maison -->
+                    <div class="w-full h-full bg-gradient-to-r from-gray-400 to-gray-600 flex items-center justify-start pl-8">
+                      <div class="flex items-center space-x-4">
+                        <div class="bg-white bg-opacity-20 rounded-full p-4">
+                          <i data-lucide="home" class="h-12 w-12 text-white"></i>
+                        </div>
+                        <div class="text-white">
+                          <h3 class="text-xl font-semibold">{{ $chamber->name }}</h3>
+                          <p class="text-gray-200 text-sm">{{ $chamber->location ?? 'Localisation non définie' }}</p>
+                        </div>
+                      </div>
+                    </div>
+                  @endif
+                </div>
+              </div>
+
+              <!-- Logo -->
+              <div class="flex items-start space-x-4">
+                <div>
+                  <dt class="text-sm font-medium text-gray-500 mb-2">Logo</dt>
+                  <div class="w-20 h-20 rounded-lg overflow-hidden border border-gray-200">
+                    @if($chamber->logo_path)
+                      <img src="{{ asset('storage/' . $chamber->logo_path) }}" 
+                           alt="Logo de {{ $chamber->name }}"
+                           class="w-full h-full object-cover">
+                    @else
+                      <!-- Fallback pour le logo -->
+                      <div class="w-full h-full bg-gray-100 flex items-center justify-center">
+                        <div class="text-center">
+                          <i data-lucide="building-2" class="h-8 w-8 text-gray-400 mx-auto mb-1"></i>
+                          <span class="text-xs text-gray-500 font-medium">{{ strtoupper(substr($chamber->name, 0, 2)) }}</span>
+                        </div>
+                      </div>
+                    @endif
+                  </div>
+                </div>
+                <div class="flex-1 pt-2">
+                  <h3 class="text-lg font-semibold text-gray-900">{{ $chamber->name }}</h3>
+                  <p class="text-sm text-gray-600">{{ $chamber->location ?? 'Localisation non définie' }}</p>
+                  @if($chamber->state_number)
+                    <p class="text-xs text-gray-500 mt-1">N° d'État: {{ $chamber->state_number }}</p>
+                  @endif
+                </div>
+              </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -96,7 +153,7 @@
               @endif
               @if($chamber->certification_date)
               <div>
-                <dt class="text-sm font-medium text-gray-500 mb-1">Date de certification</dt>
+                <dt class="text-sm font-medium text-gray-500 mb-1">Date d'agrément</dt>
                 <dd class="text-sm text-gray-900">{{
                   \Carbon\Carbon::parse($chamber->certification_date)->format('d/m/Y') }}</dd>
               </div>
@@ -118,7 +175,7 @@
             <div class="flex items-center justify-between mb-6">
               <h2 class="text-xl font-semibold text-gray-900">Membres ({{ $chamber->members->count() }})</h2>
               <button
-                class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                class="inline-flex items-center px-4 py-2 bg-[#073066] text-white text-sm font-medium rounded-lg hover:bg-[#052347] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#073066]">
                 <i data-lucide="user-plus" class="h-4 w-4 mr-2"></i>
                 Ajouter membre
               </button>
@@ -139,27 +196,27 @@
               <div class="flex items-center space-x-2 ml-3">
                 <!-- Badge de rôle -->
                 @if($member->pivot->role === 'manager')
-                <div class="h-6 w-6 rounded-full bg-purple-100 flex items-center justify-center" title="Gestionnaire">
-                  <i data-lucide="crown" class="h-3 w-3 text-purple-600"></i>
+                <div class="h-6 w-6 rounded-full bg-[#fcb357]/10 flex items-center justify-center" title="Gestionnaire">
+                  <i data-lucide="crown" class="h-3 w-3 text-[#fcb357]"></i>
                 </div>
                 @else
-                <div class="h-6 w-6 rounded-full bg-blue-100 flex items-center justify-center" title="Membre">
-                  <i data-lucide="user" class="h-3 w-3 text-blue-600"></i>
+                <div class="h-6 w-6 rounded-full bg-[#073066]/10 flex items-center justify-center" title="Membre">
+                  <i data-lucide="user" class="h-3 w-3 text-[#073066]"></i>
                 </div>
                 @endif
 
                 <!-- Badge de statut -->
                 @if($member->pivot->status === 'approved')
-                <div class="h-6 w-6 rounded-full bg-green-100 flex items-center justify-center" title="Approuvé">
-                  <i data-lucide="check" class="h-3 w-3 text-green-600"></i>
+                <div class="h-6 w-6 rounded-full bg-[#fcb357]/10 flex items-center justify-center" title="Approuvé">
+                  <i data-lucide="check" class="h-3 w-3 text-[#fcb357]"></i>
                 </div>
                 @elseif($member->pivot->status === 'pending')
-                <div class="h-6 w-6 rounded-full bg-yellow-100 flex items-center justify-center" title="En attente">
-                  <i data-lucide="clock" class="h-3 w-3 text-yellow-600"></i>
+                <div class="h-6 w-6 rounded-full bg-[#b81010]/10 flex items-center justify-center" title="En attente">
+                  <i data-lucide="clock" class="h-3 w-3 text-[#b81010]"></i>
                 </div>
                 @else
-                <div class="h-6 w-6 rounded-full bg-red-100 flex items-center justify-center" title="Rejeté">
-                  <i data-lucide="x" class="h-3 w-3 text-red-600"></i>
+                <div class="h-6 w-6 rounded-full bg-[#b81010]/10 flex items-center justify-center" title="Rejeté">
+                  <i data-lucide="x" class="h-3 w-3 text-[#b81010]"></i>
                 </div>
                 @endif
 
@@ -201,31 +258,31 @@
 
       <!-- Colonne latérale - Actions -->
       <div class="space-y-6">
-        <!-- Certification -->
+        <!-- Agrément -->
         <div class="bg-white rounded-lg shadow-sm border border-gray-200">
           <div class="p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Certification</h3>
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Agrément</h3>
 
             @if($chamber->verified)
-            <!-- Chambre certifiée -->
+            <!-- Chambre agréée -->
             <div class="space-y-3">
               <button onclick="showRevokeCertificationConfirm()"
-                class="w-full bg-orange-600 text-white px-4 py-3 rounded-lg flex items-center justify-center hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-colors">
+                class="w-full bg-[#b81010] text-white px-4 py-3 rounded-lg flex items-center justify-center hover:bg-[#9a0e0e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#b81010] transition-colors">
                 <i data-lucide="x-circle" class="h-5 w-5 mr-2"></i>
-                Retirer certification
+                Retirer agrément
               </button>
               <button onclick="showVerificationModal()"
-                class="w-full bg-yellow-600 text-white px-4 py-3 rounded-lg flex items-center justify-center hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transition-colors">
+                class="w-full bg-[#fcb357] text-white px-4 py-3 rounded-lg flex items-center justify-center hover:bg-[#f5a742] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#fcb357] transition-colors">
                 <i data-lucide="shield-check" class="h-5 w-5 mr-2"></i>
                 Retirer vérification
               </button>
             </div>
             @else
-            <!-- Chambre non certifiée -->
+            <!-- Chambre non agréée -->
             <button onclick="showCertificationModal()"
-              class="w-full bg-green-600 text-white px-4 py-3 rounded-lg flex items-center justify-center hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
+              class="w-full bg-[#fcb357] text-white px-4 py-3 rounded-lg flex items-center justify-center hover:bg-[#f5a742] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#fcb357] transition-colors">
               <i data-lucide="award" class="h-5 w-5 mr-2"></i>
-              Certifier la chambre
+              Agréer la chambre
             </button>
             @endif
           </div>
@@ -239,7 +296,7 @@
             </div>
 
             <a href="{{ route('admin.chambers.assign-manager.show', $chamber) }}"
-              class="w-full bg-purple-600 text-white px-4 py-3 rounded-lg flex items-center justify-center hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors mb-4">
+              class="w-full bg-[#073066] text-white px-4 py-3 rounded-lg flex items-center justify-center hover:bg-[#052347] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#073066] transition-colors mb-4">
               <i data-lucide="user-plus" class="h-5 w-5 mr-2"></i>
               Assigner gestionnaire
             </a>
@@ -250,8 +307,8 @@
               @forelse($chamber->members->where('pivot.role', 'manager') as $manager)
               <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                 <div class="flex items-center flex-1">
-                  <div class="h-10 w-10 rounded-full bg-purple-200 flex items-center justify-center mr-3">
-                    <span class="text-sm font-medium text-purple-800">{{ strtoupper(substr($manager->name, 0, 1))
+                  <div class="h-10 w-10 rounded-full bg-[#fcb357]/20 flex items-center justify-center mr-3">
+                    <span class="text-sm font-medium text-[#fcb357]">{{ strtoupper(substr($manager->name, 0, 1))
                       }}</span>
                   </div>
                   <div class="flex-1 min-w-0">
@@ -260,8 +317,8 @@
                   </div>
                 </div>
                 <div class="flex items-center space-x-2 ml-3">
-                  <div class="h-6 w-6 rounded-full bg-purple-100 flex items-center justify-center" title="Gestionnaire">
-                    <i data-lucide="crown" class="h-3 w-3 text-purple-600"></i>
+                  <div class="h-6 w-6 rounded-full bg-[#fcb357]/10 flex items-center justify-center" title="Gestionnaire">
+                    <i data-lucide="crown" class="h-3 w-3 text-[#fcb357]"></i>
                   </div>
                   <button onclick="showRemoveManagerConfirm('{{ $manager->id }}', '{{ $manager->name }}')"
                     class="text-red-600 hover:text-red-800 p-1 rounded hover:bg-red-50 transition-colors"
@@ -281,20 +338,20 @@
         </div>
 
         <!-- Actions dangereuses -->
-        <div class="bg-white rounded-lg shadow-sm border border-red-200">
+        <div class="bg-white rounded-lg shadow-sm border border-[#b81010]/20">
           <div class="p-6">
-            <h3 class="text-lg font-semibold text-red-900 mb-4">Actions dangereuses</h3>
+            <h3 class="text-lg font-semibold text-[#b81010] mb-4">Actions dangereuses</h3>
 
             <div class="space-y-3">
               @if(!$chamber->suspended)
               <button onclick="showSuspendConfirm()"
-                class="w-full bg-red-600 text-white px-4 py-3 rounded-lg flex items-center justify-center hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors">
+                class="w-full bg-[#b81010] text-white px-4 py-3 rounded-lg flex items-center justify-center hover:bg-[#9a0e0e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#b81010] transition-colors">
                 <i data-lucide="ban" class="h-5 w-5 mr-2"></i>
                 Suspendre la chambre
               </button>
               @else
               <button onclick="showUnsuspendConfirm()"
-                class="w-full bg-green-600 text-white px-4 py-3 rounded-lg flex items-center justify-center hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
+                class="w-full bg-[#fcb357] text-white px-4 py-3 rounded-lg flex items-center justify-center hover:bg-[#f5a742] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#fcb357] transition-colors">
                 <i data-lucide="check-circle" class="h-5 w-5 mr-2"></i>
                 Réactiver la chambre
               </button>
@@ -307,7 +364,7 @@
   </div>
 </div>
 
-<!-- Modal de certification -->
+<!-- Modal d'agrément -->
 <div id="certificationModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
   <div class="flex min-h-screen items-center justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
     <div class="fixed inset-0 transition-opacity bg-gray-900 bg-opacity-75" onclick="closeCertificationModal()"></div>
@@ -317,13 +374,13 @@
       <div class="bg-white px-6 pt-6 pb-4">
         <div class="flex items-center mb-6">
           <div class="flex-shrink-0">
-            <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-              <i data-lucide="shield-check" class="h-6 w-6 text-green-600"></i>
+            <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#fcb357]/10">
+              <i data-lucide="shield-check" class="h-6 w-6 text-[#fcb357]"></i>
             </div>
           </div>
           <div class="ml-4">
-            <h3 class="text-lg leading-6 font-medium text-gray-900">Certifier la chambre</h3>
-            <p class="text-sm text-gray-500">Remplissez les informations de certification</p>
+            <h3 class="text-lg leading-6 font-medium text-gray-900">Agréer la chambre</h3>
+            <p class="text-sm text-gray-500">Remplissez les informations d'agrément</p>
           </div>
         </div>
 
@@ -340,7 +397,7 @@
             </div>
             <div>
               <label for="certification_date" class="block text-sm font-medium text-gray-700 mb-1">
-                Date de certification *
+                Date d'agrément *
               </label>
               <input type="date" name="certification_date" id="certification_date" required
                 class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"
@@ -352,7 +409,7 @@
               </label>
               <textarea name="notes" id="notes" rows="3"
                 class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"
-                placeholder="Notes sur la certification..."></textarea>
+                placeholder="Notes sur l'agrément..."></textarea>
             </div>
           </div>
         </form>
@@ -366,9 +423,9 @@
           Annuler
         </button>
         <button type="button" onclick="submitCertification()"
-          class="inline-flex w-full justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 sm:ml-3 sm:w-auto sm:text-sm">
+          class="inline-flex w-full justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-[#fcb357] text-base font-medium text-white hover:bg-[#f5a742] sm:ml-3 sm:w-auto sm:text-sm">
           <i data-lucide="award" class="h-4 w-4 mr-2"></i>
-          Certifier
+          Agréer
         </button>
       </div>
     </div>
@@ -443,7 +500,7 @@
 let confirmationCallback = null;
 const chamberSlug = '{{ $chamber->slug }}';
 
-// Gestion du modal de certification
+// Gestion du modal d'agrément
 function showCertificationModal() {
     document.getElementById('certificationModal').classList.remove('hidden');
     document.body.style.overflow = 'hidden';
@@ -692,8 +749,8 @@ function showUnsuspendConfirm() {
 
 function showRevokeCertificationConfirm() {
     showConfirmation({
-        title: 'Retirer la certification ?',
-        message: 'Êtes-vous sûr de vouloir retirer la certification de cette chambre ?',
+        title: 'Retirer l\'agrément ?',
+        message: 'Êtes-vous sûr de vouloir retirer l\'agrément de cette chambre ?',
         confirmText: 'OK',
         type: 'danger',
         callback: function() {

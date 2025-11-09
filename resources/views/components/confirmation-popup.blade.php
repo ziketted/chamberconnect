@@ -222,8 +222,8 @@ function confirmPromoteManager(chamberSlug, userId, userName) {
 
 function confirmUncertify() {
     showConfirmation({
-        title: 'Retirer la certification',
-        message: 'Êtes-vous sûr de vouloir retirer la certification de cette chambre ? Cette action affectera son statut public.',
+        title: 'Retirer l\'agrément',
+        message: 'Êtes-vous sûr de vouloir retirer l\'agrément de cette chambre ? Cette action affectera son statut public.',
         type: 'warning',
         confirmText: 'Retirer',
         callback: function() {

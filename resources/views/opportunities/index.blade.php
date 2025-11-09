@@ -19,14 +19,14 @@
                 </span>
                 <input type="text" 
                     placeholder="Rechercher des opportunités..." 
-                    class="w-full rounded-xl border border-neutral-200 bg-white pl-10 pr-4 py-3 text-sm text-neutral-800 placeholder:text-neutral-400 shadow-sm focus:border-[#E71D36] focus:ring-2 focus:ring-[#E71D36]/20">
+                    class="w-full rounded-xl border border-neutral-200 bg-white pl-10 pr-4 py-3 text-sm text-neutral-800 placeholder:text-neutral-400 shadow-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20">
             </div>
         </div>
 
         <!-- Contenu à venir -->
         <div class="rounded-xl border border-neutral-200 bg-white p-8 text-center">
             <div class="mx-auto max-w-md">
-                <div class="flex h-12 w-12 items-center justify-center rounded-full bg-[#E71D36]/10 text-[#E71D36] mx-auto">
+                <div class="flex h-12 w-12 items-center justify-center rounded-full bg-[#073066]/10 text-[#073066] mx-auto">
                     <i data-lucide="briefcase" class="h-6 w-6"></i>
                 </div>
                 <h2 class="mt-4 text-lg font-semibold">Opportunités à venir</h2>
@@ -59,7 +59,7 @@
                         <div>
                             <label class="text-xs font-medium text-neutral-700">Secteur d'activité</label>
                             <div class="mt-2">
-                                <select class="w-full rounded-md border border-neutral-200 bg-white px-3 py-2 text-sm text-neutral-800 focus:border-[#E71D36] focus:ring-2 focus:ring-[#E71D36]/20">
+                                <select class="w-full rounded-md border border-neutral-200 bg-white px-3 py-2 text-sm text-neutral-800 focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20">
                                     <option value="">Tous les secteurs</option>
                                     <option value="tech">Technologies</option>
                                     <option value="agri">Agriculture</option>

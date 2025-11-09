@@ -3,7 +3,7 @@
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
             <div class="flex items-center gap-3">
                 <div
-                    class="flex h-8 w-8 items-center justify-center rounded-md bg-[#E71D36] text-white text-sm font-semibold tracking-tight">
+                    class="flex h-8 w-8 items-center justify-center rounded-md bg-[#073066] text-white text-sm font-semibold tracking-tight">
                     CC</div>
                 <div>
                     <div class="text-sm font-semibold tracking-tight">{{ __('messages.app_name') }}</div>

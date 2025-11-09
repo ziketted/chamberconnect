@@ -67,7 +67,7 @@
                     <div>
                         <label for="name" class="block text-sm font-medium text-neutral-700">Nom complet</label>
                         <input type="text" name="name" id="name" value="{{ old('name', Auth::user()->name) }}"
-                            class="mt-1 block w-full rounded-md border border-neutral-200 px-3 py-2 text-neutral-800 shadow-sm focus:border-[#E71D36] focus:ring-2 focus:ring-[#E71D36]/20">
+                            class="mt-1 block w-full rounded-md border border-neutral-200 px-3 py-2 text-neutral-800 shadow-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20">
                         @error('name')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -77,7 +77,7 @@
                     <div>
                         <label for="email" class="block text-sm font-medium text-neutral-700">Adresse email</label>
                         <input type="email" name="email" id="email" value="{{ old('email', Auth::user()->email) }}"
-                            class="mt-1 block w-full rounded-md border border-neutral-200 px-3 py-2 text-neutral-800 shadow-sm focus:border-[#E71D36] focus:ring-2 focus:ring-[#E71D36]/20">
+                            class="mt-1 block w-full rounded-md border border-neutral-200 px-3 py-2 text-neutral-800 shadow-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20">
                         @error('email')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -88,7 +88,7 @@
                         <label for="phone" class="block text-sm font-medium text-neutral-700">Numéro de
                             téléphone</label>
                         <input type="tel" name="phone" id="phone" value="{{ old('phone', Auth::user()->phone ?? '') }}"
-                            class="mt-1 block w-full rounded-md border border-neutral-200 px-3 py-2 text-neutral-800 shadow-sm focus:border-[#E71D36] focus:ring-2 focus:ring-[#E71D36]/20">
+                            class="mt-1 block w-full rounded-md border border-neutral-200 px-3 py-2 text-neutral-800 shadow-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20">
                     </div>
 
                     <!-- Entreprise -->
@@ -96,13 +96,13 @@
                         <label for="company" class="block text-sm font-medium text-neutral-700">Entreprise</label>
                         <input type="text" name="company" id="company"
                             value="{{ old('company', Auth::user()->company ?? '') }}"
-                            class="mt-1 block w-full rounded-md border border-neutral-200 px-3 py-2 text-neutral-800 shadow-sm focus:border-[#E71D36] focus:ring-2 focus:ring-[#E71D36]/20">
+                            class="mt-1 block w-full rounded-md border border-neutral-200 px-3 py-2 text-neutral-800 shadow-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20">
                     </div>
                 </div>
 
                 <div class="flex items-center gap-4 pt-4 border-t border-neutral-200">
                     <button type="submit"
-                        class="inline-flex items-center gap-2 rounded-md bg-[#E71D36] px-4 py-2 text-sm font-semibold text-white hover:bg-[#cf1a30] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E71D36]/50">
+                        class="inline-flex items-center gap-2 rounded-md bg-[#073066] px-4 py-2 text-sm font-semibold text-white hover:bg-[#052347] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#073066]/50">
                         <i data-lucide="save" class="h-4 w-4"></i>
                         Enregistrer les modifications
                     </button>
@@ -131,7 +131,7 @@
                         <label for="current_password" class="block text-sm font-medium text-neutral-700">Mot de passe
                             actuel</label>
                         <input type="password" name="current_password" id="current_password"
-                            class="mt-1 block w-full rounded-md border border-neutral-200 px-3 py-2 text-neutral-800 shadow-sm focus:border-[#E71D36] focus:ring-2 focus:ring-[#E71D36]/20">
+                            class="mt-1 block w-full rounded-md border border-neutral-200 px-3 py-2 text-neutral-800 shadow-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20">
                         @error('current_password')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -142,7 +142,7 @@
                         <label for="password" class="block text-sm font-medium text-neutral-700">Nouveau mot de
                             passe</label>
                         <input type="password" name="password" id="password"
-                            class="mt-1 block w-full rounded-md border border-neutral-200 px-3 py-2 text-neutral-800 shadow-sm focus:border-[#E71D36] focus:ring-2 focus:ring-[#E71D36]/20">
+                            class="mt-1 block w-full rounded-md border border-neutral-200 px-3 py-2 text-neutral-800 shadow-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20">
                         @error('password')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -153,7 +153,7 @@
                         <label for="password_confirmation" class="block text-sm font-medium text-neutral-700">Confirmer
                             le mot de passe</label>
                         <input type="password" name="password_confirmation" id="password_confirmation"
-                            class="mt-1 block w-full rounded-md border border-neutral-200 px-3 py-2 text-neutral-800 shadow-sm focus:border-[#E71D36] focus:ring-2 focus:ring-[#E71D36]/20">
+                            class="mt-1 block w-full rounded-md border border-neutral-200 px-3 py-2 text-neutral-800 shadow-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20">
                         @error('password_confirmation')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -162,7 +162,7 @@
 
                 <div class="flex items-center gap-4 pt-4 border-t border-neutral-200">
                     <button type="submit"
-                        class="inline-flex items-center gap-2 rounded-md bg-[#E71D36] px-4 py-2 text-sm font-semibold text-white hover:bg-[#cf1a30] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E71D36]/50">
+                        class="inline-flex items-center gap-2 rounded-md bg-[#073066] px-4 py-2 text-sm font-semibold text-white hover:bg-[#052347] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#073066]/50">
                         <i data-lucide="key" class="h-4 w-4"></i>
                         Mettre à jour le mot de passe
                     </button>
@@ -206,7 +206,7 @@
         <div class="mt-6">
             <label for="password" class="sr-only">Mot de passe</label>
             <input type="password" name="password" id="password" placeholder="Mot de passe"
-                class="mt-1 block w-full rounded-md border border-neutral-200 px-3 py-2 text-neutral-800 shadow-sm focus:border-[#E71D36] focus:ring-2 focus:ring-[#E71D36]/20" />
+                class="mt-1 block w-full rounded-md border border-neutral-200 px-3 py-2 text-neutral-800 shadow-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20" />
             @error('password', 'userDeletion')
             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
             @enderror

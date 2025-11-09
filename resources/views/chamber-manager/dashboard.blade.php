@@ -15,7 +15,7 @@
             </div>
             <div class="mt-4 flex md:mt-0 md:ml-4">
                 <a href="{{ route('chambers.create') }}"
-                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#E71D36] hover:bg-[#cf1a30] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#E71D36]">
+                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#073066] hover:bg-[#052347] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#073066]">
                     <i data-lucide="plus" class="mr-2 h-4 w-4"></i>
                     Nouvelle chambre
                 </a>
@@ -30,7 +30,7 @@
             <div class="p-5">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
-                        <div class="w-8 h-8 bg-blue-500 rounded-md flex items-center justify-center">
+                        <div class="w-8 h-8 bg-[#073066] rounded-md flex items-center justify-center">
                             <i data-lucide="building" class="h-5 w-5 text-white"></i>
                         </div>
                     </div>
@@ -49,7 +49,7 @@
             <div class="p-5">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
-                        <div class="w-8 h-8 bg-green-500 rounded-md flex items-center justify-center">
+                        <div class="w-8 h-8 bg-[#fcb357] rounded-md flex items-center justify-center">
                             <i data-lucide="users" class="h-5 w-5 text-white"></i>
                         </div>
                     </div>
@@ -68,7 +68,7 @@
             <div class="p-5">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
-                        <div class="w-8 h-8 bg-purple-500 rounded-md flex items-center justify-center">
+                        <div class="w-8 h-8 bg-[#b81010] rounded-md flex items-center justify-center">
                             <i data-lucide="calendar" class="h-5 w-5 text-white"></i>
                         </div>
                     </div>
@@ -87,7 +87,7 @@
             <div class="p-5">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
-                        <div class="w-8 h-8 bg-orange-500 rounded-md flex items-center justify-center">
+                        <div class="w-8 h-8 bg-[#fcb357] rounded-md flex items-center justify-center">
                             <i data-lucide="file-text" class="h-5 w-5 text-white"></i>
                         </div>
                     </div>
@@ -113,7 +113,7 @@
                     <div class="border border-gray-200 rounded-lg p-4 mb-4 last:mb-0">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center space-x-4">
-                                <img src="{{ $chamber->logo_path ?? 'https://ui-avatars.com/api/?name=' . urlencode($chamber->name) . '&background=E71D36&color=fff' }}"
+                                <img src="{{ $chamber->logo_path ?? 'https://ui-avatars.com/api/?name=' . urlencode($chamber->name) . '&background=073066&color=fff' }}"
                                     alt="{{ $chamber->name }}" class="h-12 w-12 rounded-lg object-cover">
                                 <div>
                                     <h4 class="text-sm font-medium text-gray-900">{{ $chamber->name }}</h4>
@@ -126,13 +126,13 @@
                                         </span>
                                         @if($chamber->verified)
                                         <span
-                                            class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                                            class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[#fcb357]/10 text-[#fcb357]">
                                             <i data-lucide="check-circle" class="mr-1 h-3 w-3"></i>
                                             Vérifiée
                                         </span>
                                         @else
                                         <span
-                                            class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800">
+                                            class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[#b81010]/10 text-[#b81010]">
                                             <i data-lucide="clock" class="mr-1 h-3 w-3"></i>
                                             En attente
                                         </span>
@@ -142,12 +142,12 @@
                             </div>
                             <div class="flex items-center space-x-2">
                                 <a href="{{ route('chambers.manage-members', $chamber) }}"
-                                    class="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#E71D36]">
+                                    class="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#073066]">
                                     <i data-lucide="users" class="mr-1 h-3 w-3"></i>
                                     Gérer
                                 </a>
                                 <a href="{{ route('chamber.show', $chamber) }}"
-                                    class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded text-white bg-[#E71D36] hover:bg-[#cf1a30] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#E71D36]">
+                                    class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded text-white bg-[#073066] hover:bg-[#052347] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#073066]">
                                     <i data-lucide="eye" class="mr-1 h-3 w-3"></i>
                                     Voir
                                 </a>
@@ -162,7 +162,7 @@
                         <h3 class="text-sm font-medium text-gray-900 mb-2">Aucune chambre gérée</h3>
                         <p class="text-sm text-gray-500 mb-4">Vous ne gérez actuellement aucune chambre de commerce.</p>
                         <a href="{{ route('chambers.create') }}"
-                            class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#E71D36] hover:bg-[#cf1a30] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#E71D36]">
+                            class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#073066] hover:bg-[#052347] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#073066]">
                             <i data-lucide="plus" class="mr-2 h-4 w-4"></i>
                             Créer une chambre
                         </a>
@@ -180,7 +180,7 @@
                         Demandes d'adhésion
                         @if($pendingMembers->count() > 0)
                         <span
-                            class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                            class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#b81010]/10 text-[#b81010]">
                             {{ $pendingMembers->count() }}
                         </span>
                         @endif
@@ -190,7 +190,7 @@
                     <div class="border border-gray-200 rounded-lg p-3 mb-3 last:mb-0">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center space-x-3">
-                                <img src="https://ui-avatars.com/api/?name={{ urlencode($member->name) }}&background=E71D36&color=fff"
+                                <img src="https://ui-avatars.com/api/?name={{ urlencode($member->name) }}&background=073066&color=fff"
                                     alt="{{ $member->name }}" class="h-8 w-8 rounded-full">
                                 <div>
                                     <p class="text-sm font-medium text-gray-900">{{ $member->name }}</p>
@@ -203,7 +203,7 @@
                                 method="POST" class="inline">
                                 @csrf
                                 <button type="submit"
-                                    class="inline-flex items-center px-2 py-1 border border-transparent text-xs font-medium rounded text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                                    class="inline-flex items-center px-2 py-1 border border-transparent text-xs font-medium rounded text-white bg-[#fcb357] hover:bg-[#f5a742] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#fcb357]">
                                     <i data-lucide="check" class="mr-1 h-3 w-3"></i>
                                     Approuver
                                 </button>
@@ -212,7 +212,7 @@
                                 method="POST" class="inline">
                                 @csrf
                                 <button type="submit"
-                                    class="inline-flex items-center px-2 py-1 border border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#E71D36]">
+                                    class="inline-flex items-center px-2 py-1 border border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#073066]">
                                     <i data-lucide="x" class="mr-1 h-3 w-3"></i>
                                     Rejeter
                                 </button>

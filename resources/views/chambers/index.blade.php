@@ -2,68 +2,184 @@
 
 @section('content')
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-    <!-- Sidebar (static hints/filters only) -->
+    <!-- Sidebar -->
     <aside class="lg:col-span-3">
         <div class="sticky top-[88px] space-y-4">
+            @auth
+            <!-- Section Mon rôle - Seulement pour les utilisateurs connectés -->
             <div class="rounded-xl border border-neutral-200 bg-white p-4">
                 <h2 class="text-sm font-semibold">Mon rôle</h2>
                 <p class="mt-1 text-xs text-neutral-600">Contrôlez la portée et les actions.</p>
                 <div class="mt-3">
+                    @if(Auth::user()->isSuperAdmin())
                     <span
-                        class="inline-flex items-center rounded-md bg-emerald-50 px-2 py-1 text-xs font-medium text-emerald-700">Super
+                        class="inline-flex items-center rounded-md bg-[#b81010]/10 px-2 py-1 text-xs font-medium text-[#b81010]">Super
                         admin</span>
+                    @elseif(Auth::user()->isChamberManager())
+                    <span
+                        class="inline-flex items-center rounded-md bg-[#fcb357]/10 px-2 py-1 text-xs font-medium text-[#fcb357]">Gestionnaire</span>
+                    @else
+                    <span
+                        class="inline-flex items-center rounded-md bg-[#073066]/10 px-2 py-1 text-xs font-medium text-[#073066]">Utilisateur</span>
+                    @endif
                 </div>
-                <div class="mt-2"><span class="text-xs text-neutral-600">Accès global aux chambres</span></div>
+                <div class="mt-2">
+                    <span class="text-xs text-neutral-600">
+                        @if(Auth::user()->isSuperAdmin())
+                        Accès global aux chambres
+                        @elseif(Auth::user()->isChamberManager())
+                        Gestion des chambres assignées
+                        @else
+                        Membre des chambres
+                        @endif
+                    </span>
+                </div>
             </div>
+            @else
+            <!-- Section Investir en RDC - Pour les utilisateurs non connectés -->
+            <div class="rounded-xl border border-neutral-200 bg-white p-4">
+                <h2 class="text-sm font-semibold text-[#073066]">Investir en RDC</h2>
+                <p class="mt-1 text-xs text-neutral-600">Découvrez les opportunités d'investissement.</p>
+                <div class="mt-4 space-y-3">
+                    <div class="flex items-start gap-2">
+                        <div
+                            class="flex-shrink-0 w-5 h-5 rounded-full bg-[#073066] text-white flex items-center justify-center text-xs font-semibold">
+                            1</div>
+                        <p class="text-xs text-neutral-700">Explorez les chambres de commerce sectorielles pour
+                            identifier les opportunités d'investissement</p>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <div
+                            class="flex-shrink-0 w-5 h-5 rounded-full bg-[#fcb357] text-white flex items-center justify-center text-xs font-semibold">
+                            2</div>
+                        <p class="text-xs text-neutral-700">Connectez-vous avec des entrepreneurs locaux et des
+                            partenaires stratégiques</p>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <div
+                            class="flex-shrink-0 w-5 h-5 rounded-full bg-[#073066] text-white flex items-center justify-center text-xs font-semibold">
+                            3</div>
+                        <p class="text-xs text-neutral-700">Participez aux événements et forums d'affaires pour étendre
+                            votre réseau</p>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <div
+                            class="flex-shrink-0 w-5 h-5 rounded-full bg-[#fcb357] text-white flex items-center justify-center text-xs font-semibold">
+                            4</div>
+                        <p class="text-xs text-neutral-700">Accédez aux informations réglementaires et aux conseils
+                            d'experts locaux</p>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <div
+                            class="flex-shrink-0 w-5 h-5 rounded-full bg-[#073066] text-white flex items-center justify-center text-xs font-semibold">
+                            5</div>
+                        <p class="text-xs text-neutral-700">Bénéficiez de l'accompagnement personnalisé pour concrétiser
+                            vos projets d'investissement</p>
+                    </div>
+                </div>
+                <div class="mt-4 pt-3 border-t border-neutral-200">
+                    <a href="{{ route('register') }}"
+                        class="inline-flex items-center gap-2 w-full justify-center rounded-md bg-[#073066] px-3 py-2 text-xs font-semibold text-white hover:bg-[#052347] transition-colors">
+                        <i data-lucide="user-plus" class="h-3 w-3"></i>
+                        Rejoindre maintenant
+                    </a>
+                </div>
+            </div>
+            @endauth
 
-            <div class="rounded-xl border border-neutral-200 bg-white">
+            <!-- Carrousel des Partenaires -->
+            <div class="rounded-xl border border-neutral-200 bg-white overflow-hidden">
                 <div class="border-b border-neutral-200 p-4">
-                    <h2 class="text-sm font-semibold">Filtres</h2>
+                    <h2 class="text-sm font-semibold text-[#073066]">Nos Partenaires</h2>
+                    <p class="mt-1 text-xs text-neutral-600">Grandes marques qui nous font confiance</p>
                 </div>
                 <div class="p-4">
-                    <div class="space-y-4">
-                        <div>
-                            <label class="text-xs font-medium text-neutral-700">Type d'activité</label>
-                            <div class="mt-2 flex flex-wrap gap-2">
-                                <button
-                                    class="inline-flex items-center rounded-md bg-amber-50 px-2.5 py-1.5 text-xs font-medium text-amber-800">Forum</button>
-                                <button
-                                    class="inline-flex items-center rounded-md bg-neutral-100 px-2.5 py-1.5 text-xs font-medium text-neutral-700">Atelier</button>
-                                <button
-                                    class="inline-flex items-center rounded-md bg-neutral-100 px-2.5 py-1.5 text-xs font-medium text-neutral-700">Participation</button>
+                    <div class="relative overflow-hidden">
+                        <div class="carousel-container flex transition-transform duration-500 ease-in-out"
+                            id="partners-carousel">
+                            <!-- Logo 1 - Microsoft -->
+                            <div class="carousel-slide flex-shrink-0 w-full flex items-center justify-center p-6">
+                                <div class="flex flex-col items-center space-y-3">
+                                    <div
+                                        class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
+                                        <svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor">
+                                            <path
+                                                d="M11.4 24H0V12.6h11.4V24zM24 24H12.6V12.6H24V24zM11.4 11.4H0V0h11.4v11.4zM24 11.4H12.6V0H24v11.4z" />
+                                        </svg>
+                                    </div>
+                                    <span class="text-xs font-medium text-neutral-700">Microsoft</span>
+                                </div>
+                            </div>
+
+                            <!-- Logo 2 - Google -->
+                            <div class="carousel-slide flex-shrink-0 w-full flex items-center justify-center p-6">
+                                <div class="flex flex-col items-center space-y-3">
+                                    <div
+                                        class="w-16 h-16 bg-gradient-to-br from-red-500 via-yellow-500 to-blue-500 rounded-lg flex items-center justify-center shadow-lg">
+                                        <span class="text-white font-bold text-lg">G</span>
+                                    </div>
+                                    <span class="text-xs font-medium text-neutral-700">Google</span>
+                                </div>
+                            </div>
+
+                            <!-- Logo 3 - Amazon -->
+                            <div class="carousel-slide flex-shrink-0 w-full flex items-center justify-center p-6">
+                                <div class="flex flex-col items-center space-y-3">
+                                    <div
+                                        class="w-16 h-16 bg-gradient-to-br from-orange-400 to-orange-500 rounded-lg flex items-center justify-center shadow-lg">
+                                        <svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor">
+                                            <path
+                                                d="M.045 18.02c.072-.116.187-.124.348-.022 3.636 2.11 7.594 3.166 11.87 3.166 2.852 0 5.668-.533 8.447-1.595l.315-.14c.138-.06.234-.1.293-.13.226-.088.39-.046.525.13.12.174.09.336-.12.48-.256.19-.6.41-1.006.654-1.244.743-2.64 1.316-4.185 1.726-1.548.41-3.156.615-4.83.615-2.424 0-4.73-.315-6.914-.946-2.185-.63-4.17-1.54-5.955-2.73-.195-.13-.285-.285-.225-.465l.437-.743z" />
+                                            <path
+                                                d="M18.78 16.826c-.885-.442-2.942-.21-4.067.066-.344.084-.398-.258-.043-.473 1.988-1.4 5.248-1.004 5.63-.53.382.472-.1 3.74-1.963 5.3-.32.267-.625.125-.483-.23.465-1.16 1.51-3.75.926-4.133z" />
+                                        </svg>
+                                    </div>
+                                    <span class="text-xs font-medium text-neutral-700">Amazon</span>
+                                </div>
+                            </div>
+
+                            <!-- Logo 4 - Apple -->
+                            <div class="carousel-slide flex-shrink-0 w-full flex items-center justify-center p-6">
+                                <div class="flex flex-col items-center space-y-3">
+                                    <div
+                                        class="w-16 h-16 bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg flex items-center justify-center shadow-lg">
+                                        <svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor">
+                                            <path
+                                                d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
+                                        </svg>
+                                    </div>
+                                    <span class="text-xs font-medium text-neutral-700">Apple</span>
+                                </div>
+                            </div>
+
+                            <!-- Logo 5 - Meta -->
+                            <div class="carousel-slide flex-shrink-0 w-full flex items-center justify-center p-6">
+                                <div class="flex flex-col items-center space-y-3">
+                                    <div
+                                        class="w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
+                                        <span class="text-white font-bold text-lg">M</span>
+                                    </div>
+                                    <span class="text-xs font-medium text-neutral-700">Meta</span>
+                                </div>
                             </div>
                         </div>
-                        <div>
-                            <label class="text-xs font-medium text-neutral-700">Période</label>
-                            <div class="mt-2 flex flex-wrap gap-2">
-                                <button
-                                    class="inline-flex items-center rounded-md bg-neutral-100 px-2.5 py-1.5 text-xs font-medium text-neutral-900">Cette
-                                    semaine</button>
-                                <button
-                                    class="inline-flex items-center rounded-md bg-neutral-100 px-2.5 py-1.5 text-xs font-medium text-neutral-700">Ce
-                                    mois</button>
-                                <button
-                                    class="inline-flex items-center rounded-md bg-neutral-100 px-2.5 py-1.5 text-xs font-medium text-neutral-700">Trimestre</button>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="text-xs font-medium text-neutral-700">Localisation</label>
-                            <div class="mt-2">
-                                <select
-                                    class="w-full rounded-md border border-neutral-200 bg-white px-3 py-2 text-sm text-neutral-800 focus:border-[#E71D36] focus:ring-2 focus:ring-[#E71D36]/20">
-                                    <option value="">Toutes les régions</option>
-                                    <option value="afrique">Afrique</option>
-                                    <option value="europe">Europe</option>
-                                    <option value="amerique">Amérique</option>
-                                    <option value="asie">Asie</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <label class="text-xs font-medium text-neutral-700">Afficher uniquement "vérifiées"</label>
-                            <button type="button"
-                                class="relative inline-flex h-5 w-9 flex-shrink-0 rounded-full border-2 border-transparent bg-neutral-200"><span
-                                    class="translate-x-0 pointer-events-none relative inline-block h-4 w-4 transform rounded-full bg-white shadow"></span></button>
+
+                        <!-- Indicateurs de navigation -->
+                        <div class="flex justify-center mt-4 space-x-2">
+                            <button class="carousel-dot w-2 h-2 rounded-full bg-[#073066] transition-all duration-200"
+                                data-slide="0"></button>
+                            <button
+                                class="carousel-dot w-2 h-2 rounded-full bg-neutral-300 hover:bg-neutral-400 transition-all duration-200"
+                                data-slide="1"></button>
+                            <button
+                                class="carousel-dot w-2 h-2 rounded-full bg-neutral-300 hover:bg-neutral-400 transition-all duration-200"
+                                data-slide="2"></button>
+                            <button
+                                class="carousel-dot w-2 h-2 rounded-full bg-neutral-300 hover:bg-neutral-400 transition-all duration-200"
+                                data-slide="3"></button>
+                            <button
+                                class="carousel-dot w-2 h-2 rounded-full bg-neutral-300 hover:bg-neutral-400 transition-all duration-200"
+                                data-slide="4"></button>
                         </div>
                     </div>
                 </div>
@@ -72,107 +188,512 @@
     </aside>
 
     <!-- Main Content -->
-    <main class="lg:col-span-9 space-y-6">
+    <main class="lg:col-span-6 space-y-6">
         <div class="space-y-4">
             <div class="relative">
                 <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-400">
                     <i data-lucide="search" class="h-5 w-5"></i>
                 </span>
-                <input type="text" placeholder="Rechercher une chambre par nom, pays ou secteur d'activité..."
-                    class="w-full rounded-xl border border-neutral-200 bg-white pl-10 pr-4 py-3 text-sm text-neutral-800 placeholder:text-neutral-400 shadow-sm focus:border-[#E71D36] focus:ring-2 focus:ring-[#E71D36]/20">
+                <input type="text" id="search-input"
+                    placeholder="Rechercher une chambre par nom, pays ou secteur d'activité..."
+                    class="w-full rounded-xl border border-neutral-200 bg-white pl-10 pr-4 py-3 text-sm text-neutral-800 placeholder:text-neutral-400 shadow-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20">
             </div>
             <div class="flex flex-wrap items-center gap-2">
                 <span class="text-sm font-medium text-neutral-700">Filtres rapides:</span>
-                <button
-                    class="inline-flex items-center rounded-full bg-neutral-100 px-3 py-1 text-xs font-medium text-neutral-700 hover:bg-neutral-200">Les
-                    plus actives</button>
-                <button
-                    class="inline-flex items-center rounded-full bg-neutral-100 px-3 py-1 text-xs font-medium text-neutral-700 hover:bg-neutral-200">Récemment
-                    créées</button>
-                <button
-                    class="inline-flex items-center rounded-full bg-neutral-100 px-3 py-1 text-xs font-medium text-neutral-700 hover:bg-neutral-200">Événements
-                    à venir</button>
+                <button data-filter="most-active"
+                    class="filter-btn inline-flex items-center rounded-full bg-neutral-100 px-3 py-1 text-xs font-medium text-neutral-700 hover:bg-neutral-200 transition-colors">
+                    <i data-lucide="trending-up" class="h-3 w-3 mr-1"></i>
+                    Les plus actives
+                </button>
+                <button data-filter="recently-created"
+                    class="filter-btn inline-flex items-center rounded-full bg-neutral-100 px-3 py-1 text-xs font-medium text-neutral-700 hover:bg-neutral-200 transition-colors">
+                    <i data-lucide="sparkles" class="h-3 w-3 mr-1"></i>
+                    Récemment créées
+                </button>
+                <button data-filter="upcoming-events"
+                    class="filter-btn inline-flex items-center rounded-full bg-neutral-100 px-3 py-1 text-xs font-medium text-neutral-700 hover:bg-neutral-200 transition-colors">
+                    <i data-lucide="calendar-days" class="h-3 w-3 mr-1"></i>
+                    Événements à venir
+                </button>
+                <button data-filter="certified"
+                    class="filter-btn inline-flex items-center rounded-full bg-neutral-100 px-3 py-1 text-xs font-medium text-neutral-700 hover:bg-neutral-200 transition-colors">
+                    <i data-lucide="shield-check" class="h-3 w-3 mr-1"></i>
+                    Agréée</button>
+                <button data-filter="all" id="clear-filters"
+                    class="filter-btn inline-flex items-center rounded-full bg-[#073066] px-3 py-1 text-xs font-medium text-white hover:bg-[#052347] transition-colors"
+                    style="display: none;">
+                    <i data-lucide="x" class="h-3 w-3 mr-1"></i>
+                    Effacer filtres
+                </button>
             </div>
         </div>
 
-        <!-- Static illustrated chambers (API will hydrate later) -->
+        <!-- Chambers List -->
         <div class="space-y-4" id="chambers-list">
-            @php($cards = [
-            ['code' => 'CH CD', 'name' => 'Chambre Suisse — RDC', 'desc' => 'Plateforme de coopération économique entre
-            la Suisse et la République', 'members' => 1842, 'events' => 5, 'verified' => true],
-            ['code' => 'FR MA', 'name' => 'Chambre France — Maroc', 'desc' => 'Réseau d\'affaires franco-marocain,
-            promotion des échanges et partenariats', 'members' => 2310, 'events' => 3, 'verified' => true],
-            ['code' => 'CA CI', 'name' => 'Chambre Canada — Côte d\'Ivoire', 'desc' => 'Connecter les entreprises
-            canadiennes et ivoiriennes autour d\'opportunités', 'members' => 1154, 'events' => 2, 'verified' => false],
-            ['code' => 'BE CM', 'name' => 'Chambre Belgique — Cameroun', 'desc' => 'Faciliter les échanges
-            belgo-camerounais et l\'accès aux marchés.', 'members' => 987, 'events' => 4, 'verified' => true],
-            ])
-            @foreach($cards as $c)
-            <div
-                class="group rounded-xl border border-neutral-200 bg-white p-6 hover:shadow-sm transition-all duration-200">
+            @foreach($chambers as $chamber)
+            <div class="chamber-card group rounded-xl border border-neutral-200 bg-white p-6 hover:shadow-sm transition-all duration-200"
+                data-name="{{ strtolower($chamber['name']) }}"
+                data-description="{{ strtolower($chamber['description']) }}"
+                data-activity-level="{{ $chamber['activity_level'] }}"
+                data-events-count="{{ $chamber['upcoming_events'] }}"
+                data-members-count="{{ $chamber['members_count'] }}"
+                data-certified="{{ $chamber['is_certified'] ? 'true' : 'false' }}"
+                data-created="{{ isset($chamber['created_at']) ? $chamber['created_at'] : '2024-01-01' }}">
                 <div class="flex items-start gap-6">
                     <div class="flex items-start gap-4 flex-1">
                         <div class="relative">
-                            <div
-                                class="relative flex h-14 w-14 items-center justify-center rounded-lg bg-gradient-to-br from-[#E71D36] to-[#cf1a30] text-white shadow-sm">
-                                <div class="flex flex-col items-center text-sm font-semibold leading-none">
-                                    <span>{{ substr($c['code'], 0, 2) }}</span>
-                                    <span class="mt-0.5 text-white/80">{{ substr($c['code'], -2) }}</span>
-                                </div>
-                            </div>
-                            @if($c['verified'])
-                            <div class="absolute -right-1 -top-1 rounded-full bg-white p-0.5 shadow-sm">
-                                <div
-                                    class="flex h-5 w-5 items-center justify-center rounded-full bg-blue-500 text-white">
-                                    <i data-lucide="shield-check" class="h-3 w-3"></i>
-                                </div>
-                            </div>
-                            @endif
+                            @auth
+                            <a href="{{ route('chamber.show', $chamber['slug']) }}" class="block">
+                                @else
+                                <button onclick="openModal('signin-modal')" class="block">
+                                    @endauth
+                                    @if($chamber['logo_path'])
+                                    <img src="{{ asset('storage/' . $chamber['logo_path']) }}"
+                                        alt="{{ $chamber['name'] }}"
+                                        class="h-14 w-14 rounded-lg object-cover shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+                                    @else
+                                    <div
+                                        class="relative flex h-14 w-14 items-center justify-center rounded-lg bg-gradient-to-br from-[#073066] to-[#052347] text-white shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+                                        <div class="flex flex-col items-center text-sm font-semibold leading-none">
+                                            <span>{{ substr($chamber['code'], 0, 2) }}</span>
+                                            <span class="mt-0.5 text-white/80">{{ substr($chamber['code'], -2) }}</span>
+                                        </div>
+                                    </div>
+                                    @endif
+                                    @if($chamber['is_certified'])
+                                    <div class="absolute -right-1 -top-1 rounded-full bg-white p-0.5 shadow-sm">
+                                        <div
+                                            class="flex h-5 w-5 items-center justify-center rounded-full bg-[#fcb357] text-white">
+                                            <i data-lucide="shield-check" class="h-3 w-3"></i>
+                                        </div>
+                                    </div>
+                                    @endif
+                                    @auth
+                            </a>
+                            @else
+                            </button>
+                            @endauth
                         </div>
                         <div class="flex-1">
                             <div class="flex items-center gap-2 flex-wrap">
-                                <h3 class="text-base font-medium">{{ $c['name'] }}</h3>
-                                @if($c['verified'])
+                                @auth
+                                <a href="{{ route('chamber.show', $chamber['slug']) }}"
+                                    class="hover:text-[#073066] transition-colors">
+                                    <h3 class="text-base font-medium cursor-pointer">{{ $chamber['name'] }}</h3>
+                                </a>
+                                @else
+                                <button onclick="openModal('signin-modal')"
+                                    class="hover:text-[#073066] transition-colors">
+                                    <h3 class="text-base font-medium cursor-pointer">{{ $chamber['name'] }}</h3>
+                                </button>
+                                @endauth
+                                @if($chamber['is_certified'])
                                 <span
-                                    class="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700"><i
-                                        data-lucide="shield-check" class="h-3.5 w-3.5"></i> Certified</span>
+                                    class="inline-flex items-center gap-1 rounded-full bg-[#fcb357]/10 px-2 py-0.5 text-xs font-medium text-[#fcb357]"><i
+                                        data-lucide="shield-check" class="h-3.5 w-3.5"></i> Agréée</span>
                                 @endif
                             </div>
-                            <p class="mt-1 text-sm text-neutral-600">{{ $c['desc'] }}</p>
-                            <div class="mt-3 flex items-center flex-wrap gap-4">
-                                <div class="flex items-center gap-4">
-                                    <span class="inline-flex items-center gap-1.5 text-sm text-neutral-600"><i
-                                            data-lucide="users" class="h-4 w-4 text-neutral-400"></i> {{
-                                        number_format($c['members']) }} membres</span>
-                                    <span class="inline-flex items-center gap-1.5 text-sm text-neutral-600"><i
-                                            data-lucide="calendar" class="h-4 w-4 text-neutral-400"></i> {{ $c['events']
-                                        }} événements</span>
+                            <p class="mt-1 text-sm text-neutral-600">
+                                {{ Str::limit($chamber['description'], 150, '...') }}
+                            </p>
+                            <div class="mt-3 space-y-2">
+                                <!-- Première ligne : Membres et Événements -->
+                                <div class="flex items-center flex-wrap gap-4">
+                                    <span class="inline-flex items-center gap-1.5 text-sm text-neutral-600">
+                                        <i data-lucide="users" class="h-4 w-4 text-neutral-400"></i>
+                                        {{ number_format($chamber['members_count']) }} membres
+                                    </span>
+                                    <span class="inline-flex items-center gap-1.5 text-sm text-neutral-600">
+                                        <i data-lucide="calendar" class="h-4 w-4 text-neutral-400"></i>
+                                        {{ $chamber['upcoming_events'] }} événements
+                                    </span>
+                                    @if($chamber['upcoming_events'] > 0)
+                                    <div
+                                        class="inline-flex items-center gap-1.5 rounded-full bg-[#fcb357]/10 px-2.5 py-1 text-xs font-medium text-[#fcb357]">
+                                        <i data-lucide="calendar-clock" class="h-3.5 w-3.5"></i>
+                                        {{ $chamber['activity_level'] }}
+                                    </div>
+                                    @endif
                                 </div>
-                                @if($c['events'] > 0)
-                                <div
-                                    class="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-800">
-                                    <i data-lucide="calendar-clock" class="h-3.5 w-3.5"></i> Forum Export • 12 Nov
+
+                                <!-- Deuxième ligne : Date de création et Localisation -->
+                                <div class="flex items-center flex-wrap gap-4">
+                                    <span class="inline-flex items-center gap-1.5 text-sm text-neutral-500">
+                                        <i data-lucide="calendar-plus" class="h-4 w-4 text-neutral-400"></i>
+                                        Fondée en
+                                        @if($chamber['certification_date'])
+                                        {{ \Carbon\Carbon::parse($chamber['certification_date'])->format('Y') }}
+                                        @else
+                                        {{ \Carbon\Carbon::parse($chamber['created_at'])->format('Y') }}
+                                        @endif
+                                    </span>
+                                    <span class="inline-flex items-center gap-1.5 text-sm text-neutral-500">
+                                        <i data-lucide="map-pin" class="h-4 w-4 text-neutral-400"></i>
+                                        {{ $chamber['location'] ?? 'Non spécifiée' }}
+                                    </span>
                                 </div>
-                                @endif
                             </div>
                         </div>
                     </div>
+                    <!-- Boutons d'action - visibles seulement pour les admins -->
+                    @if(auth()->check() && (auth()->user()->isSuperAdmin() || auth()->user()->isChamberManager()))
                     <div class="flex items-center gap-2">
-                        <a href="/chamber/kinshasa"
-                            class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-neutral-100 text-neutral-600 hover:bg-neutral-200 transition-colors"><i
-                                data-lucide="layout-grid" class="h-4 w-4"></i></a>
+                        @if(!$chamber['is_subscribed'])
+                        <button
+                            class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-[#fcb357] text-white hover:bg-[#f5a742] transition-colors"
+                            title="Rejoindre la chambre">
+                            <i data-lucide="user-plus" class="h-4 w-4"></i>
+                        </button>
+                        @else
+                        <span
+                            class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-green-100 text-green-600"
+                            title="Membre">
+                            <i data-lucide="check" class="h-4 w-4"></i>
+                        </span>
+                        @endif
                     </div>
+                    @endif
                 </div>
             </div>
             @endforeach
         </div>
     </main>
+
+    <!-- Sidebar Droite - Événements du Mois -->
+    <aside class="lg:col-span-3">
+        <div class="sticky top-[88px] space-y-4">
+            <!-- Section Événements du Mois -->
+            <div class="rounded-xl border border-neutral-200 bg-white">
+                <div class="border-b border-neutral-200 p-4">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-sm font-semibold text-[#073066]">Événements du Mois</h2>
+                        <span
+                            class="inline-flex items-center rounded-full bg-[#073066]/10 px-2 py-1 text-xs font-medium text-[#073066]">
+                            {{ now()->format('M Y') }}
+                        </span>
+                    </div>
+                    <p class="mt-1 text-xs text-neutral-600">Les 5 événements les plus populaires</p>
+                </div>
+                <div class="p-4 space-y-4">
+                    @if($monthlyEvents->count() > 0)
+                    @foreach($monthlyEvents as $event)
+                    <div
+                        class="group rounded-lg border border-neutral-100 p-3 hover:border-[#073066]/20 hover:bg-[#073066]/5 transition-all duration-200">
+                        <div class="flex items-start gap-3">
+                            <div class="flex-shrink-0">
+                                @if($event['type'] === 'forum')
+                                <div class="w-8 h-8 rounded-lg bg-[#073066]/10 flex items-center justify-center">
+                                    <i data-lucide="users" class="h-4 w-4 text-[#073066]"></i>
+                                </div>
+                                @elseif($event['type'] === 'atelier')
+                                <div class="w-8 h-8 rounded-lg bg-[#fcb357]/10 flex items-center justify-center">
+                                    <i data-lucide="wrench" class="h-4 w-4 text-[#fcb357]"></i>
+                                </div>
+                                @elseif($event['type'] === 'networking')
+                                <div class="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center">
+                                    <i data-lucide="network" class="h-4 w-4 text-green-600"></i>
+                                </div>
+                                @elseif($event['type'] === 'conference')
+                                <div class="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center">
+                                    <i data-lucide="presentation" class="h-4 w-4 text-purple-600"></i>
+                                </div>
+                                @else
+                                <div class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
+                                    <i data-lucide="calendar" class="h-4 w-4 text-blue-600"></i>
+                                </div>
+                                @endif
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h4
+                                    class="text-sm font-medium text-neutral-900 group-hover:text-[#073066] transition-colors">
+                                    {{ $event['title'] }}
+                                </h4>
+                                <div class="mt-1 flex items-center gap-2 text-xs text-neutral-500">
+                                    <span class="inline-flex items-center gap-1">
+                                        <i data-lucide="building-2" class="h-3 w-3"></i>
+                                        {{ $event['chamber'] }}
+                                    </span>
+                                    <span class="inline-flex items-center gap-1">
+                                        <i data-lucide="calendar" class="h-3 w-3"></i>
+                                        {{ $event['date'] }}
+                                    </span>
+                                </div>
+                                <div class="mt-2 flex items-center justify-between">
+                                    <span class="inline-flex items-center gap-1 text-xs text-neutral-600">
+                                        <i data-lucide="users" class="h-3 w-3"></i>
+                                        {{ $event['participants'] }} participants
+                                    </span>
+                                    <button
+                                        class="text-xs text-[#073066] hover:text-[#052347] font-medium transition-colors">
+                                        Voir plus
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                    @else
+                    <div class="text-center py-8">
+                        <div
+                            class="flex h-12 w-12 items-center justify-center rounded-full bg-neutral-100 text-neutral-400 mx-auto mb-4">
+                            <i data-lucide="calendar-x" class="h-6 w-6"></i>
+                        </div>
+                        <h3 class="text-sm font-medium text-neutral-900 mb-2">Aucun événement ce mois</h3>
+                        <p class="text-xs text-neutral-600 mb-4">Aucun événement prévu pour {{ now()->format('F Y') }}.
+                        </p>
+                        <a href="{{ route('events') }}"
+                            class="inline-flex items-center gap-1 text-xs text-[#073066] hover:text-[#052347] font-medium transition-colors">
+                            <i data-lucide="calendar-plus" class="h-3 w-3"></i>
+                            Voir tous les événements
+                        </a>
+                    </div>
+                    @endif
+                </div>
+                <div class="border-t border-neutral-200 p-4">
+                    <a href="{{ route('events') }}"
+                        class="inline-flex items-center gap-2 w-full justify-center rounded-md bg-[#073066] px-3 py-2 text-xs font-semibold text-white hover:bg-[#052347] transition-colors">
+                        <i data-lucide="calendar-plus" class="h-3 w-3"></i>
+                        Voir tous les événements
+                    </a>
+                </div>
+            </div>
+        </div>
+    </aside>
 </div>
 
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         lucide.createIcons({ attrs: { 'stroke-width': 1.5 } });
+        
+        // Variables globales
+        const searchInput = document.getElementById('search-input');
+        const chamberCards = document.querySelectorAll('.chamber-card');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const clearFiltersBtn = document.getElementById('clear-filters');
+        let activeFilter = 'all';
+        
+        // Fonction de recherche
+        function performSearch() {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            let visibleCount = 0;
+            
+            chamberCards.forEach(card => {
+                const name = card.dataset.name;
+                const description = card.dataset.description;
+                
+                // Vérifier si la carte correspond à la recherche
+                const matchesSearch = searchTerm === '' || 
+                    name.includes(searchTerm) || 
+                    description.includes(searchTerm);
+                
+                // Vérifier si la carte correspond au filtre actif
+                const matchesFilter = applyFilter(card, activeFilter);
+                
+                // Afficher/masquer la carte
+                const shouldShow = matchesSearch && matchesFilter;
+                card.style.display = shouldShow ? 'block' : 'none';
+                
+                if (shouldShow) visibleCount++;
+            });
+            
+            // Afficher un message si aucun résultat
+            showNoResultsMessage(visibleCount === 0);
+        }
+        
+        // Fonction d'application des filtres
+        function applyFilter(card, filter) {
+            switch (filter) {
+                case 'most-active':
+                    return card.dataset.activityLevel === 'Très active';
+                case 'recently-created':
+                    // Simuler les chambres récemment créées (derniers 6 mois)
+                    const createdDate = new Date(card.dataset.created);
+                    const sixMonthsAgo = new Date();
+                    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+                    return createdDate > sixMonthsAgo;
+                case 'upcoming-events':
+                    return parseInt(card.dataset.eventsCount) > 0;
+                case 'certified':
+                    return card.dataset.certified === 'true';
+                case 'all':
+                default:
+                    return true;
+            }
+        }
+        
+        // Fonction pour afficher/masquer le message "Aucun résultat"
+        function showNoResultsMessage(show) {
+            let noResultsDiv = document.getElementById('no-results-message');
+            
+            if (show && !noResultsDiv) {
+                // Créer le message s'il n'existe pas
+                noResultsDiv = document.createElement('div');
+                noResultsDiv.id = 'no-results-message';
+                noResultsDiv.className = 'text-center py-12';
+                noResultsDiv.innerHTML = `
+                    <div class="mx-auto max-w-md">
+                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-neutral-100 text-neutral-400 mx-auto mb-4">
+                            <i data-lucide="search" class="h-6 w-6"></i>
+                        </div>
+                        <h3 class="text-lg font-medium text-neutral-900 mb-2">Aucune chambre trouvée</h3>
+                        <p class="text-sm text-neutral-600">Essayez de modifier vos critères de recherche ou vos filtres.</p>
+                        <button onclick="clearAllFilters()" class="mt-4 inline-flex items-center gap-2 rounded-md bg-[#073066] px-4 py-2 text-sm font-semibold text-white hover:bg-[#052347] transition-colors">
+                            <i data-lucide="refresh-cw" class="h-4 w-4"></i>
+                            Réinitialiser
+                        </button>
+                    </div>
+                `;
+                document.getElementById('chambers-list').appendChild(noResultsDiv);
+                lucide.createIcons();
+            } else if (!show && noResultsDiv) {
+                noResultsDiv.remove();
+            }
+        }
+        
+        // Fonction pour effacer tous les filtres
+        window.clearAllFilters = function() {
+            searchInput.value = '';
+            activeFilter = 'all';
+            updateFilterButtons();
+            performSearch();
+        };
+        
+        // Fonction pour mettre à jour l'apparence des boutons de filtre
+        function updateFilterButtons() {
+            filterButtons.forEach(btn => {
+                const isActive = btn.dataset.filter === activeFilter;
+                
+                if (btn.id === 'clear-filters') {
+                    btn.style.display = activeFilter !== 'all' || searchInput.value.trim() !== '' ? 'inline-flex' : 'none';
+                } else {
+                    // Réinitialiser les classes
+                    btn.className = btn.className.replace(/bg-\[#[^\]]+\]/g, '').replace(/text-\[#[^\]]+\]/g, '');
+                    
+                    if (isActive && activeFilter !== 'all') {
+                        btn.className += ' bg-[#073066] text-white';
+                    } else {
+                        btn.className += ' bg-neutral-100 text-neutral-700 hover:bg-neutral-200';
+                    }
+                }
+            });
+        }
+        
+        // Event listeners
+        searchInput.addEventListener('input', performSearch);
+        
+        // Gestion des filtres rapides
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const filter = btn.dataset.filter;
+                
+                if (filter === 'all') {
+                    clearAllFilters();
+                } else {
+                    activeFilter = activeFilter === filter ? 'all' : filter;
+                    updateFilterButtons();
+                    performSearch();
+                }
+            });
+        });
+        
+        // Initialisation
+        updateFilterButtons();
+        
+        // Fonction de debounce pour optimiser la recherche
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+        
+        // Appliquer le debounce à la recherche
+        const debouncedSearch = debounce(performSearch, 300);
+        searchInput.removeEventListener('input', performSearch);
+        searchInput.addEventListener('input', debouncedSearch);
+        
+        // Animation d'entrée pour les cartes
+        function animateCards() {
+            chamberCards.forEach((card, index) => {
+                if (card.style.display !== 'none') {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    
+                    setTimeout(() => {
+                        card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, index * 50);
+                }
+            });
+        }
+        
+        // Animer les cartes au chargement
+        setTimeout(animateCards, 100);
+        
+        // Gestion du carrousel des partenaires
+        const carousel = document.getElementById('partners-carousel');
+        const dots = document.querySelectorAll('.carousel-dot');
+        let currentSlide = 0;
+        const totalSlides = 5;
+        let carouselInterval;
+        
+        // Fonction pour aller à une slide spécifique
+        function goToSlide(slideIndex) {
+            currentSlide = slideIndex;
+            const translateX = -slideIndex * 100;
+            carousel.style.transform = `translateX(${translateX}%)`;
+            
+            // Mettre à jour les indicateurs
+            dots.forEach((dot, index) => {
+                if (index === slideIndex) {
+                    dot.classList.remove('bg-neutral-300');
+                    dot.classList.add('bg-[#073066]');
+                } else {
+                    dot.classList.remove('bg-[#073066]');
+                    dot.classList.add('bg-neutral-300');
+                }
+            });
+        }
+        
+        // Fonction pour aller à la slide suivante
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            goToSlide(currentSlide);
+        }
+        
+        // Démarrer le carrousel automatique
+        function startCarousel() {
+            carouselInterval = setInterval(nextSlide, 3000); // Change toutes les 3 secondes
+        }
+        
+        // Arrêter le carrousel automatique
+        function stopCarousel() {
+            clearInterval(carouselInterval);
+        }
+        
+        // Event listeners pour les indicateurs
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                stopCarousel();
+                goToSlide(index);
+                setTimeout(startCarousel, 5000); // Redémarre après 5 secondes
+            });
+        });
+        
+        // Pause au survol du carrousel
+        const carouselContainer = carousel.parentElement;
+        carouselContainer.addEventListener('mouseenter', stopCarousel);
+        carouselContainer.addEventListener('mouseleave', startCarousel);
+        
+        // Démarrer le carrousel
+        startCarousel();
     });
 </script>
 @endpush

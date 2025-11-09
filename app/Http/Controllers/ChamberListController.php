@@ -8,62 +8,70 @@ class ChamberListController extends Controller
 {
     public function index()
     {
-        // Données factices d'illustration (design)
+        // Récupérer les 5 événements du mois en cours
+        $monthlyEvents = \App\Models\Event::with('chamber')
+            ->whereMonth('date', now()->month)
+            ->whereYear('date', now()->year)
+            ->where('date', '>=', now())
+            ->orderBy('date', 'asc')
+            ->take(5)
+            ->get()
+            ->map(function($event) {
+                return [
+                    'id' => $event->id,
+                    'title' => $event->title,
+                    'chamber' => $event->chamber->name ?? 'Chambre inconnue',
+                    'date' => $event->date->format('d M'),
+                    'participants' => $event->max_participants ?? rand(50, 300),
+                    'type' => strtolower($event->type ?? 'event'),
+                    'slug' => $event->slug ?? $event->id
+                ];
+            });
+
+        // Récupérer les chambres réelles de la base de données
+        $chambers = \App\Models\Chamber::withCount('members')
+            ->with(['events' => function($query) {
+                $query->where('date', '>=', now())->take(5);
+            }])
+            ->get()
+            ->map(function($chamber) {
+                // Générer un code basé sur le nom de la chambre
+                $words = explode(' ', $chamber->name);
+                $code = '';
+                foreach($words as $word) {
+                    if(strlen($code) < 4 && strlen($word) > 2) {
+                        $code .= strtoupper(substr($word, 0, 2));
+                    }
+                }
+                if(strlen($code) < 4) {
+                    $code = strtoupper(substr($chamber->name, 0, 4));
+                }
+                
+                return [
+                    'id' => $chamber->id,
+                    'code' => $code,
+                    'name' => $chamber->name,
+                    'description' => $chamber->description ?? 'Description de la chambre de commerce',
+                    'members_count' => $chamber->members_count,
+                    'is_subscribed' => auth()->check() ? $chamber->members->contains(auth()->id()) : false,
+                    'is_certified' => $chamber->verified,
+                    'upcoming_events' => $chamber->events->count(),
+                    'activity_level' => $chamber->events->count() > 3 ? 'Très active' : ($chamber->events->count() > 1 ? 'Active' : 'Modérée'),
+                    'slug' => $chamber->slug,
+                    'logo_path' => $chamber->logo_path,
+                    'location' => $chamber->location,
+                    'certification_date' => $chamber->certification_date,
+                    'created_at' => $chamber->created_at
+                ];
+            });
+
         $data = [
             'userRole' => [
-                'role' => 'Super admin',
-                'has_global_access' => true,
+                'role' => auth()->check() && auth()->user()->isSuperAdmin() ? 'Super admin' : 'Utilisateur',
+                'has_global_access' => auth()->check() && auth()->user()->isSuperAdmin(),
             ],
-            'chambers' => [
-                [
-                    'id' => 1,
-                    'code' => 'CH CD',
-                    'name' => 'Chambre Suisse — RDC',
-                    'description' => 'Plateforme de coopération économique entre la Suisse et la République',
-                    'members_count' => 1842,
-                    'is_subscribed' => false,
-                    'is_certified' => true,
-                    'upcoming_events' => 5,
-                    'activity_level' => 'Très active',
-                    'slug' => 'chambre-suisse-rdc'
-                ],
-                [
-                    'id' => 2,
-                    'code' => 'FR MA',
-                    'name' => 'Chambre France — Maroc',
-                    'description' => 'Réseau d\'affaires franco-marocain, promotion des échanges et partenariats',
-                    'members_count' => 2310,
-                    'is_subscribed' => true,
-                    'is_certified' => true,
-                    'upcoming_events' => 3,
-                    'activity_level' => 'Très active',
-                    'slug' => 'chambre-france-maroc'
-                ],
-                [
-                    'id' => 3,
-                    'code' => 'CA CI',
-                    'name' => 'Chambre Canada — Côte d\'Ivoire',
-                    'description' => 'Connecter les entreprises canadiennes et ivoiriennes autour d\'opportunités',
-                    'members_count' => 1154,
-                    'is_subscribed' => false,
-                    'is_certified' => false,
-                    'upcoming_events' => 2,
-                    'activity_level' => 'Active',
-                    'slug' => 'chambre-canada-cote-ivoire'
-                ],
-                [
-                    'id' => 4,
-                    'code' => 'BE CM',
-                    'name' => 'Chambre Belgique — Cameroun',
-                    'description' => 'Faciliter les échanges belgo-camerounais et l\'accès aux marchés.',
-                    'members_count' => 987,
-                    'is_subscribed' => true,
-                    'is_certified' => true,
-                    'upcoming_events' => 4,
-                    'activity_level' => 'Très active',
-                    'slug' => 'chambre-belgique-cameroun'
-                ],
-            ],
+            'chambers' => $chambers,
+            'monthlyEvents' => $monthlyEvents,
             'filters' => [
                 'types' => ['Forum', 'Atelier', 'Participation'],
                 'periods' => ['Cette semaine', 'Ce mois', 'Trimestre'],

@@ -2,8 +2,8 @@
 
 return [
     // General
-    'app_name' => 'ChamberConnect DRC',
-    'tagline' => 'Connect, Collaborate, and Grow with ChamberConnect DRC.',
+    'app_name' => 'ChambreRDC',
+    'tagline' => 'Connect, Collaborate, and Grow with ChambreRDC.',
     'description' => 'A trusted hub for businesses to access news, events, and networking opportunities across the region.',
 
     // Navigation
@@ -45,7 +45,7 @@ return [
     'our_partners' => 'Our Valued Partners',
     'partners_subtitle' => 'Building credibility through collaboration',
     'testimonials_title' => 'What Our Members Say',
-    'join_cta_title' => 'Join ChamberConnect DRC Today',
+    'join_cta_title' => 'Join ChambreRDC Today',
     'join_cta_description' => 'Accelerate your growth with events, resources, and trusted connections.',
     'get_started' => 'Get Started',
 

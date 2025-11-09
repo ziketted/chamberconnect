@@ -17,9 +17,30 @@
                         <i data-lucide="map-pin" class="h-3.5 w-3.5"></i> {{ $event->location }}
                     </span>
                 </div>
-                <div class="mt-4">
-                    <a href="{{ route('events.register', $event) }}" class="inline-flex items-center gap-2 rounded-md bg-[#E71D36] px-3 py-2 text-sm font-semibold text-white hover:bg-[#cf1a30]">
-                        <i data-lucide="ticket" class="h-4 w-4"></i> Register
+                
+                <!-- Stats Section -->
+                <div class="mt-3 flex items-center gap-6">
+                    <div class="flex items-center gap-1.5 text-sm text-neutral-500">
+                        <i data-lucide="heart" class="h-4 w-4"></i>
+                        <span class="likes-count font-medium">{{ $event->likes_count ?? rand(5, 50) }}</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 text-sm text-neutral-500">
+                        <i data-lucide="eye" class="h-4 w-4"></i>
+                        <span class="views-count font-medium">{{ $event->views_count ?? rand(20, 200) }}</span>
+                    </div>
+                </div>
+                
+                <div class="mt-4 flex flex-wrap gap-3">
+                    <button onclick="toggleLike(this)" data-likes="{{ $event->likes_count ?? rand(5, 50) }}" class="like-btn inline-flex items-center justify-center w-9 h-9 rounded-full text-neutral-400 hover:text-red-500 hover:bg-red-50 transition-all duration-200">
+                        <i data-lucide="heart" class="h-4 w-4"></i>
+                    </button>
+                    <a href="{{ route('events.register', $event) }}" class="inline-flex items-center gap-2 rounded-md bg-[#073066] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#052347] transition-colors shadow-sm">
+                        <i data-lucide="calendar-plus" class="h-4 w-4"></i>
+                        Réserver place
+                    </a>
+                    <a href="{{ route('events.show', $event) }}" onclick="incrementViews(this)" data-views="{{ $event->views_count ?? rand(20, 200) }}" class="inline-flex items-center gap-2 rounded-md border border-neutral-200 bg-white px-4 py-2.5 text-sm font-medium text-neutral-600 hover:bg-neutral-50 hover:border-neutral-300 transition-colors">
+                        <i data-lucide="eye" class="h-4 w-4"></i>
+                        Voir plus
                     </a>
                 </div>
             </div>

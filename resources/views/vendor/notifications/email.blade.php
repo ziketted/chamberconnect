@@ -2,7 +2,7 @@
     {{-- Header --}}
     <div style="text-align: center; margin-bottom: 30px;">
         <div
-            style="display: inline-block; background-color: #E71D36; color: white; width: 50px; height: 50px; line-height: 50px; border-radius: 8px; font-weight: 600; font-size: 18px;">
+            style="display: inline-block; background-color: #073066; color: white; width: 50px; height: 50px; line-height: 50px; border-radius: 8px; font-weight: 600; font-size: 18px;">
             CC
         </div>
     </div>

@@ -1,11 +1,11 @@
 <div class="relative" x-data="{ open: false }">
     <button @click="open = !open" type="button"
-        class="flex items-center gap-2 rounded-md p-2 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E71D36]">
+        class="flex items-center gap-2 rounded-md p-2 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#073066]">
         <span class="text-sm">{{ strtoupper(App::getLocale()) }}</span>
         <i data-lucide="chevron-down" class="h-4 w-4"></i>
     </button>
 
-    <div x-show="open" @click.away="open = false" x-transition:enter="transition ease-out duration-100"
+   {{--  <div x-show="open" @click.away="open = false" x-transition:enter="transition ease-out duration-100"
         x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100"
         x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100"
         x-transition:leave-end="transform opacity-0 scale-95"
@@ -16,5 +16,5 @@
             {{ $name }}
         </a>
         @endforeach
-    </div>
+    </div> --}}
 </div>

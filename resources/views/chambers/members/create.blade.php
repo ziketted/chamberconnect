@@ -43,7 +43,7 @@
                        name="email" 
                        required
                        placeholder="Tapez l'email ou le nom de l'utilisateur..."
-                       class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#E71D36] focus:ring-2 focus:ring-[#E71D36]/20"
+                       class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20"
                        autocomplete="off" />
                 
                 <!-- Dropdown pour les résultats -->
@@ -87,7 +87,7 @@
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Rôle dans la chambre</label>
             <select name="role" required
-                class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#E71D36] focus:ring-2 focus:ring-[#E71D36]/20">
+                class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20">
                 <option value="member">Membre</option>
                 <option value="manager">Gestionnaire</option>
             </select>
@@ -211,13 +211,13 @@ document.addEventListener('DOMContentLoaded', function() {
     function enableSubmitButton() {
         submitBtn.disabled = false;
         submitBtn.classList.remove('bg-gray-400', 'cursor-not-allowed');
-        submitBtn.classList.add('bg-[#E71D36]', 'hover:bg-[#cf1a30]');
+        submitBtn.classList.add('bg-[#073066]', 'hover:bg-[#052347]');
     }
 
     function disableSubmitButton() {
         submitBtn.disabled = true;
         submitBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
-        submitBtn.classList.remove('bg-[#E71D36]', 'hover:bg-[#cf1a30]');
+        submitBtn.classList.remove('bg-[#073066]', 'hover:bg-[#052347]');
     }
 
     // Événements

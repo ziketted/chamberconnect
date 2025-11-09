@@ -8,7 +8,7 @@
                 $chamber->name }}</h1>
             <p class="text-sm text-neutral-600">Approuvez ou rejetez les membres en attente.</p>
         </div>
-        <a href="{{ route('chamber.show', $chamber) }}" class="text-sm text-[#E71D36] hover:underline">Retour à la
+        <a href="{{ route('chamber.show', $chamber) }}" class="text-sm text-[#073066] hover:underline">Retour à la
             chambre</a>
     </div>
 
@@ -30,7 +30,7 @@
                         <form method="POST" action="{{ route('chambers.members.approve', [$chamber, $user]) }}">
                             @csrf
                             <button
-                                class="inline-flex items-center gap-2 rounded-md bg-[#E71D36] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#cf1a30]">
+                                class="inline-flex items-center gap-2 rounded-md bg-[#073066] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#052347]">
                                 <i data-lucide="check" class="h-4 w-4"></i> Approuver
                             </button>
                         </form>

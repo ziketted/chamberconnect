@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'ChamberConnect DRC') }}</title>
+    <title>{{ config('app.name', 'ChambreRDC') }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,7 +18,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="min-h-screen bg-white text-neutral-900 antialiased selection:bg-[#E71D36]/10 selection:text-[#E71D36]"
+<body class="min-h-screen bg-white text-neutral-900 antialiased selection:bg-[#073066]/10 selection:text-[#073066]"
     style="font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji';">
 
     @include('layouts.partials.header')
@@ -81,14 +81,58 @@
             const pressed = btn.getAttribute('aria-pressed') === 'true';
             btn.setAttribute('aria-pressed', String(!pressed));
             if (!pressed) {
-                btn.classList.add('text-[#E71D36]');
+                btn.classList.add('text-[#073066]');
                 icon.setAttribute('data-lucide', 'heart');
-                btn.innerHTML = '<i data-lucide="heart" class="h-4 w-4 fill-[#E71D36] text-[#E71D36]"></i>';
+                btn.innerHTML = '<i data-lucide="heart" class="h-4 w-4 fill-[#073066] text-[#073066]"></i>';
             } else {
-                btn.classList.remove('text-[#E71D36]');
+                btn.classList.remove('text-[#073066]');
                 btn.innerHTML = '<i data-lucide="heart" class="h-4 w-4"></i>';
             }
             lucide.createIcons({ attrs: { 'stroke-width': 1.5 } });
+        }
+
+        // Fonction pour gérer le bouton J'aime avec compteur
+        function toggleLike(button) {
+            const isLiked = button.classList.contains('liked');
+            const eventCard = button.closest('.event-card') || button.closest('article');
+            const likesCountElement = eventCard.querySelector('.likes-count');
+            let currentLikes = parseInt(likesCountElement.textContent);
+            
+            if (isLiked) {
+                // Retirer le like
+                button.classList.remove('liked', 'bg-red-50', 'text-red-600', 'border-red-200');
+                button.classList.add('bg-white', 'text-neutral-700', 'border-neutral-200');
+                button.innerHTML = '<i data-lucide="heart" class="h-4 w-4"></i>';
+                currentLikes--;
+            } else {
+                // Ajouter le like
+                button.classList.add('liked', 'bg-red-50', 'text-red-600', 'border-red-200');
+                button.classList.remove('bg-white', 'text-neutral-700', 'border-neutral-200');
+                button.innerHTML = '<i data-lucide="heart" class="h-4 w-4 fill-current"></i>';
+                currentLikes++;
+            }
+            
+            // Mettre à jour le compteur
+            likesCountElement.textContent = currentLikes;
+            button.setAttribute('data-likes', currentLikes);
+            
+            // Recréer les icônes Lucide
+            lucide.createIcons({ attrs: { 'stroke-width': 1.5 } });
+        }
+        
+        // Fonction pour incrémenter les vues
+        function incrementViews(button) {
+            const eventCard = button.closest('.event-card') || button.closest('article');
+            const viewsCountElement = eventCard.querySelector('.views-count');
+            let currentViews = parseInt(viewsCountElement.textContent);
+            
+            // Incrémenter les vues
+            currentViews++;
+            viewsCountElement.textContent = currentViews;
+            button.setAttribute('data-views', currentViews);
+            
+            // Ici vous pouvez ajouter une requête AJAX pour sauvegarder en base de données
+            // fetch('/events/increment-views', { method: 'POST', ... });
         }
     </script>
     @stack('scripts')

@@ -8,7 +8,7 @@
             <p class="text-sm text-neutral-600">Attach existing users as chamber managers.</p>
         </div>
         <a href="{{ route('chambers.create') }}"
-            class="inline-flex items-center gap-2 rounded-md bg-[#E71D36] px-3 py-2 text-sm font-semibold text-white hover:bg-[#cf1a30]"><i
+            class="inline-flex items-center gap-2 rounded-md bg-[#073066] px-3 py-2 text-sm font-semibold text-white hover:bg-[#052347]"><i
                 data-lucide="plus" class="h-4 w-4"></i> Create Chamber</a>
     </div>
 
@@ -28,7 +28,7 @@
                     <td class="px-4 py-2">{{ $chamber->approvedMembers()->count() }}</td>
                     <td class="px-4 py-2">
                         <a href="{{ route('chambers.members.create', $chamber) }}"
-                            class="inline-flex items-center gap-2 rounded-md bg-[#E71D36] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#cf1a30]"><i
+                            class="inline-flex items-center gap-2 rounded-md bg-[#073066] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#052347]"><i
                                 data-lucide="user-plus" class="h-4 w-4"></i> Add Manager</a>
                         <a href="{{ route('chambers.members.pending', $chamber) }}"
                             class="inline-flex items-center gap-2 rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-xs font-medium hover:bg-neutral-50"><i

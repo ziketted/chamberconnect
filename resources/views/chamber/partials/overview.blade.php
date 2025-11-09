@@ -17,7 +17,7 @@
             <section class="space-y-3">
                 <div class="flex items-center justify-between">
                     <h3 class="text-lg font-semibold tracking-tight">Upcoming Events</h3>
-                    <a href="{{ route('chambers.events', $chamber) }}" class="text-sm font-medium text-[#E71D36] hover:underline">See all</a>
+                    <a href="{{ route('chambers.events', $chamber) }}" class="text-sm font-medium text-[#073066] hover:underline">See all</a>
                 </div>
                 <div class="grid sm:grid-cols-2 gap-4">
                     @foreach($upcomingEvents as $event)
@@ -63,7 +63,7 @@
                     </a>
                     @if($chamber->is_accredited)
                     <div class="inline-flex items-center gap-2 rounded-full bg-neutral-100 px-3 py-1 text-xs text-neutral-800">
-                        <i data-lucide="shield-check" class="h-4 w-4 text-[#E71D36]"></i>
+                        <i data-lucide="shield-check" class="h-4 w-4 text-[#073066]"></i>
                         Accredited
                     </div>
                     @endif
@@ -84,7 +84,7 @@
             <section class="rounded-xl border border-neutral-200 bg-white p-4 shadow-sm">
                 <div class="flex items-center justify-between">
                     <h3 class="text-sm font-semibold tracking-tight">Partner Companies</h3>
-                    <a href="{{ route('chambers.partners', $chamber) }}" class="text-xs font-medium text-[#E71D36] hover:underline">All partners</a>
+                    <a href="{{ route('chambers.partners', $chamber) }}" class="text-xs font-medium text-[#073066] hover:underline">All partners</a>
                 </div>
                 <div class="mt-3 grid grid-cols-3 gap-3">
                     @foreach($partners->take(3) as $partner)

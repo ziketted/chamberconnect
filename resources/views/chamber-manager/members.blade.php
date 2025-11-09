@@ -32,7 +32,7 @@
             </div>
             <div class="mt-4 flex space-x-3 md:mt-0 md:ml-4">
                 <a href="{{ route('chambers.members.create', $chamber) }}" 
-                   class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#E71D36] hover:bg-[#cf1a30] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#E71D36]">
+                   class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#073066] hover:bg-[#052347] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#073066]">
                     <i data-lucide="user-plus" class="mr-2 h-4 w-4"></i>
                     Ajouter un membre
                 </a>
@@ -146,7 +146,7 @@
                         <!-- Dropdown pour changer le rôle -->
                         <div class="relative inline-block text-left">
                             <button type="button" 
-                                    class="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#E71D36]"
+                                    class="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#073066]"
                                     onclick="toggleDropdown('role-{{ $member->id }}')">
                                 <i data-lucide="settings" class="mr-1 h-3 w-3"></i>
                                 Actions
@@ -203,7 +203,7 @@
             <h3 class="text-sm font-medium text-gray-900 mb-2">Aucun membre actif</h3>
             <p class="text-sm text-gray-500 mb-4">Cette chambre n'a pas encore de membres approuvés.</p>
             <a href="{{ route('chambers.members.create', $chamber) }}" 
-               class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#E71D36] hover:bg-[#cf1a30]">
+               class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#073066] hover:bg-[#052347]">
                 <i data-lucide="user-plus" class="mr-2 h-4 w-4"></i>
                 Ajouter le premier membre
             </a>

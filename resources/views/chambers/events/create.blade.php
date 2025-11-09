@@ -13,28 +13,28 @@
         <div>
             <label class="text-xs font-medium text-neutral-700">Title</label>
             <input name="title" required
-                class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#E71D36] focus:ring-2 focus:ring-[#E71D36]/20" />
+                class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20" />
         </div>
         <div>
             <label class="text-xs font-medium text-neutral-700">Description</label>
             <textarea name="description" rows="4"
-                class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#E71D36] focus:ring-2 focus:ring-[#E71D36]/20"></textarea>
+                class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20"></textarea>
         </div>
         <div class="grid sm:grid-cols-3 gap-4">
             <div>
                 <label class="text-xs font-medium text-neutral-700">Date</label>
                 <input type="date" name="date"
-                    class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#E71D36] focus:ring-2 focus:ring-[#E71D36]/20" />
+                    class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20" />
             </div>
             <div>
                 <label class="text-xs font-medium text-neutral-700">Time</label>
                 <input name="time" placeholder="10:00 AM"
-                    class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#E71D36] focus:ring-2 focus:ring-[#E71D36]/20" />
+                    class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20" />
             </div>
             <div>
                 <label class="text-xs font-medium text-neutral-700">Location</label>
                 <input name="location"
-                    class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#E71D36] focus:ring-2 focus:ring-[#E71D36]/20" />
+                    class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20" />
             </div>
         </div>
         <div>
@@ -46,7 +46,7 @@
             <a href="{{ route('chamber.show', $chamber) }}"
                 class="rounded-md border border-neutral-300 bg-white px-4 py-2 text-sm font-medium hover:bg-neutral-50">Cancel</a>
             <button
-                class="rounded-md bg-[#E71D36] px-4 py-2 text-sm font-semibold text-white hover:bg-[#cf1a30]">Create</button>
+                class="rounded-md bg-[#073066] px-4 py-2 text-sm font-semibold text-white hover:bg-[#052347]">Create</button>
         </div>
     </form>
 </div>

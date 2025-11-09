@@ -26,7 +26,7 @@
                         class="inline-flex items-center gap-2 rounded-md border border-white/60 bg-white/10 px-3 py-2 text-sm font-semibold text-white backdrop-blur hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"><i
                             data-lucide="share-2" class="h-4 w-4"></i> Share</button>
                     <button
-                        class="inline-flex items-center gap-2 rounded-md bg-[#E71D36] px-3 py-2 text-sm font-semibold text-white hover:bg-[#cf1a30]"><i
+                        class="inline-flex items-center gap-2 rounded-md bg-[#073066] px-3 py-2 text-sm font-semibold text-white hover:bg-[#052347]"><i
                             data-lucide="heart" class="h-4 w-4"></i> Follow</button>
                 </div>
             </div>
@@ -38,13 +38,13 @@
 <div class="mt-6 rounded-xl border border-neutral-200 bg-white shadow-sm">
     <div class="border-b border-neutral-200 px-4 py-2 flex justify-end">
         <button
-            class="inline-flex items-center gap-2 rounded-md bg-[#E71D36] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#cf1a30]"><i
+            class="inline-flex items-center gap-2 rounded-md bg-[#073066] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#052347]"><i
                 data-lucide="user-plus" class="h-4 w-4"></i> Adhérer</button>
     </div>
     <div class="flex flex-wrap items-center gap-1 border-b border-neutral-200 px-4 py-2">
         <button onclick="switchChamberTab('overview')" data-chamber-link="overview"
             class="cham-link active inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium text-neutral-900 hover:bg-neutral-100"><i
-                data-lucide="layout-dashboard" class="h-4 w-4 text-[#E71D36]"></i> Overview</button>
+                data-lucide="layout-dashboard" class="h-4 w-4 text-[#073066]"></i> Overview</button>
         <button onclick="switchChamberTab('events')" data-chamber-link="events"
             class="cham-link inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium text-neutral-600 hover:bg-neutral-100"><i
                 data-lucide="calendar" class="h-4 w-4"></i> Events</button>
@@ -83,7 +83,7 @@
                     <div class="flex items-center justify-between">
                         <h3 class="text-lg font-semibold tracking-tight" style="letter-spacing:-0.01em;">Upcoming Events
                         </h3>
-                        <button class="text-sm font-medium text-[#E71D36] hover:underline">See all</button>
+                        <button class="text-sm font-medium text-[#073066] hover:underline">See all</button>
                     </div>
                     <div class="grid sm:grid-cols-2 gap-4">
                         <a href="#"
@@ -135,7 +135,7 @@
                                 data-lucide="map" class="h-4 w-4"></i> Get Directions</button>
                         <div
                             class="inline-flex items-center gap-2 rounded-full bg-neutral-100 px-3 py-1 text-xs text-neutral-800">
-                            <i data-lucide="shield-check" class="h-4 w-4 text-[#E71D36]"></i> Accredited</div>
+                            <i data-lucide="shield-check" class="h-4 w-4 text-[#073066]"></i> Accredited</div>
                     </div>
                 </section>
 
@@ -158,7 +158,7 @@
                     <div class="flex items-center justify-between">
                         <h3 class="text-sm font-semibold tracking-tight" style="letter-spacing:-0.01em;">Partner
                             Companies</h3>
-                        <button class="text-xs font-medium text-[#E71D36] hover:underline">All partners</button>
+                        <button class="text-xs font-medium text-[#073066] hover:underline">All partners</button>
                     </div>
                     <div class="mt-3 grid grid-cols-3 gap-3">
                         <div class="rounded-lg border border-neutral-200 p-3 text-center"><span
@@ -202,7 +202,7 @@
                             Gombe</span>
                     </div>
                     <div class="mt-4"><button
-                            class="inline-flex items-center gap-2 rounded-md bg-[#E71D36] px-3 py-2 text-sm font-semibold text-white hover:bg-[#cf1a30]"><i
+                            class="inline-flex items-center gap-2 rounded-md bg-[#073066] px-3 py-2 text-sm font-semibold text-white hover:bg-[#052347]"><i
                                 data-lucide="ticket" class="h-4 w-4"></i> Register</button></div>
                 </div>
             </article>
@@ -237,7 +237,7 @@
                 <h3 class="text-sm font-semibold tracking-tight" style="letter-spacing:-0.01em;">Active Members</h3>
                 <div class="relative">
                     <input type="text" placeholder="Search members"
-                        class="w-48 rounded-md border border-neutral-200 bg-white pl-3 pr-9 py-1.5 text-xs focus:border-[#E71D36] focus:ring-2 focus:ring-[#E71D36]/20">
+                        class="w-48 rounded-md border border-neutral-200 bg-white pl-3 pr-9 py-1.5 text-xs focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20">
                     <span
                         class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 text-neutral-400"><i
                             data-lucide="search" class="h-3.5 w-3.5"></i></span>
@@ -257,19 +257,19 @@
                         <tr class="hover:bg-neutral-50">
                             <td class="px-4 py-2">Kivu Agro</td>
                             <td class="px-4 py-2">Amina K.</td>
-                            <td class="px-4 py-2 text-[#E71D36]">amina@kivuagro.com</td>
+                            <td class="px-4 py-2 text-[#073066]">amina@kivuagro.com</td>
                             <td class="px-4 py-2">+243 800 111 222</td>
                         </tr>
                         <tr class="hover:bg-neutral-50">
                             <td class="px-4 py-2">Lumumba Logistics</td>
                             <td class="px-4 py-2">Jean P.</td>
-                            <td class="px-4 py-2 text-[#E71D36]">jean@lumlog.com</td>
+                            <td class="px-4 py-2 text-[#073066]">jean@lumlog.com</td>
                             <td class="px-4 py-2">+243 800 333 444</td>
                         </tr>
                         <tr class="hover:bg-neutral-50">
                             <td class="px-4 py-2">KinTech Labs</td>
                             <td class="px-4 py-2">Chantal M.</td>
-                            <td class="px-4 py-2 text-[#E71D36]">cm@kintechlabs.io</td>
+                            <td class="px-4 py-2 text-[#073066]">cm@kintechlabs.io</td>
                             <td class="px-4 py-2">+243 800 555 666</td>
                         </tr>
                     </tbody>
@@ -321,7 +321,7 @@
             const active = t.getAttribute('data-chamber-link') === target;
             t.classList.toggle('text-neutral-900', active);
             t.classList.toggle('text-neutral-600', !active);
-            t.querySelector('i')?.classList.toggle('text-[#E71D36]', active);
+            t.querySelector('i')?.classList.toggle('text-[#073066]', active);
         });
     }
 </script>

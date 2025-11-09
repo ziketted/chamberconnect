@@ -28,6 +28,15 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        // Redirect based on user role
+        $user = Auth::user();
+        
+        if ($user->isSuperAdmin()) {
+            return redirect()->intended(route('admin.chambers', absolute: false));
+        } elseif ($user->isChamberManager()) {
+            return redirect()->intended(route('chamber-manager.dashboard', absolute: false));
+        }
+
         return redirect()->intended(route('dashboard', absolute: false));
     }
 

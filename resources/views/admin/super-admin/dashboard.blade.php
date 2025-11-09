@@ -5,7 +5,7 @@
     <!-- Header -->
     <div class="mb-8">
         <h1 class="text-3xl font-bold text-gray-900">Tableau de bord Super Admin</h1>
-        <p class="mt-2 text-gray-600">Gérez les chambres, utilisateurs et certifications</p>
+        <p class="mt-2 text-gray-600">Gérez les chambres, utilisateurs et agréments</p>
     </div>
 
     <!-- Stats Cards -->
@@ -14,7 +14,7 @@
         <div class="bg-white rounded-lg shadow p-6">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
-                    <i data-lucide="building" class="h-8 w-8 text-blue-600"></i>
+                    <i data-lucide="building" class="h-8 w-8 text-[#073066]"></i>
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-gray-500">Total Chambres</p>
@@ -23,14 +23,14 @@
             </div>
         </div>
 
-        <!-- Chambres Certifiées -->
+        <!-- Chambres Agréées -->
         <div class="bg-white rounded-lg shadow p-6">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
-                    <i data-lucide="shield-check" class="h-8 w-8 text-green-600"></i>
+                    <i data-lucide="shield-check" class="h-8 w-8 text-[#fcb357]"></i>
                 </div>
                 <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-500">Chambres Certifiées</p>
+                    <p class="text-sm font-medium text-gray-500">Chambres Agréées</p>
                     <p class="text-2xl font-semibold text-gray-900">{{ $stats['verified_chambers'] }}</p>
                 </div>
             </div>
@@ -40,7 +40,7 @@
         <div class="bg-white rounded-lg shadow p-6">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
-                    <i data-lucide="clock" class="h-8 w-8 text-yellow-600"></i>
+                    <i data-lucide="clock" class="h-8 w-8 text-[#b81010]"></i>
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-gray-500">En Attente</p>
@@ -53,7 +53,7 @@
         <div class="bg-white rounded-lg shadow p-6">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
-                    <i data-lucide="users" class="h-8 w-8 text-purple-600"></i>
+                    <i data-lucide="users" class="h-8 w-8 text-[#073066]"></i>
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-gray-500">Total Utilisateurs</p>
@@ -66,7 +66,7 @@
         <div class="bg-white rounded-lg shadow p-6">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
-                    <i data-lucide="briefcase" class="h-8 w-8 text-indigo-600"></i>
+                    <i data-lucide="briefcase" class="h-8 w-8 text-[#fcb357]"></i>
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-gray-500">Gestionnaires</p>
@@ -92,7 +92,7 @@
     <!-- Quick Actions -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <a href="{{ route('chambers.create') }}" 
-           class="bg-[#E71D36] text-white rounded-lg p-4 hover:bg-[#cf1a30] transition-colors">
+           class="bg-[#073066] text-white rounded-lg p-4 hover:bg-[#052347] transition-colors">
             <div class="flex items-center">
                 <i data-lucide="plus" class="h-5 w-5 mr-2"></i>
                 Créer une chambre
@@ -100,7 +100,7 @@
         </a>
 
         <a href="{{ route('admin.chambers') }}" 
-           class="bg-blue-600 text-white rounded-lg p-4 hover:bg-blue-700 transition-colors">
+           class="bg-[#fcb357] text-white rounded-lg p-4 hover:bg-[#f5a742] transition-colors">
             <div class="flex items-center">
                 <i data-lucide="building" class="h-5 w-5 mr-2"></i>
                 Gérer les chambres
@@ -108,7 +108,7 @@
         </a>
 
         <a href="{{ route('admin.users') }}" 
-           class="bg-green-600 text-white rounded-lg p-4 hover:bg-green-700 transition-colors">
+           class="bg-[#073066] text-white rounded-lg p-4 hover:bg-[#052347] transition-colors">
             <div class="flex items-center">
                 <i data-lucide="users" class="h-5 w-5 mr-2"></i>
                 Gérer les utilisateurs
@@ -116,7 +116,7 @@
         </a>
 
         <a href="{{ route('admin.chambers.admins') }}" 
-           class="bg-purple-600 text-white rounded-lg p-4 hover:bg-purple-700 transition-colors">
+           class="bg-[#b81010] text-white rounded-lg p-4 hover:bg-[#9a0e0e] transition-colors">
             <div class="flex items-center">
                 <i data-lucide="settings" class="h-5 w-5 mr-2"></i>
                 Configuration

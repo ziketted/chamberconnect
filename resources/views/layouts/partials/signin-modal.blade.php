@@ -17,22 +17,22 @@
                 <div>
                     <label class="text-xs font-medium text-neutral-700">{{ __('messages.email') }}</label>
                     <input type="email" name="email"
-                        class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#E71D36] focus:ring-2 focus:ring-[#E71D36]/20"
+                        class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20"
                         placeholder="you@company.com">
                 </div>
                 <div>
                     <div class="flex items-center justify-between">
                         <label class="text-xs font-medium text-neutral-700">{{ __('messages.password') }}</label>
                         <a href="{{ route('password.request') }}"
-                            class="text-xs font-medium text-[#E71D36] hover:underline">{{ __('messages.forgot_password')
+                            class="text-xs font-medium text-[#073066] hover:underline">{{ __('messages.forgot_password')
                             }}</a>
                     </div>
                     <input type="password" name="password"
-                        class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#E71D36] focus:ring-2 focus:ring-[#E71D36]/20"
+                        class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20"
                         placeholder="••••••••">
                 </div>
                 <button type="submit"
-                    class="w-full rounded-md bg-[#E71D36] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#cf1a30]">{{
+                    class="w-full rounded-md bg-[#073066] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#052347]">{{
                     __('messages.login') }}</button>
             </form>
             <div class="my-4 flex items-center gap-3">

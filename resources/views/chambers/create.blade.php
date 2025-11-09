@@ -15,39 +15,39 @@
             <div>
                 <label class="text-xs font-medium text-neutral-700">Name</label>
                 <input name="name" required
-                    class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#E71D36] focus:ring-2 focus:ring-[#E71D36]/20" />
+                    class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20" />
             </div>
             <div>
                 <label class="text-xs font-medium text-neutral-700">Location</label>
                 <input name="location"
-                    class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#E71D36] focus:ring-2 focus:ring-[#E71D36]/20" />
+                    class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20" />
             </div>
             <div>
                 <label class="text-xs font-medium text-neutral-700">Address</label>
                 <input name="address"
-                    class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#E71D36] focus:ring-2 focus:ring-[#E71D36]/20" />
+                    class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20" />
             </div>
             <div>
                 <label class="text-xs font-medium text-neutral-700">Website</label>
                 <input name="website"
-                    class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#E71D36] focus:ring-2 focus:ring-[#E71D36]/20" />
+                    class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20" />
             </div>
             <div>
                 <label class="text-xs font-medium text-neutral-700">Email</label>
                 <input type="email" name="email"
-                    class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#E71D36] focus:ring-2 focus:ring-[#E71D36]/20" />
+                    class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20" />
             </div>
             <div>
                 <label class="text-xs font-medium text-neutral-700">Phone</label>
                 <input name="phone"
-                    class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#E71D36] focus:ring-2 focus:ring-[#E71D36]/20" />
+                    class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20" />
             </div>
         </div>
 
         <div>
             <label class="text-xs font-medium text-neutral-700">Description</label>
             <textarea name="description" rows="4"
-                class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#E71D36] focus:ring-2 focus:ring-[#E71D36]/20"></textarea>
+                class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20"></textarea>
         </div>
 
         <!-- Upload Section -->
@@ -117,17 +117,17 @@
                 <div>
                     <label class="text-xs font-medium text-neutral-700">LinkedIn</label>
                     <input name="social_links[linkedin]"
-                        class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#E71D36] focus:ring-2 focus:ring-[#E71D36]/20" />
+                        class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20" />
                 </div>
                 <div>
                     <label class="text-xs font-medium text-neutral-700">Twitter</label>
                     <input name="social_links[twitter]"
-                        class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#E71D36] focus:ring-2 focus:ring-[#E71D36]/20" />
+                        class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20" />
                 </div>
                 <div>
                     <label class="text-xs font-medium text-neutral-700">Facebook</label>
                     <input name="social_links[facebook]"
-                        class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#E71D36] focus:ring-2 focus:ring-[#E71D36]/20" />
+                        class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20" />
                 </div>
             </div>
         </div>
@@ -135,7 +135,7 @@
         <div class="flex justify-end gap-2">
             <a href="{{ route('chambers') }}"
                 class="rounded-md border border-neutral-300 bg-white px-4 py-2 text-sm font-medium hover:bg-neutral-50">Cancel</a>
-            <button class="rounded-md bg-[#E71D36] px-4 py-2 text-sm font-semibold text-white hover:bg-[#cf1a30]">Create
+            <button class="rounded-md bg-[#073066] px-4 py-2 text-sm font-semibold text-white hover:bg-[#052347]">Create
                 Chamber</button>
         </div>
     </form>
@@ -177,17 +177,17 @@ document.addEventListener('DOMContentLoaded', function() {
         // Gestion du drag & drop
         dropzone.addEventListener('dragover', (e) => {
             e.preventDefault();
-            dropzone.classList.add('border-[#E71D36]', 'bg-red-50');
+            dropzone.classList.add('border-[#073066]', 'bg-red-50');
         });
 
         dropzone.addEventListener('dragleave', (e) => {
             e.preventDefault();
-            dropzone.classList.remove('border-[#E71D36]', 'bg-red-50');
+            dropzone.classList.remove('border-[#073066]', 'bg-red-50');
         });
 
         dropzone.addEventListener('drop', (e) => {
             e.preventDefault();
-            dropzone.classList.remove('border-[#E71D36]', 'bg-red-50');
+            dropzone.classList.remove('border-[#073066]', 'bg-red-50');
             
             const files = e.dataTransfer.files;
             if (files.length > 0) {
