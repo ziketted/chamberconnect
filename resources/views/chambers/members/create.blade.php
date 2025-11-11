@@ -5,7 +5,7 @@
     <div class="mb-6">
         <h1 class="text-2xl font-semibold tracking-tight" style="letter-spacing:-0.02em;">Add Member — {{ $chamber->name
             }}</h1>
-        <p class="text-sm text-neutral-600">User must already have an account.</p>
+        <p class="text-sm text-neutral-600 dark:text-gray-400">User must already have an account.</p>
     </div>
 
     @if ($errors->any())
@@ -31,23 +31,23 @@
     @endif
 
     <form action="{{ route('chambers.members.store', $chamber) }}" method="POST"
-        class="space-y-6 rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
+        class="space-y-6 rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 shadow-sm">
         @csrf
         
         <!-- User Search with Autocomplete -->
         <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Rechercher un utilisateur</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Rechercher un utilisateur</label>
             <div class="relative">
                 <input type="email" 
                        id="user-search" 
                        name="email" 
                        required
                        placeholder="Tapez l'email ou le nom de l'utilisateur..."
-                       class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20"
+                       class="mt-1 w-full rounded-md border border-neutral-300 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-[#073066] dark:focus:border-blue-500 focus:ring-2 focus:ring-[#073066]/20 dark:focus:ring-blue-500/20"
                        autocomplete="off" />
                 
                 <!-- Dropdown pour les résultats -->
-                <div id="search-results" class="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm hidden">
+                <div id="search-results" class="absolute z-10 mt-1 w-full bg-white dark:bg-gray-800 shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm hidden">
                     <!-- Les résultats seront ajoutés ici par JavaScript -->
                 </div>
                 
@@ -85,20 +85,20 @@
 
         <!-- Role Selection -->
         <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Rôle dans la chambre</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Rôle dans la chambre</label>
             <select name="role" required
-                class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20">
+                class="mt-1 w-full rounded-md border border-neutral-300 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-[#073066] dark:focus:border-blue-500 focus:ring-2 focus:ring-[#073066]/20 dark:focus:ring-blue-500/20">
                 <option value="member">Membre</option>
                 <option value="manager">Gestionnaire</option>
             </select>
-            <p class="mt-1 text-xs text-gray-500">
+            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
                 Les gestionnaires peuvent gérer les membres et le contenu de la chambre.
             </p>
         </div>
 
         <div class="flex justify-end gap-2">
             <a href="{{ route('chamber.show', $chamber) }}"
-                class="rounded-md border border-neutral-300 bg-white px-4 py-2 text-sm font-medium hover:bg-neutral-50">Annuler</a>
+                class="rounded-md border border-neutral-300 bg-white dark:bg-gray-800 px-4 py-2 text-sm font-medium hover:bg-neutral-50 dark:bg-gray-700">Annuler</a>
             <button type="submit" id="submit-btn" disabled
                 class="rounded-md bg-gray-400 px-4 py-2 text-sm font-semibold text-white cursor-not-allowed">
                 Ajouter le membre
@@ -148,16 +148,16 @@ document.addEventListener('DOMContentLoaded', function() {
     function displayResults(users) {
         if (users.length === 0) {
             searchResults.innerHTML = `
-                <div class="px-4 py-2 text-sm text-gray-500">
+                <div class="px-4 py-2 text-sm text-gray-500 dark:text-gray-400">
                     Aucun utilisateur trouvé
                 </div>
             `;
         } else {
             searchResults.innerHTML = users.map(user => `
-                <div class="cursor-pointer px-4 py-2 text-sm hover:bg-gray-100 user-result" 
+                <div class="cursor-pointer px-4 py-2 text-sm hover:bg-gray-100 dark:bg-gray-700 user-result" 
                      data-user='${JSON.stringify(user)}'>
-                    <div class="font-medium text-gray-900">${user.name}</div>
-                    <div class="text-gray-500">${user.email}</div>
+                    <div class="font-medium text-gray-900 dark:text-white">${user.name}</div>
+                    <div class="text-gray-500 dark:text-gray-400">${user.email}</div>
                 </div>
             `).join('');
             
@@ -296,9 +296,9 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateSelection(results) {
         results.forEach((result, index) => {
             if (index === selectedIndex) {
-                result.classList.add('bg-gray-100');
+                result.classList.add('bg-gray-100 dark:bg-gray-700');
             } else {
-                result.classList.remove('bg-gray-100');
+                result.classList.remove('bg-gray-100 dark:bg-gray-700');
             }
         });
     }

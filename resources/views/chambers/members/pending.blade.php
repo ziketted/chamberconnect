@@ -6,15 +6,15 @@
         <div>
             <h1 class="text-2xl font-semibold tracking-tight" style="letter-spacing:-0.02em;">Demandes d'adhésion — {{
                 $chamber->name }}</h1>
-            <p class="text-sm text-neutral-600">Approuvez ou rejetez les membres en attente.</p>
+            <p class="text-sm text-neutral-600 dark:text-gray-400">Approuvez ou rejetez les membres en attente.</p>
         </div>
-        <a href="{{ route('chamber.show', $chamber) }}" class="text-sm text-[#073066] hover:underline">Retour à la
+        <a href="{{ route('chamber.show', $chamber) }}" class="text-sm text-[#073066] dark:text-blue-400 hover:underline">Retour à la
             chambre</a>
     </div>
 
-    <div class="rounded-xl border border-neutral-200 bg-white shadow-sm overflow-hidden">
+    <div class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm overflow-hidden">
         <table class="min-w-full text-sm">
-            <thead class="bg-neutral-50 text-neutral-600">
+            <thead class="bg-neutral-50 dark:bg-gray-700 text-neutral-600 dark:text-gray-400">
                 <tr>
                     <th class="px-4 py-2 text-left font-medium">Nom</th>
                     <th class="px-4 py-2 text-left font-medium">Email</th>
@@ -38,7 +38,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td class="px-4 py-4 text-neutral-500" colspan="3">Aucune demande en attente.</td>
+                    <td class="px-4 py-4 text-neutral-500 dark:text-gray-500 dark:text-gray-400" colspan="3">Aucune demande en attente.</td>
                 </tr>
                 @endforelse
             </tbody>

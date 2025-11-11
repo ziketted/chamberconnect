@@ -5,16 +5,16 @@
     <div class="mb-6 flex items-center justify-between">
         <div>
             <h1 class="text-2xl font-semibold tracking-tight" style="letter-spacing:-0.02em;">Manage Chamber Admins</h1>
-            <p class="text-sm text-neutral-600">Attach existing users as chamber managers.</p>
+            <p class="text-sm text-neutral-600 dark:text-gray-400">Attach existing users as chamber managers.</p>
         </div>
         <a href="{{ route('chambers.create') }}"
             class="inline-flex items-center gap-2 rounded-md bg-[#073066] px-3 py-2 text-sm font-semibold text-white hover:bg-[#052347]"><i
                 data-lucide="plus" class="h-4 w-4"></i> Create Chamber</a>
     </div>
 
-    <div class="rounded-xl border border-neutral-200 bg-white shadow-sm overflow-hidden">
+    <div class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm overflow-hidden">
         <table class="min-w-full text-sm">
-            <thead class="bg-neutral-50 text-neutral-600">
+            <thead class="bg-neutral-50 dark:bg-gray-700 text-neutral-600 dark:text-gray-400">
                 <tr>
                     <th class="px-4 py-2 text-left font-medium">Chamber</th>
                     <th class="px-4 py-2 text-left font-medium">Members</th>
@@ -31,7 +31,7 @@
                             class="inline-flex items-center gap-2 rounded-md bg-[#073066] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#052347]"><i
                                 data-lucide="user-plus" class="h-4 w-4"></i> Add Manager</a>
                         <a href="{{ route('chambers.members.pending', $chamber) }}"
-                            class="inline-flex items-center gap-2 rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-xs font-medium hover:bg-neutral-50"><i
+                            class="inline-flex items-center gap-2 rounded-md border border-neutral-300 bg-white dark:bg-gray-800 px-3 py-1.5 text-xs font-medium hover:bg-neutral-50 dark:bg-gray-700"><i
                                 data-lucide="user-check" class="h-4 w-4"></i> Pending</a>
                     </td>
                 </tr>

@@ -4,33 +4,33 @@
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- Header -->
     <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900">Gestion des Utilisateurs</h1>
-        <p class="mt-2 text-gray-600">Gérez les rôles et permissions des utilisateurs</p>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Gestion des Utilisateurs</h1>
+        <p class="mt-2 text-gray-600 dark:text-gray-400">Gérez les rôles et permissions des utilisateurs</p>
     </div>
 
     <!-- Users List -->
-    <div class="bg-white shadow rounded-lg overflow-hidden">
+    <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
         <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
+            <thead class="bg-gray-50 dark:bg-gray-800">
                 <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                         Utilisateur
                     </th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                         Entreprise
                     </th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                         Rôle
                     </th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                         Chambres
                     </th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                         Actions
                     </th>
                 </tr>
             </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
+            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200">
                 @forelse($users as $user)
                 <tr>
                     <td class="px-6 py-4 whitespace-nowrap">
@@ -38,17 +38,17 @@
                             @if($user->avatar)
                                 <img class="h-10 w-10 rounded-full" src="{{ $user->avatar }}" alt="{{ $user->name }}">
                             @else
-                                <div class="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
-                                    <span class="text-sm font-medium text-gray-700">{{ strtoupper(substr($user->name, 0, 1)) }}</span>
+                                <div class="h-10 w-10 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
+                                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ strtoupper(substr($user->name, 0, 1)) }}</span>
                                 </div>
                             @endif
                             <div class="ml-4">
-                                <div class="text-sm font-medium text-gray-900">{{ $user->name }}</div>
-                                <div class="text-sm text-gray-500">{{ $user->email }}</div>
+                                <div class="text-sm font-medium text-gray-900 dark:text-white">{{ $user->name }}</div>
+                                <div class="text-sm text-gray-500 dark:text-gray-400">{{ $user->email }}</div>
                             </div>
                         </div>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                         {{ $user->company ?? 'Non spécifiée' }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
@@ -63,13 +63,13 @@
                                 Gestionnaire
                             </span>
                         @else
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
                                 <i data-lucide="user" class="h-3 w-3 mr-1"></i>
                                 Utilisateur
                             </span>
                         @endif
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                         @if($user->chambers->count() > 0)
                             <div class="flex flex-wrap gap-1">
                                 @foreach($user->chambers as $chamber)
@@ -117,7 +117,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                    <td colspan="5" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
                         Aucun utilisateur trouvé
                     </td>
                 </tr>

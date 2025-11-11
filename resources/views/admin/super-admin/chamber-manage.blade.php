@@ -2,9 +2,9 @@
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Informations principales -->
     <div class="lg:col-span-2">
-        <div class="bg-white rounded-lg border border-gray-200 p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 p-6">
             <div class="flex items-center justify-between mb-6">
-                <h4 class="text-lg font-medium text-gray-900">{{ $chamber->name }}</h4>
+                <h4 class="text-lg font-medium text-gray-900 dark:text-white">{{ $chamber->name }}</h4>
                 <div class="flex items-center space-x-2">
                     @if($chamber->verified && $chamber->state_number)
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
@@ -22,46 +22,46 @@
 
             <div class="grid grid-cols-2 gap-4 mb-6">
                 <div>
-                    <dt class="text-sm font-medium text-gray-500">Localisation</dt>
-                    <dd class="mt-1 text-sm text-gray-900">{{ $chamber->location ?? 'Non définie' }}</dd>
+                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Localisation</dt>
+                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ $chamber->location ?? 'Non définie' }}</dd>
                 </div>
                 <div>
-                    <dt class="text-sm font-medium text-gray-500">Date de création</dt>
-                    <dd class="mt-1 text-sm text-gray-900">{{ $chamber->created_at->format('d/m/Y') }}</dd>
+                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Date de création</dt>
+                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ $chamber->created_at->format('d/m/Y') }}</dd>
                 </div>
                 @if($chamber->state_number)
                 <div>
-                    <dt class="text-sm font-medium text-gray-500">Numéro d'État</dt>
-                    <dd class="mt-1 text-sm text-gray-900">{{ $chamber->state_number }}</dd>
+                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Numéro d'État</dt>
+                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ $chamber->state_number }}</dd>
                 </div>
                 @endif
                 @if($chamber->certification_date)
                 <div>
-                    <dt class="text-sm font-medium text-gray-500">Date de certification</dt>
-                    <dd class="mt-1 text-sm text-gray-900">{{ \Carbon\Carbon::parse($chamber->certification_date)->format('d/m/Y') }}</dd>
+                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Date de certification</dt>
+                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ \Carbon\Carbon::parse($chamber->certification_date)->format('d/m/Y') }}</dd>
                 </div>
                 @endif
             </div>
 
             @if($chamber->description)
             <div class="mb-6">
-                <dt class="text-sm font-medium text-gray-500">Description</dt>
-                <dd class="mt-1 text-sm text-gray-900">{{ $chamber->description }}</dd>
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Description</dt>
+                <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ $chamber->description }}</dd>
             </div>
             @endif
 
             @if($chamber->certification_notes)
             <div class="mb-6">
-                <dt class="text-sm font-medium text-gray-500">Notes de certification</dt>
-                <dd class="mt-1 text-sm text-gray-900 bg-green-50 p-3 rounded-md">{{ $chamber->certification_notes }}</dd>
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Notes de certification</dt>
+                <dd class="mt-1 text-sm text-gray-900 dark:text-white bg-green-50 p-3 rounded-md">{{ $chamber->certification_notes }}</dd>
             </div>
             @endif
         </div>
 
         <!-- Membres de la chambre -->
-        <div class="bg-white rounded-lg border border-gray-200 p-6 mt-6">
+        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 p-6 mt-6">
             <div class="flex items-center justify-between mb-4">
-                <h4 class="text-lg font-medium text-gray-900">Membres ({{ $chamber->members->count() }})</h4>
+                <h4 class="text-lg font-medium text-gray-900 dark:text-white">Membres ({{ $chamber->members->count() }})</h4>
                 <button onclick="openAddMemberModal('{{ $chamber->id }}')" 
                         class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700">
                     <i data-lucide="user-plus" class="h-4 w-4 inline mr-1"></i>
@@ -71,18 +71,18 @@
 
             <div class="space-y-3">
                 @forelse($chamber->members as $member)
-                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                     <div class="flex items-center">
                         @if($member->avatar)
                             <img class="h-8 w-8 rounded-full" src="{{ $member->avatar }}" alt="{{ $member->name }}">
                         @else
-                            <div class="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center">
-                                <span class="text-xs font-medium text-gray-700">{{ strtoupper(substr($member->name, 0, 1)) }}</span>
+                            <div class="h-8 w-8 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
+                                <span class="text-xs font-medium text-gray-700 dark:text-gray-300">{{ strtoupper(substr($member->name, 0, 1)) }}</span>
                             </div>
                         @endif
                         <div class="ml-3">
-                            <p class="text-sm font-medium text-gray-900">{{ $member->name }}</p>
-                            <p class="text-xs text-gray-500">{{ $member->email }}</p>
+                            <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $member->name }}</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">{{ $member->email }}</p>
                         </div>
                     </div>
                     <div class="flex items-center space-x-2">
@@ -92,7 +92,7 @@
                                 Gestionnaire
                             </span>
                         @else
-                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
                                 Membre
                             </span>
                         @endif
@@ -103,7 +103,7 @@
                     </div>
                 </div>
                 @empty
-                <p class="text-gray-500 text-center py-4">Aucun membre dans cette chambre</p>
+                <p class="text-gray-500 dark:text-gray-400 text-center py-4">Aucun membre dans cette chambre</p>
                 @endforelse
             </div>
         </div>
@@ -112,8 +112,8 @@
     <!-- Actions -->
     <div class="space-y-4">
         <!-- Certification -->
-        <div class="bg-white rounded-lg border border-gray-200 p-6">
-            <h4 class="text-lg font-medium text-gray-900 mb-4">Certification</h4>
+        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 p-6">
+            <h4 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Certification</h4>
             
             @if(!$chamber->verified || !$chamber->state_number)
                 <button onclick="openCertificationModal('{{ $chamber->slug }}')" 
@@ -136,8 +136,8 @@
         </div>
 
         <!-- Suspension -->
-        <div class="bg-white rounded-lg border border-gray-200 p-6">
-            <h4 class="text-lg font-medium text-gray-900 mb-4">Suspension</h4>
+        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 p-6">
+            <h4 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Suspension</h4>
             
             <form method="POST" action="{{ route('admin.chambers.suspend', $chamber) }}">
                 @csrf
@@ -152,8 +152,8 @@
         </div>
 
         <!-- Gestion des gestionnaires -->
-        <div class="bg-white rounded-lg border border-gray-200 p-6">
-            <h4 class="text-lg font-medium text-gray-900 mb-4">Gestionnaires</h4>
+        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 p-6">
+            <h4 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Gestionnaires</h4>
             
             <button onclick="openAssignManagerModal('{{ $chamber->id }}')" 
                     class="w-full bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 mb-3">
@@ -165,7 +165,7 @@
                 <div class="space-y-2">
                     @foreach($chamber->members->where('pivot.role', 'manager') as $manager)
                     <div class="flex items-center justify-between p-2 bg-blue-50 rounded">
-                        <span class="text-sm text-gray-900">{{ $manager->name }}</span>
+                        <span class="text-sm text-gray-900 dark:text-white">{{ $manager->name }}</span>
                         <form method="POST" action="{{ route('admin.chambers.remove-manager', $chamber) }}" class="inline">
                             @csrf
                             @method('DELETE')
@@ -183,20 +183,20 @@
         </div>
 
         <!-- Statistiques -->
-        <div class="bg-white rounded-lg border border-gray-200 p-6">
-            <h4 class="text-lg font-medium text-gray-900 mb-4">Statistiques</h4>
+        <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 p-6">
+            <h4 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Statistiques</h4>
             
             <div class="space-y-3">
                 <div class="flex justify-between">
-                    <span class="text-sm text-gray-600">Total membres:</span>
+                    <span class="text-sm text-gray-600 dark:text-gray-400">Total membres:</span>
                     <span class="text-sm font-medium">{{ $chamber->members->count() }}</span>
                 </div>
                 <div class="flex justify-between">
-                    <span class="text-sm text-gray-600">Gestionnaires:</span>
+                    <span class="text-sm text-gray-600 dark:text-gray-400">Gestionnaires:</span>
                     <span class="text-sm font-medium">{{ $chamber->members->where('pivot.role', 'manager')->count() }}</span>
                 </div>
                 <div class="flex justify-between">
-                    <span class="text-sm text-gray-600">Membres actifs:</span>
+                    <span class="text-sm text-gray-600 dark:text-gray-400">Membres actifs:</span>
                     <span class="text-sm font-medium">{{ $chamber->members->where('pivot.status', 'approved')->count() }}</span>
                 </div>
             </div>

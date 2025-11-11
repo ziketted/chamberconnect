@@ -27,6 +27,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'phone',
         'company',
         'is_admin',
+        'theme_preference',
     ];
 
     /**
@@ -116,5 +117,39 @@ class User extends Authenticatable implements MustVerifyEmail
         }
         
         return Chamber::whereRaw('1 = 0'); // Aucune chambre pour les utilisateurs normaux
+    }
+
+    /**
+     * Relation avec les événements auxquels l'utilisateur participe
+     */
+    public function events()
+    {
+        return $this->belongsToMany(Event::class)
+            ->withPivot(['status', 'reserved_at', 'confirmed_at', 'notes'])
+            ->withTimestamps();
+    }
+
+    /**
+     * Événements réservés par l'utilisateur
+     */
+    public function reservedEvents()
+    {
+        return $this->events()->wherePivot('status', 'reserved');
+    }
+
+    /**
+     * Événements confirmés par l'utilisateur
+     */
+    public function confirmedEvents()
+    {
+        return $this->events()->wherePivot('status', 'confirmed');
+    }
+
+    /**
+     * Vérifier si l'utilisateur a réservé un événement
+     */
+    public function hasBookedEvent(Event $event): bool
+    {
+        return $this->events()->where('event_id', $event->id)->exists();
     }
 }

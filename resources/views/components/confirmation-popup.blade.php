@@ -5,8 +5,8 @@
         <div class="fixed inset-0 transition-opacity bg-black bg-opacity-50 backdrop-blur-sm" onclick="closeConfirmationModal()"></div>
         
         <!-- Modal -->
-        <div class="inline-block transform overflow-hidden rounded-2xl bg-white text-left align-bottom shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-md sm:align-middle animate-in zoom-in-95 duration-200">
-            <div class="bg-white px-6 pt-6 pb-4">
+        <div class="inline-block transform overflow-hidden rounded-2xl bg-white dark:bg-gray-800 text-left align-bottom shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-md sm:align-middle animate-in zoom-in-95 duration-200">
+            <div class="bg-white dark:bg-gray-800 px-6 pt-6 pb-4">
                 <!-- Icône dynamique -->
                 <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full mb-4" id="confirmIcon">
                     <i data-lucide="alert-triangle" class="h-8 w-8 text-amber-600"></i>
@@ -14,19 +14,19 @@
                 
                 <!-- Contenu -->
                 <div class="text-center">
-                    <h3 class="text-xl font-semibold text-gray-900 mb-2" id="confirmTitle">
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2" id="confirmTitle">
                         Confirmer l'action
                     </h3>
-                    <p class="text-sm text-gray-600 mb-6 leading-relaxed" id="confirmMessage">
+                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-6 leading-relaxed" id="confirmMessage">
                         Êtes-vous sûr de vouloir effectuer cette action ?
                     </p>
                 </div>
             </div>
             
             <!-- Boutons d'action -->
-            <div class="bg-gray-50 px-6 py-4 flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-3 space-y-3 space-y-reverse sm:space-y-0">
+            <div class="bg-gray-50 dark:bg-gray-800 px-6 py-4 flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-3 space-y-3 space-y-reverse sm:space-y-0">
                 <button type="button" onclick="closeConfirmationModal()"
-                        class="inline-flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 sm:w-auto transition-colors">
+                        class="inline-flex w-full justify-center rounded-lg border border-gray-300 dark:border-gray-600 dark:border-gray-400 bg-white dark:bg-gray-800 px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 shadow-sm hover:bg-gray-50 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 sm:w-auto transition-colors">
                     <i data-lucide="x" class="h-4 w-4 mr-2"></i>
                     Annuler
                 </button>

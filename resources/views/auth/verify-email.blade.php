@@ -2,9 +2,9 @@
 
 @section('content')
 <div class="mx-auto max-w-lg">
-    <div class="rounded-xl border border-neutral-200 bg-white p-8 shadow-sm">
+    <div class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-8 shadow-sm">
         <!-- Icon -->
-        <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#073066]/10 text-[#073066]">
+        <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#073066]/10 dark:bg-blue-500/20 text-[#073066] dark:text-blue-400 dark:text-blue-400">
             <i data-lucide="mail" class="h-6 w-6"></i>
         </div>
 
@@ -26,7 +26,7 @@
         </div>
         @endif
 
-        <p class="mt-4 text-center text-sm text-neutral-600">
+        <p class="mt-4 text-center text-sm text-neutral-600 dark:text-gray-400">
             {{ __('Thanks for signing up! Before getting started, could you verify your email address by clicking on the
             link we just emailed to you? If you didn\'t receive the email, we will gladly send you another.') }}
         </p>
@@ -35,7 +35,7 @@
             <form method="POST" action="{{ route('verification.send') }}" class="flex-1">
                 @csrf
                 <button type="submit"
-                    class="w-full rounded-md bg-[#073066] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#052347] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#073066]/50">
+                    class="w-full rounded-md bg-[#073066] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#052347] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#073066] dark:focus-visible:ring-blue-500/50">
                     {{ __('Resend Verification Email') }}
                 </button>
             </form>
@@ -43,7 +43,7 @@
             <form method="POST" action="{{ route('logout') }}" class="flex-1">
                 @csrf
                 <button type="submit"
-                    class="w-full rounded-md border border-neutral-300 bg-white px-4 py-2.5 text-sm font-medium text-neutral-700 hover:bg-neutral-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#073066]">
+                    class="w-full rounded-md border border-neutral-300 bg-white dark:bg-gray-800 px-4 py-2.5 text-sm font-medium text-neutral-700 dark:text-gray-300 hover:bg-neutral-50 dark:bg-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#073066] dark:focus-visible:ring-blue-500">
                     {{ __('Log Out') }}
                 </button>
             </form>

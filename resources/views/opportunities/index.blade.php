@@ -14,23 +14,23 @@
 
             <!-- Barre de recherche -->
             <div class="relative">
-                <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-400">
+                <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-400 dark:text-gray-500 dark:text-gray-400">
                     <i data-lucide="search" class="h-5 w-5"></i>
                 </span>
                 <input type="text" 
                     placeholder="Rechercher des opportunités..." 
-                    class="w-full rounded-xl border border-neutral-200 bg-white pl-10 pr-4 py-3 text-sm text-neutral-800 placeholder:text-neutral-400 shadow-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20">
+                    class="w-full rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 pl-10 pr-4 py-3 text-sm text-neutral-800 dark:text-gray-100 placeholder:text-neutral-400 dark:text-gray-500 dark:text-gray-400 shadow-sm focus:border-[#073066] dark:focus:border-blue-500 focus:ring-2 focus:ring-[#073066]/20 dark:focus:ring-blue-500/20">
             </div>
         </div>
 
         <!-- Contenu à venir -->
-        <div class="rounded-xl border border-neutral-200 bg-white p-8 text-center">
+        <div class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-8 text-center">
             <div class="mx-auto max-w-md">
-                <div class="flex h-12 w-12 items-center justify-center rounded-full bg-[#073066]/10 text-[#073066] mx-auto">
+                <div class="flex h-12 w-12 items-center justify-center rounded-full bg-[#073066]/10 dark:bg-blue-500/20 text-[#073066] dark:text-blue-400 dark:text-blue-400 mx-auto">
                     <i data-lucide="briefcase" class="h-6 w-6"></i>
                 </div>
                 <h2 class="mt-4 text-lg font-semibold">Opportunités à venir</h2>
-                <p class="mt-2 text-sm text-neutral-600">Cette section est en cours de développement. Revenez bientôt pour découvrir les opportunités commerciales de nos chambres.</p>
+                <p class="mt-2 text-sm text-neutral-600 dark:text-gray-400">Cette section est en cours de développement. Revenez bientôt pour découvrir les opportunités commerciales de nos chambres.</p>
             </div>
         </div>
     </main>
@@ -39,27 +39,27 @@
     <aside class="lg:col-span-3">
         <div class="sticky top-[88px] space-y-6">
             <!-- Filtres -->
-            <div class="rounded-xl border border-neutral-200 bg-white">
-                <div class="border-b border-neutral-200 p-4">
+            <div class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+                <div class="border-b border-neutral-200 dark:border-gray-700 p-4">
                     <h2 class="text-sm font-semibold">Filtres</h2>
                 </div>
                 <div class="p-4">
                     <div class="space-y-4">
                         <!-- Type -->
                         <div>
-                            <label class="text-xs font-medium text-neutral-700">Type d'opportunité</label>
+                            <label class="text-xs font-medium text-neutral-700 dark:text-gray-300">Type d'opportunité</label>
                             <div class="mt-2 flex flex-wrap gap-2">
-                                <button class="inline-flex items-center rounded-md bg-neutral-100 px-2.5 py-1.5 text-xs font-medium text-neutral-700">Partenariat</button>
-                                <button class="inline-flex items-center rounded-md bg-neutral-100 px-2.5 py-1.5 text-xs font-medium text-neutral-700">Investissement</button>
-                                <button class="inline-flex items-center rounded-md bg-neutral-100 px-2.5 py-1.5 text-xs font-medium text-neutral-700">Commercial</button>
+                                <button class="inline-flex items-center rounded-md bg-neutral-100 dark:bg-gray-700 px-2.5 py-1.5 text-xs font-medium text-neutral-700 dark:text-gray-300">Partenariat</button>
+                                <button class="inline-flex items-center rounded-md bg-neutral-100 dark:bg-gray-700 px-2.5 py-1.5 text-xs font-medium text-neutral-700 dark:text-gray-300">Investissement</button>
+                                <button class="inline-flex items-center rounded-md bg-neutral-100 dark:bg-gray-700 px-2.5 py-1.5 text-xs font-medium text-neutral-700 dark:text-gray-300">Commercial</button>
                             </div>
                         </div>
 
                         <!-- Secteur -->
                         <div>
-                            <label class="text-xs font-medium text-neutral-700">Secteur d'activité</label>
+                            <label class="text-xs font-medium text-neutral-700 dark:text-gray-300">Secteur d'activité</label>
                             <div class="mt-2">
-                                <select class="w-full rounded-md border border-neutral-200 bg-white px-3 py-2 text-sm text-neutral-800 focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20">
+                                <select class="w-full rounded-md border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm text-neutral-800 dark:text-gray-100 focus:border-[#073066] dark:focus:border-blue-500 focus:ring-2 focus:ring-[#073066]/20 dark:focus:ring-blue-500/20">
                                     <option value="">Tous les secteurs</option>
                                     <option value="tech">Technologies</option>
                                     <option value="agri">Agriculture</option>

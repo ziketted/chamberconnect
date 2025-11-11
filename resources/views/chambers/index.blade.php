@@ -7,9 +7,9 @@
         <div class="sticky top-[88px] space-y-4">
             @auth
             <!-- Section Mon rôle - Seulement pour les utilisateurs connectés -->
-            <div class="rounded-xl border border-neutral-200 bg-white p-4">
-                <h2 class="text-sm font-semibold">Mon rôle</h2>
-                <p class="mt-1 text-xs text-neutral-600">Contrôlez la portée et les actions.</p>
+            <div class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4">
+                <h2 class="text-sm font-semibold text-gray-900 dark:text-white">Mon rôle</h2>
+                <p class="mt-1 text-xs text-neutral-600 dark:text-gray-400">Contrôlez la portée et les actions.</p>
                 <div class="mt-3">
                     @if(Auth::user()->isSuperAdmin())
                     <span
@@ -20,11 +20,11 @@
                         class="inline-flex items-center rounded-md bg-[#fcb357]/10 px-2 py-1 text-xs font-medium text-[#fcb357]">Gestionnaire</span>
                     @else
                     <span
-                        class="inline-flex items-center rounded-md bg-[#073066]/10 px-2 py-1 text-xs font-medium text-[#073066]">Utilisateur</span>
+                        class="inline-flex items-center rounded-md bg-[#073066]/10 px-2 py-1 text-xs font-medium text-[#073066] dark:text-blue-400">Utilisateur</span>
                     @endif
                 </div>
                 <div class="mt-2">
-                    <span class="text-xs text-neutral-600">
+                    <span class="text-xs text-neutral-600 dark:text-gray-400">
                         @if(Auth::user()->isSuperAdmin())
                         Accès global aux chambres
                         @elseif(Auth::user()->isChamberManager())
@@ -37,47 +37,47 @@
             </div>
             @else
             <!-- Section Investir en RDC - Pour les utilisateurs non connectés -->
-            <div class="rounded-xl border border-neutral-200 bg-white p-4">
-                <h2 class="text-sm font-semibold text-[#073066]">Investir en RDC</h2>
-                <p class="mt-1 text-xs text-neutral-600">Découvrez les opportunités d'investissement.</p>
+            <div class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4">
+                <h2 class="text-sm font-semibold text-[#073066] dark:text-blue-400">Investir en RDC</h2>
+                <p class="mt-1 text-xs text-neutral-600 dark:text-gray-400">Découvrez les opportunités d'investissement.</p>
                 <div class="mt-4 space-y-3">
                     <div class="flex items-start gap-2">
                         <div
                             class="flex-shrink-0 w-5 h-5 rounded-full bg-[#073066] text-white flex items-center justify-center text-xs font-semibold">
                             1</div>
-                        <p class="text-xs text-neutral-700">Explorez les chambres de commerce sectorielles pour
+                        <p class="text-xs text-neutral-700 dark:text-gray-300">Explorez les chambres de commerce sectorielles pour
                             identifier les opportunités d'investissement</p>
                     </div>
                     <div class="flex items-start gap-2">
                         <div
                             class="flex-shrink-0 w-5 h-5 rounded-full bg-[#fcb357] text-white flex items-center justify-center text-xs font-semibold">
                             2</div>
-                        <p class="text-xs text-neutral-700">Connectez-vous avec des entrepreneurs locaux et des
+                        <p class="text-xs text-neutral-700 dark:text-gray-300">Connectez-vous avec des entrepreneurs locaux et des
                             partenaires stratégiques</p>
                     </div>
                     <div class="flex items-start gap-2">
                         <div
                             class="flex-shrink-0 w-5 h-5 rounded-full bg-[#073066] text-white flex items-center justify-center text-xs font-semibold">
                             3</div>
-                        <p class="text-xs text-neutral-700">Participez aux événements et forums d'affaires pour étendre
+                        <p class="text-xs text-neutral-700 dark:text-gray-300">Participez aux événements et forums d'affaires pour étendre
                             votre réseau</p>
                     </div>
                     <div class="flex items-start gap-2">
                         <div
                             class="flex-shrink-0 w-5 h-5 rounded-full bg-[#fcb357] text-white flex items-center justify-center text-xs font-semibold">
                             4</div>
-                        <p class="text-xs text-neutral-700">Accédez aux informations réglementaires et aux conseils
+                        <p class="text-xs text-neutral-700 dark:text-gray-300">Accédez aux informations réglementaires et aux conseils
                             d'experts locaux</p>
                     </div>
                     <div class="flex items-start gap-2">
                         <div
                             class="flex-shrink-0 w-5 h-5 rounded-full bg-[#073066] text-white flex items-center justify-center text-xs font-semibold">
                             5</div>
-                        <p class="text-xs text-neutral-700">Bénéficiez de l'accompagnement personnalisé pour concrétiser
+                        <p class="text-xs text-neutral-700 dark:text-gray-300">Bénéficiez de l'accompagnement personnalisé pour concrétiser
                             vos projets d'investissement</p>
                     </div>
                 </div>
-                <div class="mt-4 pt-3 border-t border-neutral-200">
+                <div class="mt-4 pt-3 border-t border-neutral-200 dark:border-gray-700">
                     <a href="{{ route('register') }}"
                         class="inline-flex items-center gap-2 w-full justify-center rounded-md bg-[#073066] px-3 py-2 text-xs font-semibold text-white hover:bg-[#052347] transition-colors">
                         <i data-lucide="user-plus" class="h-3 w-3"></i>
@@ -88,10 +88,10 @@
             @endauth
 
             <!-- Carrousel des Partenaires -->
-            <div class="rounded-xl border border-neutral-200 bg-white overflow-hidden">
-                <div class="border-b border-neutral-200 p-4">
-                    <h2 class="text-sm font-semibold text-[#073066]">Nos Partenaires</h2>
-                    <p class="mt-1 text-xs text-neutral-600">Grandes marques qui nous font confiance</p>
+            <div class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden">
+                <div class="border-b border-neutral-200 dark:border-gray-700 p-4">
+                    <h2 class="text-sm font-semibold text-[#073066] dark:text-blue-400">Nos Partenaires</h2>
+                    <p class="mt-1 text-xs text-neutral-600 dark:text-gray-400">Grandes marques qui nous font confiance</p>
                 </div>
                 <div class="p-4">
                     <div class="relative overflow-hidden">
@@ -107,7 +107,7 @@
                                                 d="M11.4 24H0V12.6h11.4V24zM24 24H12.6V12.6H24V24zM11.4 11.4H0V0h11.4v11.4zM24 11.4H12.6V0H24v11.4z" />
                                         </svg>
                                     </div>
-                                    <span class="text-xs font-medium text-neutral-700">Microsoft</span>
+                                    <span class="text-xs font-medium text-neutral-700 dark:text-gray-300">Microsoft</span>
                                 </div>
                             </div>
 
@@ -118,7 +118,7 @@
                                         class="w-16 h-16 bg-gradient-to-br from-red-500 via-yellow-500 to-blue-500 rounded-lg flex items-center justify-center shadow-lg">
                                         <span class="text-white font-bold text-lg">G</span>
                                     </div>
-                                    <span class="text-xs font-medium text-neutral-700">Google</span>
+                                    <span class="text-xs font-medium text-neutral-700 dark:text-gray-300">Google</span>
                                 </div>
                             </div>
 
@@ -134,7 +134,7 @@
                                                 d="M18.78 16.826c-.885-.442-2.942-.21-4.067.066-.344.084-.398-.258-.043-.473 1.988-1.4 5.248-1.004 5.63-.53.382.472-.1 3.74-1.963 5.3-.32.267-.625.125-.483-.23.465-1.16 1.51-3.75.926-4.133z" />
                                         </svg>
                                     </div>
-                                    <span class="text-xs font-medium text-neutral-700">Amazon</span>
+                                    <span class="text-xs font-medium text-neutral-700 dark:text-gray-300">Amazon</span>
                                 </div>
                             </div>
 
@@ -148,7 +148,7 @@
                                                 d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
                                         </svg>
                                     </div>
-                                    <span class="text-xs font-medium text-neutral-700">Apple</span>
+                                    <span class="text-xs font-medium text-neutral-700 dark:text-gray-300">Apple</span>
                                 </div>
                             </div>
 
@@ -159,7 +159,7 @@
                                         class="w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
                                         <span class="text-white font-bold text-lg">M</span>
                                     </div>
-                                    <span class="text-xs font-medium text-neutral-700">Meta</span>
+                                    <span class="text-xs font-medium text-neutral-700 dark:text-gray-300">Meta</span>
                                 </div>
                             </div>
                         </div>
@@ -191,32 +191,32 @@
     <main class="lg:col-span-6 space-y-6">
         <div class="space-y-4">
             <div class="relative">
-                <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-400">
+                <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-400 dark:text-gray-500 dark:text-gray-400">
                     <i data-lucide="search" class="h-5 w-5"></i>
                 </span>
                 <input type="text" id="search-input"
                     placeholder="Rechercher une chambre par nom, pays ou secteur d'activité..."
-                    class="w-full rounded-xl border border-neutral-200 bg-white pl-10 pr-4 py-3 text-sm text-neutral-800 placeholder:text-neutral-400 shadow-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20">
+                    class="w-full rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 pl-10 pr-4 py-3 text-sm text-neutral-800 dark:text-gray-100 placeholder:text-neutral-400 dark:text-gray-500 dark:text-gray-400 shadow-sm focus:border-[#073066] dark:focus:border-blue-500 focus:ring-2 focus:ring-[#073066]/20 dark:focus:ring-blue-500/20">
             </div>
             <div class="flex flex-wrap items-center gap-2">
-                <span class="text-sm font-medium text-neutral-700">Filtres rapides:</span>
+                <span class="text-sm font-medium text-neutral-700 dark:text-gray-300">Filtres rapides:</span>
                 <button data-filter="most-active"
-                    class="filter-btn inline-flex items-center rounded-full bg-neutral-100 px-3 py-1 text-xs font-medium text-neutral-700 hover:bg-neutral-200 transition-colors">
+                    class="filter-btn inline-flex items-center rounded-full bg-neutral-100 dark:bg-gray-700 px-3 py-1 text-xs font-medium text-neutral-700 dark:text-gray-300 hover:bg-neutral-200 dark:hover:bg-gray-600 transition-colors">
                     <i data-lucide="trending-up" class="h-3 w-3 mr-1"></i>
                     Les plus actives
                 </button>
                 <button data-filter="recently-created"
-                    class="filter-btn inline-flex items-center rounded-full bg-neutral-100 px-3 py-1 text-xs font-medium text-neutral-700 hover:bg-neutral-200 transition-colors">
+                    class="filter-btn inline-flex items-center rounded-full bg-neutral-100 dark:bg-gray-700 px-3 py-1 text-xs font-medium text-neutral-700 dark:text-gray-300 hover:bg-neutral-200 dark:hover:bg-gray-600 transition-colors">
                     <i data-lucide="sparkles" class="h-3 w-3 mr-1"></i>
                     Récemment créées
                 </button>
                 <button data-filter="upcoming-events"
-                    class="filter-btn inline-flex items-center rounded-full bg-neutral-100 px-3 py-1 text-xs font-medium text-neutral-700 hover:bg-neutral-200 transition-colors">
+                    class="filter-btn inline-flex items-center rounded-full bg-neutral-100 dark:bg-gray-700 px-3 py-1 text-xs font-medium text-neutral-700 dark:text-gray-300 hover:bg-neutral-200 dark:hover:bg-gray-600 transition-colors">
                     <i data-lucide="calendar-days" class="h-3 w-3 mr-1"></i>
                     Événements à venir
                 </button>
                 <button data-filter="certified"
-                    class="filter-btn inline-flex items-center rounded-full bg-neutral-100 px-3 py-1 text-xs font-medium text-neutral-700 hover:bg-neutral-200 transition-colors">
+                    class="filter-btn inline-flex items-center rounded-full bg-neutral-100 dark:bg-gray-700 px-3 py-1 text-xs font-medium text-neutral-700 dark:text-gray-300 hover:bg-neutral-200 dark:hover:bg-gray-600 transition-colors">
                     <i data-lucide="shield-check" class="h-3 w-3 mr-1"></i>
                     Agréée</button>
                 <button data-filter="all" id="clear-filters"
@@ -231,7 +231,7 @@
         <!-- Chambers List -->
         <div class="space-y-4" id="chambers-list">
             @foreach($chambers as $chamber)
-            <div class="chamber-card group rounded-xl border border-neutral-200 bg-white p-6 hover:shadow-sm transition-all duration-200"
+            <div class="chamber-card group rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 hover:shadow-sm transition-all duration-200 relative"
                 data-name="{{ strtolower($chamber['name']) }}"
                 data-description="{{ strtolower($chamber['description']) }}"
                 data-activity-level="{{ $chamber['activity_level'] }}"
@@ -239,8 +239,44 @@
                 data-members-count="{{ $chamber['members_count'] }}"
                 data-certified="{{ $chamber['is_certified'] ? 'true' : 'false' }}"
                 data-created="{{ isset($chamber['created_at']) ? $chamber['created_at'] : '2024-01-01' }}">
-                <div class="flex items-start gap-6">
-                    <div class="flex items-start gap-4 flex-1">
+                
+                <!-- Statut d'adhésion dans le coin supérieur droit -->
+                <div class="absolute top-4 right-4">
+                    @auth
+                        @php
+                            // Vérifier si l'utilisateur est déjà membre de cette chambre
+                            $isMember = auth()->user()->chambers()->where('chambers.id', $chamber['id'] ?? 0)->exists();
+                        @endphp
+                        
+                        @if(!$isMember)
+                            <!-- Bouton Adhérer discret -->
+                            <form action="{{ route('chambers.members.join', $chamber['slug']) }}" method="POST" class="inline">
+                                @csrf
+                                <button type="submit"
+                                    class="inline-flex items-center gap-1.5 rounded-full bg-[#073066] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#052347] transition-all duration-200 shadow-sm hover:shadow-md"
+                                    title="Adhérer à cette chambre">
+                                    <i data-lucide="plus" class="h-3.5 w-3.5"></i>
+                                    Adhérer
+                                </button>
+                            </form>
+                        @else
+                            <!-- Badge membre discret -->
+                            <div class="inline-flex items-center gap-1.5 rounded-full bg-green-100 dark:bg-green-900/30 px-3 py-1.5 text-xs font-medium text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800">
+                                <i data-lucide="check" class="h-3.5 w-3.5"></i>
+                                Membre
+                            </div>
+                        @endif
+                    @else
+                        <!-- Bouton pour utilisateurs non connectés -->
+                        <button onclick="openModal('signin-modal')"
+                            class="inline-flex items-center gap-1.5 rounded-full bg-[#073066] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#052347] transition-all duration-200 shadow-sm hover:shadow-md">
+                            <i data-lucide="plus" class="h-3.5 w-3.5"></i>
+                            Adhérer
+                        </button>
+                    @endauth
+                </div>
+
+                <div class="flex items-start gap-4 flex-1 pr-20">
                         <div class="relative">
                             @auth
                             <a href="{{ route('chamber.show', $chamber['slug']) }}" class="block">
@@ -261,7 +297,7 @@
                                     </div>
                                     @endif
                                     @if($chamber['is_certified'])
-                                    <div class="absolute -right-1 -top-1 rounded-full bg-white p-0.5 shadow-sm">
+                                    <div class="absolute -right-1 -top-1 rounded-full bg-white dark:bg-gray-800 p-0.5 shadow-sm">
                                         <div
                                             class="flex h-5 w-5 items-center justify-center rounded-full bg-[#fcb357] text-white">
                                             <i data-lucide="shield-check" class="h-3 w-3"></i>
@@ -278,12 +314,12 @@
                             <div class="flex items-center gap-2 flex-wrap">
                                 @auth
                                 <a href="{{ route('chamber.show', $chamber['slug']) }}"
-                                    class="hover:text-[#073066] transition-colors">
+                                    class="hover:text-[#073066] dark:hover:text-blue-400 transition-colors">
                                     <h3 class="text-base font-medium cursor-pointer">{{ $chamber['name'] }}</h3>
                                 </a>
                                 @else
                                 <button onclick="openModal('signin-modal')"
-                                    class="hover:text-[#073066] transition-colors">
+                                    class="hover:text-[#073066] dark:hover:text-blue-400 transition-colors">
                                     <h3 class="text-base font-medium cursor-pointer">{{ $chamber['name'] }}</h3>
                                 </button>
                                 @endauth
@@ -293,18 +329,18 @@
                                         data-lucide="shield-check" class="h-3.5 w-3.5"></i> Agréée</span>
                                 @endif
                             </div>
-                            <p class="mt-1 text-sm text-neutral-600">
+                            <p class="mt-1 text-sm text-neutral-600 dark:text-gray-400 text-justify">
                                 {{ Str::limit($chamber['description'], 150, '...') }}
                             </p>
                             <div class="mt-3 space-y-2">
                                 <!-- Première ligne : Membres et Événements -->
                                 <div class="flex items-center flex-wrap gap-4">
-                                    <span class="inline-flex items-center gap-1.5 text-sm text-neutral-600">
-                                        <i data-lucide="users" class="h-4 w-4 text-neutral-400"></i>
+                                    <span class="inline-flex items-center gap-1.5 text-sm text-neutral-600 dark:text-gray-400">
+                                        <i data-lucide="users" class="h-4 w-4 text-neutral-400 dark:text-gray-500 dark:text-gray-400"></i>
                                         {{ number_format($chamber['members_count']) }} membres
                                     </span>
-                                    <span class="inline-flex items-center gap-1.5 text-sm text-neutral-600">
-                                        <i data-lucide="calendar" class="h-4 w-4 text-neutral-400"></i>
+                                    <span class="inline-flex items-center gap-1.5 text-sm text-neutral-600 dark:text-gray-400">
+                                        <i data-lucide="calendar" class="h-4 w-4 text-neutral-400 dark:text-gray-500 dark:text-gray-400"></i>
                                         {{ $chamber['upcoming_events'] }} événements
                                     </span>
                                     @if($chamber['upcoming_events'] > 0)
@@ -318,8 +354,8 @@
 
                                 <!-- Deuxième ligne : Date de création et Localisation -->
                                 <div class="flex items-center flex-wrap gap-4">
-                                    <span class="inline-flex items-center gap-1.5 text-sm text-neutral-500">
-                                        <i data-lucide="calendar-plus" class="h-4 w-4 text-neutral-400"></i>
+                                    <span class="inline-flex items-center gap-1.5 text-sm text-neutral-500 dark:text-gray-500 dark:text-gray-400">
+                                        <i data-lucide="calendar-plus" class="h-4 w-4 text-neutral-400 dark:text-gray-500 dark:text-gray-400"></i>
                                         Fondée en
                                         @if($chamber['certification_date'])
                                         {{ \Carbon\Carbon::parse($chamber['certification_date'])->format('Y') }}
@@ -327,32 +363,13 @@
                                         {{ \Carbon\Carbon::parse($chamber['created_at'])->format('Y') }}
                                         @endif
                                     </span>
-                                    <span class="inline-flex items-center gap-1.5 text-sm text-neutral-500">
-                                        <i data-lucide="map-pin" class="h-4 w-4 text-neutral-400"></i>
+                                    <span class="inline-flex items-center gap-1.5 text-sm text-neutral-500 dark:text-gray-500 dark:text-gray-400">
+                                        <i data-lucide="map-pin" class="h-4 w-4 text-neutral-400 dark:text-gray-500 dark:text-gray-400"></i>
                                         {{ $chamber['location'] ?? 'Non spécifiée' }}
                                     </span>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <!-- Boutons d'action - visibles seulement pour les admins -->
-                    @if(auth()->check() && (auth()->user()->isSuperAdmin() || auth()->user()->isChamberManager()))
-                    <div class="flex items-center gap-2">
-                        @if(!$chamber['is_subscribed'])
-                        <button
-                            class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-[#fcb357] text-white hover:bg-[#f5a742] transition-colors"
-                            title="Rejoindre la chambre">
-                            <i data-lucide="user-plus" class="h-4 w-4"></i>
-                        </button>
-                        @else
-                        <span
-                            class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-green-100 text-green-600"
-                            title="Membre">
-                            <i data-lucide="check" class="h-4 w-4"></i>
-                        </span>
-                        @endif
-                    </div>
-                    @endif
                 </div>
             </div>
             @endforeach
@@ -363,27 +380,27 @@
     <aside class="lg:col-span-3">
         <div class="sticky top-[88px] space-y-4">
             <!-- Section Événements du Mois -->
-            <div class="rounded-xl border border-neutral-200 bg-white">
-                <div class="border-b border-neutral-200 p-4">
+            <div class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+                <div class="border-b border-neutral-200 dark:border-gray-700 p-4">
                     <div class="flex items-center justify-between">
-                        <h2 class="text-sm font-semibold text-[#073066]">Événements du Mois</h2>
+                        <h2 class="text-sm font-semibold text-[#073066] dark:text-blue-400">Événements du Mois</h2>
                         <span
-                            class="inline-flex items-center rounded-full bg-[#073066]/10 px-2 py-1 text-xs font-medium text-[#073066]">
+                            class="inline-flex items-center rounded-full bg-[#073066]/10 px-2 py-1 text-xs font-medium text-[#073066] dark:text-blue-400">
                             {{ now()->format('M Y') }}
                         </span>
                     </div>
-                    <p class="mt-1 text-xs text-neutral-600">Les 5 événements les plus populaires</p>
+                    <p class="mt-1 text-xs text-neutral-600 dark:text-gray-400">Les 5 événements les plus populaires</p>
                 </div>
                 <div class="p-4 space-y-4">
                     @if($monthlyEvents->count() > 0)
                     @foreach($monthlyEvents as $event)
                     <div
-                        class="group rounded-lg border border-neutral-100 p-3 hover:border-[#073066]/20 hover:bg-[#073066]/5 transition-all duration-200">
+                        class="group rounded-lg border border-neutral-100 dark:border-gray-600 dark:border-gray-400 p-3 hover:border-[#073066] dark:border-blue-500/20 hover:bg-[#073066]/5 transition-all duration-200">
                         <div class="flex items-start gap-3">
                             <div class="flex-shrink-0">
                                 @if($event['type'] === 'forum')
                                 <div class="w-8 h-8 rounded-lg bg-[#073066]/10 flex items-center justify-center">
-                                    <i data-lucide="users" class="h-4 w-4 text-[#073066]"></i>
+                                    <i data-lucide="users" class="h-4 w-4 text-[#073066] dark:text-blue-400"></i>
                                 </div>
                                 @elseif($event['type'] === 'atelier')
                                 <div class="w-8 h-8 rounded-lg bg-[#fcb357]/10 flex items-center justify-center">
@@ -405,10 +422,10 @@
                             </div>
                             <div class="flex-1 min-w-0">
                                 <h4
-                                    class="text-sm font-medium text-neutral-900 group-hover:text-[#073066] transition-colors">
+                                    class="text-sm font-medium text-neutral-900 dark:text-white group-hover:text-[#073066] dark:group-hover:text-blue-400 transition-colors">
                                     {{ $event['title'] }}
                                 </h4>
-                                <div class="mt-1 flex items-center gap-2 text-xs text-neutral-500">
+                                <div class="mt-1 flex items-center gap-2 text-xs text-neutral-500 dark:text-gray-500 dark:text-gray-400">
                                     <span class="inline-flex items-center gap-1">
                                         <i data-lucide="building-2" class="h-3 w-3"></i>
                                         {{ $event['chamber'] }}
@@ -419,12 +436,12 @@
                                     </span>
                                 </div>
                                 <div class="mt-2 flex items-center justify-between">
-                                    <span class="inline-flex items-center gap-1 text-xs text-neutral-600">
+                                    <span class="inline-flex items-center gap-1 text-xs text-neutral-600 dark:text-gray-400">
                                         <i data-lucide="users" class="h-3 w-3"></i>
                                         {{ $event['participants'] }} participants
                                     </span>
                                     <button
-                                        class="text-xs text-[#073066] hover:text-[#052347] font-medium transition-colors">
+                                        class="text-xs text-[#073066] dark:text-blue-400 hover:text-[#052347] font-medium transition-colors">
                                         Voir plus
                                     </button>
                                 </div>
@@ -435,21 +452,21 @@
                     @else
                     <div class="text-center py-8">
                         <div
-                            class="flex h-12 w-12 items-center justify-center rounded-full bg-neutral-100 text-neutral-400 mx-auto mb-4">
+                            class="flex h-12 w-12 items-center justify-center rounded-full bg-neutral-100 dark:bg-gray-700 text-neutral-400 dark:text-gray-500 dark:text-gray-400 mx-auto mb-4">
                             <i data-lucide="calendar-x" class="h-6 w-6"></i>
                         </div>
-                        <h3 class="text-sm font-medium text-neutral-900 mb-2">Aucun événement ce mois</h3>
-                        <p class="text-xs text-neutral-600 mb-4">Aucun événement prévu pour {{ now()->format('F Y') }}.
+                        <h3 class="text-sm font-medium text-neutral-900 dark:text-white mb-2">Aucun événement ce mois</h3>
+                        <p class="text-xs text-neutral-600 dark:text-gray-400 mb-4">Aucun événement prévu pour {{ now()->format('F Y') }}.
                         </p>
                         <a href="{{ route('events') }}"
-                            class="inline-flex items-center gap-1 text-xs text-[#073066] hover:text-[#052347] font-medium transition-colors">
+                            class="inline-flex items-center gap-1 text-xs text-[#073066] dark:text-blue-400 hover:text-[#052347] font-medium transition-colors">
                             <i data-lucide="calendar-plus" class="h-3 w-3"></i>
                             Voir tous les événements
                         </a>
                     </div>
                     @endif
                 </div>
-                <div class="border-t border-neutral-200 p-4">
+                <div class="border-t border-neutral-200 dark:border-gray-700 p-4">
                     <a href="{{ route('events') }}"
                         class="inline-flex items-center gap-2 w-full justify-center rounded-md bg-[#073066] px-3 py-2 text-xs font-semibold text-white hover:bg-[#052347] transition-colors">
                         <i data-lucide="calendar-plus" class="h-3 w-3"></i>
@@ -533,11 +550,11 @@
                 noResultsDiv.className = 'text-center py-12';
                 noResultsDiv.innerHTML = `
                     <div class="mx-auto max-w-md">
-                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-neutral-100 text-neutral-400 mx-auto mb-4">
+                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-neutral-100 dark:bg-gray-700 text-neutral-400 dark:text-gray-500 dark:text-gray-400 mx-auto mb-4">
                             <i data-lucide="search" class="h-6 w-6"></i>
                         </div>
-                        <h3 class="text-lg font-medium text-neutral-900 mb-2">Aucune chambre trouvée</h3>
-                        <p class="text-sm text-neutral-600">Essayez de modifier vos critères de recherche ou vos filtres.</p>
+                        <h3 class="text-lg font-medium text-neutral-900 dark:text-white mb-2">Aucune chambre trouvée</h3>
+                        <p class="text-sm text-neutral-600 dark:text-gray-400">Essayez de modifier vos critères de recherche ou vos filtres.</p>
                         <button onclick="clearAllFilters()" class="mt-4 inline-flex items-center gap-2 rounded-md bg-[#073066] px-4 py-2 text-sm font-semibold text-white hover:bg-[#052347] transition-colors">
                             <i data-lucide="refresh-cw" class="h-4 w-4"></i>
                             Réinitialiser
@@ -573,7 +590,7 @@
                     if (isActive && activeFilter !== 'all') {
                         btn.className += ' bg-[#073066] text-white';
                     } else {
-                        btn.className += ' bg-neutral-100 text-neutral-700 hover:bg-neutral-200';
+                        btn.className += ' bg-neutral-100 dark:bg-gray-700 text-neutral-700 dark:text-gray-300 hover:bg-neutral-200 dark:hover:bg-gray-600';
                     }
                 }
             });

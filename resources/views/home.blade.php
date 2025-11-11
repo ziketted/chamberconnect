@@ -93,7 +93,7 @@
 
 <div class="space-y-14">
     <!-- Hero with Video Background -->
-    <div class="overflow-hidden rounded-2xl border border-neutral-200 shadow-sm">
+    <div class="overflow-hidden rounded-2xl border border-neutral-200 dark:border-gray-700 shadow-sm">
         <div class="relative isolate">
             <!-- Video Background -->
             <video autoplay muted loop playsinline class="absolute inset-0 h-[460px] w-full object-cover">
@@ -110,7 +110,7 @@
             <div class="relative z-10 flex h-[460px] items-center">
                 <div class="max-w-2xl p-8 sm:p-12 hero-content slide-in-left">
                     <div
-                        class="mb-3 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white ring-1 ring-white/20 backdrop-blur hero-badge slide-in-bottom">
+                        class="mb-3 inline-flex items-center gap-2 rounded-full bg-white dark:bg-gray-800/10 px-3 py-1 text-xs font-medium text-white ring-1 ring-white/20 backdrop-blur hero-badge slide-in-bottom">
                         <i data-lucide="shield-check" class="h-4 w-4 text-white"></i>
                         {{ __('messages.accredited_chamber') }}
                     </div>
@@ -151,18 +151,18 @@
 
         <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             <!-- Feature 1: Networking -->
-            <div class="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow">
                 <div class="flex items-center gap-3 mb-4">
                     <div class="flex-shrink-0 w-12 h-12 bg-[#073066]/10 rounded-xl flex items-center justify-center">
-                        <i data-lucide="users" class="h-6 w-6 text-[#073066]"></i>
+                        <i data-lucide="users" class="h-6 w-6 text-[#073066] dark:text-blue-400"></i>
                     </div>
-                    <h3 class="text-xl font-semibold text-gray-900">Réseau Professionnel</h3>
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Réseau Professionnel</h3>
                 </div>
-                <p class="text-gray-600 mb-4">
+                <p class="text-gray-600 dark:text-gray-400 mb-4">
                     Connectez-vous avec des entrepreneurs, investisseurs et décideurs. Participez à des événements
                     exclusifs et développez votre réseau d'affaires.
                 </p>
-                <ul class="space-y-2 text-sm text-gray-500">
+                <ul class="space-y-2 text-sm text-gray-500 dark:text-gray-400">
                     <li class="flex items-center gap-2">
                         <i data-lucide="check" class="h-4 w-4 text-green-500"></i>
                         Forums d'affaires mensuels
@@ -179,18 +179,18 @@
             </div>
 
             <!-- Feature 2: Business Opportunities -->
-            <div class="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow">
                 <div class="flex items-center gap-3 mb-4">
                     <div class="flex-shrink-0 w-12 h-12 bg-[#fcb357]/10 rounded-xl flex items-center justify-center">
                         <i data-lucide="trending-up" class="h-6 w-6 text-[#fcb357]"></i>
                     </div>
-                    <h3 class="text-xl font-semibold text-gray-900">Opportunités d'Affaires</h3>
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Opportunités d'Affaires</h3>
                 </div>
-                <p class="text-gray-600 mb-4">
+                <p class="text-gray-600 dark:text-gray-400 mb-4">
                     Découvrez des opportunités exclusives, trouvez des partenaires stratégiques et accédez à des marchés
                     locaux et internationaux.
                 </p>
-                <ul class="space-y-2 text-sm text-gray-500">
+                <ul class="space-y-2 text-sm text-gray-500 dark:text-gray-400">
                     <li class="flex items-center gap-2">
                         <i data-lucide="check" class="h-4 w-4 text-green-500"></i>
                         Appels d'offres privilégiés
@@ -207,18 +207,18 @@
             </div>
 
             <!-- Feature 3: Support & Resources -->
-            <div class="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow">
                 <div class="flex items-center gap-3 mb-4">
                     <div class="flex-shrink-0 w-12 h-12 bg-[#b81010]/10 rounded-xl flex items-center justify-center">
                         <i data-lucide="shield-check" class="h-6 w-6 text-[#b81010]"></i>
                     </div>
-                    <h3 class="text-xl font-semibold text-gray-900">Accompagnement Expert</h3>
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Accompagnement Expert</h3>
                 </div>
-                <p class="text-gray-600 mb-4">
+                <p class="text-gray-600 dark:text-gray-400 mb-4">
                     Bénéficiez de l'expertise de nos conseillers, accédez à des formations spécialisées et obtenez un
                     soutien personnalisé pour votre croissance.
                 </p>
-                <ul class="space-y-2 text-sm text-gray-500">
+                <ul class="space-y-2 text-sm text-gray-500 dark:text-gray-400">
                     <li class="flex items-center gap-2">
                         <i data-lucide="check" class="h-4 w-4 text-green-500"></i>
                         Conseil stratégique personnalisé
@@ -271,22 +271,22 @@
     <section aria-labelledby="news-title" class="space-y-6">
         <div class="flex items-center justify-between">
             <h2 id="news-title" class="text-2xl font-semibold tracking-tight">{{ __('messages.latest_news') }}</h2>
-            <a href="#" class="text-sm font-medium text-[#073066] hover:underline">{{ __('messages.view_all') }}</a>
+            <a href="#" class="text-sm font-medium text-[#073066] dark:text-blue-400 hover:underline">{{ __('messages.view_all') }}</a>
         </div>
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             <!-- Card 1 -->
             <article
-                class="rounded-xl border border-neutral-200 bg-white shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+                class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
                 <img src="https://images.unsplash.com/photo-1550948390-6eb7fa773072?q=80&w=1600&auto=format&fit=crop"
                     alt="" class="h-40 w-full object-cover">
                 <div class="p-5">
                     <h3 class="text-base font-semibold leading-snug">DRC Exports Surge as New Trade Policies Take Effect
                     </h3>
-                    <p class="mt-2 text-sm text-neutral-600">Government-backed incentives are boosting exports across
+                    <p class="mt-2 text-sm text-neutral-600 dark:text-gray-400">Government-backed incentives are boosting exports across
                         key sectors...</p>
                     <div class="mt-3">
                         <a href="#"
-                            class="inline-flex items-center gap-1 text-sm font-medium text-[#073066] hover:underline">
+                            class="inline-flex items-center gap-1 text-sm font-medium text-[#073066] dark:text-blue-400 hover:underline">
                             {{ __('messages.read_more') }}
                             <i data-lucide="arrow-right" class="h-4 w-4"></i>
                         </a>
@@ -296,16 +296,16 @@
 
             <!-- Card 2 -->
             <article
-                class="rounded-xl border border-neutral-200 bg-white shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+                class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
                 <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1600&auto=format&fit=crop"
                     alt="" class="h-40 w-full object-cover">
                 <div class="p-5">
                     <h3 class="text-base font-semibold leading-snug">Entrepreneurship Week: Workshops Announced</h3>
-                    <p class="mt-2 text-sm text-neutral-600">From funding to export-readiness: practical sessions to
+                    <p class="mt-2 text-sm text-neutral-600 dark:text-gray-400">From funding to export-readiness: practical sessions to
                         scale your business...</p>
                     <div class="mt-3">
                         <a href="#"
-                            class="inline-flex items-center gap-1 text-sm font-medium text-[#073066] hover:underline">
+                            class="inline-flex items-center gap-1 text-sm font-medium text-[#073066] dark:text-blue-400 hover:underline">
                             {{ __('messages.read_more') }}
                             <i data-lucide="arrow-right" class="h-4 w-4"></i>
                         </a>
@@ -315,17 +315,17 @@
 
             <!-- Card 3 -->
             <article
-                class="rounded-xl border border-neutral-200 bg-white shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+                class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
                 <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=1600&auto=format&fit=crop"
                     alt="" class="h-40 w-full object-cover">
                 <div class="p-5">
                     <h3 class="text-base font-semibold leading-snug">Market Outlook: Q4 Forecasts Signal Steady Growth
                     </h3>
-                    <p class="mt-2 text-sm text-neutral-600">Analysts expect stabilizing supply chains to drive
+                    <p class="mt-2 text-sm text-neutral-600 dark:text-gray-400">Analysts expect stabilizing supply chains to drive
                         consistent performance...</p>
                     <div class="mt-3">
                         <a href="#"
-                            class="inline-flex items-center gap-1 text-sm font-medium text-[#073066] hover:underline">
+                            class="inline-flex items-center gap-1 text-sm font-medium text-[#073066] dark:text-blue-400 hover:underline">
                             {{ __('messages.read_more') }}
                             <i data-lucide="arrow-right" class="h-4 w-4"></i>
                         </a>
@@ -339,14 +339,14 @@
     <section aria-labelledby="partners-title" class="space-y-6">
         <div class="flex items-center justify-between">
             <h2 id="partners-title" class="text-2xl font-semibold tracking-tight">{{ __('messages.our_partners') }}</h2>
-            <span class="text-xs text-neutral-500">{{ __('messages.partners_subtitle') }}</span>
+            <span class="text-xs text-neutral-500 dark:text-gray-500 dark:text-gray-400">{{ __('messages.partners_subtitle') }}</span>
         </div>
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
             @foreach(['AL' => 'Alto Labs', 'NV' => 'Novix', 'PR' => 'Prax', 'SE' => 'Seren', 'UX' => 'UXON', 'KO' =>
             'Kora'] as $initials => $name)
-            <div class="rounded-lg border border-neutral-200 bg-white p-4 text-center">
+            <div class="rounded-lg border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 text-center">
                 <span
-                    class="mx-auto inline-flex h-10 w-10 items-center justify-center rounded-md bg-[#fcb357]/10 text-[#073066] text-sm font-semibold tracking-tight">{{
+                    class="mx-auto inline-flex h-10 w-10 items-center justify-center rounded-md bg-[#fcb357]/10 text-[#073066] dark:text-blue-400 text-sm font-semibold tracking-tight">{{
                     $initials }}</span>
                 <div class="mt-2 text-sm font-medium">{{ $name }}</div>
             </div>
@@ -360,8 +360,8 @@
             }}</h2>
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             <!-- Testimonial 1 -->
-            <figure class="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm">
-                <blockquote class="text-sm text-neutral-700">"The platform helped us meet distributors within weeks. The
+            <figure class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-5 shadow-sm">
+                <blockquote class="text-sm text-neutral-700 dark:text-gray-300">"The platform helped us meet distributors within weeks. The
                     events calendar is a game-changer."</blockquote>
                 <figcaption class="mt-4 flex items-center gap-3">
                     <img class="h-9 w-9 rounded-full object-cover"
@@ -369,14 +369,14 @@
                         alt="">
                     <div>
                         <div class="text-sm font-semibold">Amina K.</div>
-                        <div class="text-xs text-neutral-500">Founder, Kivu Agro</div>
+                        <div class="text-xs text-neutral-500 dark:text-gray-500 dark:text-gray-400">Founder, Kivu Agro</div>
                     </div>
                 </figcaption>
             </figure>
 
             <!-- Testimonial 2 -->
-            <figure class="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm">
-                <blockquote class="text-sm text-neutral-700">"Networking has never been this efficient. We booked two
+            <figure class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-5 shadow-sm">
+                <blockquote class="text-sm text-neutral-700 dark:text-gray-300">"Networking has never been this efficient. We booked two
                     deals after the last forum."</blockquote>
                 <figcaption class="mt-4 flex items-center gap-3">
                     <img class="h-9 w-9 rounded-full object-cover"
@@ -384,14 +384,14 @@
                         alt="">
                     <div>
                         <div class="text-sm font-semibold">Jean P.</div>
-                        <div class="text-xs text-neutral-500">COO, Lumumba Logistics</div>
+                        <div class="text-xs text-neutral-500 dark:text-gray-500 dark:text-gray-400">COO, Lumumba Logistics</div>
                     </div>
                 </figcaption>
             </figure>
 
             <!-- Testimonial 3 -->
-            <figure class="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm">
-                <blockquote class="text-sm text-neutral-700">"A trusted hub for small businesses to scale and connect
+            <figure class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-5 shadow-sm">
+                <blockquote class="text-sm text-neutral-700 dark:text-gray-300">"A trusted hub for small businesses to scale and connect
                     with investors."</blockquote>
                 <figcaption class="mt-4 flex items-center gap-3">
                     <img class="h-9 w-9 rounded-full object-cover"
@@ -399,7 +399,7 @@
                         alt="">
                     <div>
                         <div class="text-sm font-semibold">Chantal M.</div>
-                        <div class="text-xs text-neutral-500">CEO, KinTech Labs</div>
+                        <div class="text-xs text-neutral-500 dark:text-gray-500 dark:text-gray-400">CEO, KinTech Labs</div>
                     </div>
                 </figcaption>
             </figure>
@@ -407,21 +407,21 @@
     </section>
 
     <!-- Final CTA -->
-    <section class="rounded-2xl border border-neutral-200 bg-white p-8 shadow-sm">
+    <section class="rounded-2xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-8 shadow-sm">
         <div class="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
                 <h3 class="text-xl sm:text-2xl font-semibold tracking-tight">{{ __('messages.join_cta_title') }}</h3>
-                <p class="mt-1 text-sm text-neutral-600">{{ __('messages.join_cta_description') }}</p>
+                <p class="mt-1 text-sm text-neutral-600 dark:text-gray-400">{{ __('messages.join_cta_description') }}</p>
             </div>
             @guest
             <a href="{{ route('register') }}"
-                class="inline-flex items-center gap-2 rounded-md bg-[#073066] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#052347] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#073066]/50">
+                class="inline-flex items-center gap-2 rounded-md bg-[#073066] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#052347] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#073066] dark:focus-visible:ring-blue-500/50">
                 <i data-lucide="rocket" class="h-4 w-4"></i>
                 {{ __('messages.join_now') }}
             </a>
             @else
             <a href="{{ route('dashboard') }}"
-                class="inline-flex items-center gap-2 rounded-md bg-[#073066] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#052347] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#073066]/50">
+                class="inline-flex items-center gap-2 rounded-md bg-[#073066] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#052347] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#073066] dark:focus-visible:ring-blue-500/50">
                 <i data-lucide="rocket" class="h-4 w-4"></i>
                 {{ __('messages.explore_chambers') }}
             </a>

@@ -47,13 +47,15 @@ class ChamberListController extends Controller
                     $code = strtoupper(substr($chamber->name, 0, 4));
                 }
                 
+                $isSubscribed = auth()->check() ? $chamber->members->contains(auth()->id()) : false;
+                
                 return [
                     'id' => $chamber->id,
                     'code' => $code,
                     'name' => $chamber->name,
                     'description' => $chamber->description ?? 'Description de la chambre de commerce',
                     'members_count' => $chamber->members_count,
-                    'is_subscribed' => auth()->check() ? $chamber->members->contains(auth()->id()) : false,
+                    'is_subscribed' => $isSubscribed,
                     'is_certified' => $chamber->verified,
                     'upcoming_events' => $chamber->events->count(),
                     'activity_level' => $chamber->events->count() > 3 ? 'Très active' : ($chamber->events->count() > 1 ? 'Active' : 'Modérée'),
@@ -63,7 +65,13 @@ class ChamberListController extends Controller
                     'certification_date' => $chamber->certification_date,
                     'created_at' => $chamber->created_at
                 ];
-            });
+            })
+            ->sortBy(function($chamber) {
+                // Trier pour afficher d'abord les chambres dont l'utilisateur n'est pas membre
+                // Les chambres non-souscrites auront une priorité de 0, les souscrites auront 1
+                return $chamber['is_subscribed'] ? 1 : 0;
+            })
+            ->values(); // Réindexer la collection
 
         $data = [
             'userRole' => [

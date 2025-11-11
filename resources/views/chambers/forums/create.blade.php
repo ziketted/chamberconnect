@@ -8,21 +8,21 @@
     </div>
 
     <form action="{{ route('chambers.forums.store', $chamber) }}" method="POST"
-        class="space-y-6 rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
+        class="space-y-6 rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 shadow-sm">
         @csrf
         <div>
-            <label class="text-xs font-medium text-neutral-700">Title</label>
+            <label class="text-xs font-medium text-neutral-700 dark:text-gray-300">Title</label>
             <input name="title" required
-                class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20" />
+                class="mt-1 w-full rounded-md border border-neutral-300 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-[#073066] dark:focus:border-blue-500 focus:ring-2 focus:ring-[#073066]/20 dark:focus:ring-blue-500/20" />
         </div>
         <div>
-            <label class="text-xs font-medium text-neutral-700">Description</label>
+            <label class="text-xs font-medium text-neutral-700 dark:text-gray-300">Description</label>
             <textarea name="description" rows="4"
-                class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20"></textarea>
+                class="mt-1 w-full rounded-md border border-neutral-300 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-[#073066] dark:focus:border-blue-500 focus:ring-2 focus:ring-[#073066]/20 dark:focus:ring-blue-500/20"></textarea>
         </div>
         <div class="flex justify-end gap-2">
             <a href="{{ route('chamber.show', $chamber) }}"
-                class="rounded-md border border-neutral-300 bg-white px-4 py-2 text-sm font-medium hover:bg-neutral-50">Cancel</a>
+                class="rounded-md border border-neutral-300 bg-white dark:bg-gray-800 px-4 py-2 text-sm font-medium hover:bg-neutral-50 dark:bg-gray-700">Cancel</a>
             <button
                 class="rounded-md bg-[#073066] px-4 py-2 text-sm font-semibold text-white hover:bg-[#052347]">Create</button>
         </div>

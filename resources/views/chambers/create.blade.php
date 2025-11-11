@@ -4,67 +4,67 @@
 <div class="max-w-3xl mx-auto">
     <div class="mb-6">
         <h1 class="text-2xl font-semibold tracking-tight" style="letter-spacing:-0.02em;">Create a Chamber</h1>
-        <p class="text-sm text-neutral-600">Define details, upload cover and social links.</p>
+        <p class="text-sm text-neutral-600 dark:text-gray-400">Define details, upload cover and social links.</p>
     </div>
 
     <form action="{{ route('chambers.store') }}" method="POST" enctype="multipart/form-data"
-        class="space-y-6 rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
+        class="space-y-6 rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 shadow-sm">
         @csrf
 
         <div class="grid sm:grid-cols-2 gap-4">
             <div>
-                <label class="text-xs font-medium text-neutral-700">Name</label>
+                <label class="text-xs font-medium text-neutral-700 dark:text-gray-300">Name</label>
                 <input name="name" required
-                    class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20" />
+                    class="mt-1 w-full rounded-md border border-neutral-300 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-[#073066] dark:focus:border-blue-500 focus:ring-2 focus:ring-[#073066]/20 dark:focus:ring-blue-500/20" />
             </div>
             <div>
-                <label class="text-xs font-medium text-neutral-700">Location</label>
+                <label class="text-xs font-medium text-neutral-700 dark:text-gray-300">Location</label>
                 <input name="location"
-                    class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20" />
+                    class="mt-1 w-full rounded-md border border-neutral-300 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-[#073066] dark:focus:border-blue-500 focus:ring-2 focus:ring-[#073066]/20 dark:focus:ring-blue-500/20" />
             </div>
             <div>
-                <label class="text-xs font-medium text-neutral-700">Address</label>
+                <label class="text-xs font-medium text-neutral-700 dark:text-gray-300">Address</label>
                 <input name="address"
-                    class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20" />
+                    class="mt-1 w-full rounded-md border border-neutral-300 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-[#073066] dark:focus:border-blue-500 focus:ring-2 focus:ring-[#073066]/20 dark:focus:ring-blue-500/20" />
             </div>
             <div>
-                <label class="text-xs font-medium text-neutral-700">Website</label>
+                <label class="text-xs font-medium text-neutral-700 dark:text-gray-300">Website</label>
                 <input name="website"
-                    class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20" />
+                    class="mt-1 w-full rounded-md border border-neutral-300 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-[#073066] dark:focus:border-blue-500 focus:ring-2 focus:ring-[#073066]/20 dark:focus:ring-blue-500/20" />
             </div>
             <div>
-                <label class="text-xs font-medium text-neutral-700">Email</label>
+                <label class="text-xs font-medium text-neutral-700 dark:text-gray-300">Email</label>
                 <input type="email" name="email"
-                    class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20" />
+                    class="mt-1 w-full rounded-md border border-neutral-300 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-[#073066] dark:focus:border-blue-500 focus:ring-2 focus:ring-[#073066]/20 dark:focus:ring-blue-500/20" />
             </div>
             <div>
-                <label class="text-xs font-medium text-neutral-700">Phone</label>
+                <label class="text-xs font-medium text-neutral-700 dark:text-gray-300">Phone</label>
                 <input name="phone"
-                    class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20" />
+                    class="mt-1 w-full rounded-md border border-neutral-300 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-[#073066] dark:focus:border-blue-500 focus:ring-2 focus:ring-[#073066]/20 dark:focus:ring-blue-500/20" />
             </div>
         </div>
 
         <div>
-            <label class="text-xs font-medium text-neutral-700">Description</label>
+            <label class="text-xs font-medium text-neutral-700 dark:text-gray-300">Description</label>
             <textarea name="description" rows="4"
-                class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20"></textarea>
+                class="mt-1 w-full rounded-md border border-neutral-300 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-[#073066] dark:focus:border-blue-500 focus:ring-2 focus:ring-[#073066]/20 dark:focus:ring-blue-500/20"></textarea>
         </div>
 
         <!-- Upload Section -->
         <div class="grid sm:grid-cols-2 gap-6">
             <!-- Logo Upload -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Logo de la chambre</label>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Logo de la chambre</label>
                 <div class="relative">
-                    <div id="logo-dropzone" class="group relative flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
+                    <div id="logo-dropzone" class="group relative flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 dark:border-gray-600 dark:border-gray-400 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:bg-gray-700 transition-colors duration-200">
                         <div id="logo-placeholder" class="flex flex-col items-center justify-center pt-5 pb-6">
-                            <svg class="w-8 h-8 mb-2 text-gray-400 group-hover:text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                            <svg class="w-8 h-8 mb-2 text-gray-400 group-hover:text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
                             </svg>
-                            <p class="mb-1 text-sm text-gray-500 group-hover:text-gray-600">
+                            <p class="mb-1 text-sm text-gray-500 dark:text-gray-400 group-hover:text-gray-600 dark:text-gray-400">
                                 <span class="font-semibold">Cliquez pour télécharger</span> ou glissez-déposez
                             </p>
-                            <p class="text-xs text-gray-500">PNG, JPG ou JPEG (MAX. 2MB)</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">PNG, JPG ou JPEG (MAX. 2MB)</p>
                         </div>
                         <div id="logo-preview" class="hidden absolute inset-0 rounded-lg overflow-hidden">
                             <img id="logo-image" class="w-full h-full object-cover" alt="Logo preview">
@@ -83,17 +83,17 @@
 
             <!-- Cover Image Upload -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Image de couverture</label>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Image de couverture</label>
                 <div class="relative">
-                    <div id="cover-dropzone" class="group relative flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
+                    <div id="cover-dropzone" class="group relative flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 dark:border-gray-600 dark:border-gray-400 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:bg-gray-700 transition-colors duration-200">
                         <div id="cover-placeholder" class="flex flex-col items-center justify-center pt-5 pb-6">
-                            <svg class="w-8 h-8 mb-2 text-gray-400 group-hover:text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                            <svg class="w-8 h-8 mb-2 text-gray-400 group-hover:text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0ZM3 3l1.5 1.5M16.5 16.5L15 15"/>
                             </svg>
-                            <p class="mb-1 text-sm text-gray-500 group-hover:text-gray-600">
+                            <p class="mb-1 text-sm text-gray-500 dark:text-gray-400 group-hover:text-gray-600 dark:text-gray-400">
                                 <span class="font-semibold">Cliquez pour télécharger</span> ou glissez-déposez
                             </p>
-                            <p class="text-xs text-gray-500">PNG, JPG ou JPEG (MAX. 5MB)</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">PNG, JPG ou JPEG (MAX. 5MB)</p>
                         </div>
                         <div id="cover-preview" class="hidden absolute inset-0 rounded-lg overflow-hidden">
                             <img id="cover-image" class="w-full h-full object-cover" alt="Cover preview">
@@ -115,26 +115,26 @@
             <div class="text-sm font-semibold tracking-tight mb-2" style="letter-spacing:-0.01em;">Social Links</div>
             <div class="grid sm:grid-cols-3 gap-4">
                 <div>
-                    <label class="text-xs font-medium text-neutral-700">LinkedIn</label>
+                    <label class="text-xs font-medium text-neutral-700 dark:text-gray-300">LinkedIn</label>
                     <input name="social_links[linkedin]"
-                        class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20" />
+                        class="mt-1 w-full rounded-md border border-neutral-300 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-[#073066] dark:focus:border-blue-500 focus:ring-2 focus:ring-[#073066]/20 dark:focus:ring-blue-500/20" />
                 </div>
                 <div>
-                    <label class="text-xs font-medium text-neutral-700">Twitter</label>
+                    <label class="text-xs font-medium text-neutral-700 dark:text-gray-300">Twitter</label>
                     <input name="social_links[twitter]"
-                        class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20" />
+                        class="mt-1 w-full rounded-md border border-neutral-300 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-[#073066] dark:focus:border-blue-500 focus:ring-2 focus:ring-[#073066]/20 dark:focus:ring-blue-500/20" />
                 </div>
                 <div>
-                    <label class="text-xs font-medium text-neutral-700">Facebook</label>
+                    <label class="text-xs font-medium text-neutral-700 dark:text-gray-300">Facebook</label>
                     <input name="social_links[facebook]"
-                        class="mt-1 w-full rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm focus:border-[#073066] focus:ring-2 focus:ring-[#073066]/20" />
+                        class="mt-1 w-full rounded-md border border-neutral-300 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-[#073066] dark:focus:border-blue-500 focus:ring-2 focus:ring-[#073066]/20 dark:focus:ring-blue-500/20" />
                 </div>
             </div>
         </div>
 
         <div class="flex justify-end gap-2">
             <a href="{{ route('chambers') }}"
-                class="rounded-md border border-neutral-300 bg-white px-4 py-2 text-sm font-medium hover:bg-neutral-50">Cancel</a>
+                class="rounded-md border border-neutral-300 bg-white dark:bg-gray-800 px-4 py-2 text-sm font-medium hover:bg-neutral-50 dark:bg-gray-700">Cancel</a>
             <button class="rounded-md bg-[#073066] px-4 py-2 text-sm font-semibold text-white hover:bg-[#052347]">Create
                 Chamber</button>
         </div>
@@ -177,17 +177,17 @@ document.addEventListener('DOMContentLoaded', function() {
         // Gestion du drag & drop
         dropzone.addEventListener('dragover', (e) => {
             e.preventDefault();
-            dropzone.classList.add('border-[#073066]', 'bg-red-50');
+            dropzone.classList.add('border-[#073066] dark:border-blue-500', 'bg-red-50');
         });
 
         dropzone.addEventListener('dragleave', (e) => {
             e.preventDefault();
-            dropzone.classList.remove('border-[#073066]', 'bg-red-50');
+            dropzone.classList.remove('border-[#073066] dark:border-blue-500', 'bg-red-50');
         });
 
         dropzone.addEventListener('drop', (e) => {
             e.preventDefault();
-            dropzone.classList.remove('border-[#073066]', 'bg-red-50');
+            dropzone.classList.remove('border-[#073066] dark:border-blue-500', 'bg-red-50');
             
             const files = e.dataTransfer.files;
             if (files.length > 0) {

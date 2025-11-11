@@ -6,14 +6,14 @@
     <div class="mb-8">
         <div class="flex items-center space-x-4">
             <a href="{{ route('admin.chambers.manage', $chamber) }}"
-                class="text-gray-500 hover:text-gray-700 flex items-center">
+                class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:text-gray-300 flex items-center">
                 <i data-lucide="arrow-left" class="h-5 w-5 mr-2"></i>
                 Retour à la gestion
             </a>
-            <div class="h-6 border-l border-gray-300"></div>
-            <h1 class="text-3xl font-bold text-gray-900">Assigner un gestionnaire</h1>
+            <div class="h-6 border-l border-gray-300 dark:border-gray-600 dark:border-gray-400"></div>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Assigner un gestionnaire</h1>
         </div>
-        <p class="mt-2 text-gray-600">Chambre : <span class="font-medium">{{ $chamber->name }}</span></p>
+        <p class="mt-2 text-gray-600 dark:text-gray-400">Chambre : <span class="font-medium">{{ $chamber->name }}</span></p>
     </div>
 
     <!-- Messages de succès/erreur -->
@@ -50,7 +50,7 @@
     @endif
 
     <!-- Formulaire d'assignation -->
-    <div class="bg-white rounded-lg border border-gray-200 p-6">
+    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 p-6">
         <div class="flex items-center mb-6">
             <div class="flex-shrink-0">
                 <div class="h-12 w-12 rounded-full bg-purple-100 flex items-center justify-center">
@@ -58,8 +58,8 @@
                 </div>
             </div>
             <div class="ml-4">
-                <h2 class="text-lg font-medium text-gray-900">Rechercher et assigner un gestionnaire</h2>
-                <p class="text-sm text-gray-500">Tapez le nom ou l'email de l'utilisateur à promouvoir</p>
+                <h2 class="text-lg font-medium text-gray-900 dark:text-white">Rechercher et assigner un gestionnaire</h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Tapez le nom ou l'email de l'utilisateur à promouvoir</p>
             </div>
         </div>
 
@@ -69,18 +69,18 @@
             <div class="space-y-6">
                 <!-- Recherche d'utilisateur -->
                 <div>
-                    <label for="user_search" class="block text-sm font-medium text-gray-700 mb-2">
+                    <label for="user_search" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Rechercher un utilisateur
                     </label>
                     <div class="relative">
                         <input type="text" id="user_search"
-                            class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
+                            class="block w-full border-gray-300 dark:border-gray-600 dark:border-gray-400 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
                             placeholder="Tapez le nom ou email de l'utilisateur..." autocomplete="off">
                         <input type="hidden" name="user_id" id="selected_user_id" required>
 
                         <!-- Résultats de recherche -->
                         <div id="search_results"
-                            class="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm hidden">
+                            class="absolute z-10 mt-1 w-full bg-white dark:bg-gray-800 shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm hidden">
                             <!-- Les résultats seront ajoutés ici dynamiquement -->
                         </div>
                     </div>
@@ -94,8 +94,8 @@
                                 </div>
                             </div>
                             <div class="ml-4 flex-1">
-                                <p class="text-sm font-medium text-gray-900" id="selected_user_name"></p>
-                                <p class="text-xs text-gray-500" id="selected_user_email"></p>
+                                <p class="text-sm font-medium text-gray-900 dark:text-white" id="selected_user_name"></p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400" id="selected_user_email"></p>
                             </div>
                             <button type="button" onclick="clearSelectedUser()"
                                 class="ml-4 text-purple-600 hover:text-purple-800 p-1">
@@ -128,11 +128,11 @@
                 <!-- Boutons d'action -->
                 <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200">
                     <a href="{{ route('admin.chambers.manage', $chamber) }}"
-                        class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                        class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 dark:border-gray-400 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
                         Annuler
                     </a>
                     <button type="button" id="assign_submit_btn" disabled onclick="showConfirmationModal()"
-                        class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:bg-gray-300 disabled:cursor-not-allowed">
+                        class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:bg-gray-300 dark:bg-gray-600 disabled:cursor-not-allowed">
                         <i data-lucide="user-plus" class="h-4 w-4 mr-2"></i>
                         Assigner comme gestionnaire
                     </button>
@@ -143,19 +143,19 @@
 
     <!-- Gestionnaires actuels -->
     @if($chamber->members->where('pivot.role', 'manager')->count() > 0)
-    <div class="mt-8 bg-white rounded-lg border border-gray-200 p-6">
-        <h3 class="text-lg font-medium text-gray-900 mb-4">Gestionnaires actuels</h3>
+    <div class="mt-8 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 p-6">
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Gestionnaires actuels</h3>
         <div class="space-y-3">
             @foreach($chamber->members->where('pivot.role', 'manager') as $manager)
-            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                 <div class="flex items-center">
                     <div class="h-8 w-8 rounded-full bg-purple-200 flex items-center justify-center">
                         <span class="text-xs font-medium text-purple-800">{{ strtoupper(substr($manager->name, 0, 1))
                             }}</span>
                     </div>
                     <div class="ml-3">
-                        <p class="text-sm font-medium text-gray-900">{{ $manager->name }}</p>
-                        <p class="text-xs text-gray-500">{{ $manager->email }}</p>
+                        <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $manager->name }}</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $manager->email }}</p>
                     </div>
                 </div>
                 <span
@@ -196,7 +196,7 @@
                         <p class="text-sm text-gray-300">
                             Êtes-vous sûr de vouloir assigner <span id="modal-user-name" class="font-semibold text-purple-400"></span> comme gestionnaire de la chambre <span class="font-semibold text-purple-400">{{ $chamber->name }}</span> ?
                         </p>
-                        <div class="mt-3 p-3 bg-gray-700 rounded-lg border border-gray-600">
+                        <div class="mt-3 p-3 bg-gray-700 rounded-lg border border-gray-600 dark:border-gray-400">
                             <p class="text-xs text-gray-400 mb-2">Cette action donnera à l'utilisateur les privilèges suivants :</p>
                             <ul class="text-xs text-gray-300 space-y-1">
                                 <li class="flex items-center">
@@ -225,7 +225,7 @@
                     Confirmer
                 </button>
                 <button type="button" onclick="hideConfirmationModal()" 
-                    class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-600 shadow-sm px-4 py-2 bg-gray-700 text-base font-medium text-gray-300 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 sm:mt-0 sm:w-auto sm:text-sm transition-colors duration-200">
+                    class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-600 dark:border-gray-400 shadow-sm px-4 py-2 bg-gray-700 text-base font-medium text-gray-300 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 sm:mt-0 sm:w-auto sm:text-sm transition-colors duration-200">
                     <i data-lucide="x" class="h-4 w-4 mr-2"></i>
                     Annuler
                 </button>
@@ -289,19 +289,19 @@ function displaySearchResults(users) {
     const resultsContainer = document.getElementById('search_results');
     
     if (users.length === 0) {
-        resultsContainer.innerHTML = '<div class="px-4 py-2 text-sm text-gray-500">Aucun utilisateur trouvé</div>';
+        resultsContainer.innerHTML = '<div class="px-4 py-2 text-sm text-gray-500 dark:text-gray-400">Aucun utilisateur trouvé</div>';
     } else {
         resultsContainer.innerHTML = users.map(user => `
             <div class="cursor-pointer select-none relative py-3 pl-4 pr-9 hover:bg-purple-50" onclick="selectUser(${user.id}, '${user.name.replace(/'/g, "\\'")}', '${user.email}')">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
-                        <div class="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center">
-                            <span class="text-xs font-medium text-gray-700">${user.name.charAt(0).toUpperCase()}</span>
+                        <div class="h-8 w-8 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
+                            <span class="text-xs font-medium text-gray-700 dark:text-gray-300">${user.name.charAt(0).toUpperCase()}</span>
                         </div>
                     </div>
                     <div class="ml-3">
-                        <div class="text-sm font-medium text-gray-900">${user.name}</div>
-                        <div class="text-xs text-gray-500">${user.email}</div>
+                        <div class="text-sm font-medium text-gray-900 dark:text-white">${user.name}</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400">${user.email}</div>
                     </div>
                 </div>
             </div>

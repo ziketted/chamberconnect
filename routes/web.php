@@ -34,6 +34,7 @@ Route::get('/opportunities', [OpportunityController::class, 'index'])->name('opp
 // Auth Routes
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/my-chambers', [DashboardController::class, 'myChambers'])->name('my-chambers');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -95,6 +96,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Events
         Route::get('/chambers/{chamber}/events/create', [\App\Http\Controllers\ChamberEventController::class, 'create'])->name('chambers.events.create');
         Route::post('/chambers/{chamber}/events', [\App\Http\Controllers\ChamberEventController::class, 'store'])->name('chambers.events.store');
+        Route::get('/chambers/{chamber}/events/{event}/participants', [\App\Http\Controllers\ChamberEventController::class, 'participants'])->name('chambers.events.participants');
+        Route::patch('/chambers/{chamber}/events/{event}/participants/{user}', [\App\Http\Controllers\ChamberEventController::class, 'updateParticipantStatus'])->name('chambers.events.participants.update');
         // Partners
         Route::get('/chambers/{chamber}/partners/create', [\App\Http\Controllers\ChamberPartnerController::class, 'create'])->name('chambers.partners.create');
         Route::post('/chambers/{chamber}/partners', [\App\Http\Controllers\ChamberPartnerController::class, 'store'])->name('chambers.partners.store');
@@ -113,6 +116,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
 // Membership join (auth only, not requiring email verification)
 Route::middleware('auth')->group(function () {
     Route::post('/chambers/{chamber}/join', [\App\Http\Controllers\ChamberMemberController::class, 'join'])->name('chambers.members.join');
+    
+    // Event booking routes
+    Route::post('/events/{event}/book', [\App\Http\Controllers\EventBookingController::class, 'book'])->name('events.book');
+    Route::delete('/events/{event}/cancel', [\App\Http\Controllers\EventBookingController::class, 'cancel'])->name('events.cancel');
+    Route::patch('/events/{event}/confirm', [\App\Http\Controllers\EventBookingController::class, 'confirm'])->name('events.confirm');
+    Route::get('/my-bookings', [\App\Http\Controllers\EventBookingController::class, 'myBookings'])->name('events.my-bookings');
+    
+    // Settings routes
+    Route::get('/settings', [\App\Http\Controllers\SettingsController::class, 'index'])->name('settings');
+    Route::post('/settings/theme', [\App\Http\Controllers\SettingsController::class, 'updateTheme'])->name('settings.theme');
+    
+    // Event likes routes
+    Route::post('/events/{event}/like', [\App\Http\Controllers\EventLikeController::class, 'toggle'])->name('events.like');
 });
 
 // Socialite Routes

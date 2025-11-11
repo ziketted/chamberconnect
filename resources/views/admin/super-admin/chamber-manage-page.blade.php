@@ -7,11 +7,11 @@
     <div class="mb-8">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-4">
-          <a href="{{ route('admin.chambers') }}" class="text-gray-500 hover:text-gray-700 flex items-center">
+          <a href="{{ route('admin.chambers') }}" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:text-gray-300 flex items-center">
             <i data-lucide="arrow-left" class="h-5 w-5 mr-2"></i>
             Retour aux chambres
           </a>
-          <h1 class="text-2xl font-bold text-gray-900">Gestion de {{ $chamber->name }}</h1>
+          <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Gestion de {{ $chamber->name }}</h1>
         </div>
 
         <!-- Badge d'agrément -->
@@ -56,12 +56,12 @@
       <!-- Colonne principale - Informations de la chambre -->
       <div class="lg:col-span-2">
         <!-- Informations de la chambre -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-8">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 mb-8">
           <div class="p-6">
             <div class="flex items-center justify-between mb-6">
-              <h2 class="text-xl font-semibold text-gray-900">Informations de la chambre</h2>
+              <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Informations de la chambre</h2>
               <a href="{{ route('chamber.show', $chamber) }}" target="_blank"
-                class="text-[#073066] hover:text-[#052347] flex items-center text-sm">
+                class="text-[#073066] dark:text-blue-400 hover:text-[#052347] flex items-center text-sm">
                 <i data-lucide="external-link" class="h-4 w-4 mr-1"></i>
                 Voir la page publique
               </a>
@@ -71,7 +71,7 @@
             <div class="mb-8">
               <!-- Image de couverture -->
               <div class="mb-6">
-                <dt class="text-sm font-medium text-gray-500 mb-2">Image de couverture</dt>
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Image de couverture</dt>
                 <div class="relative h-48 rounded-lg overflow-hidden">
                   @if($chamber->cover_image_path)
                     <img src="{{ asset('storage/' . $chamber->cover_image_path) }}" 
@@ -81,7 +81,7 @@
                     <!-- Fallback avec dégradé et icône maison -->
                     <div class="w-full h-full bg-gradient-to-r from-gray-400 to-gray-600 flex items-center justify-start pl-8">
                       <div class="flex items-center space-x-4">
-                        <div class="bg-white bg-opacity-20 rounded-full p-4">
+                        <div class="bg-white dark:bg-gray-800 bg-opacity-20 rounded-full p-4">
                           <i data-lucide="home" class="h-12 w-12 text-white"></i>
                         </div>
                         <div class="text-white">
@@ -97,7 +97,7 @@
               <!-- Logo -->
               <div class="flex items-start space-x-4">
                 <div>
-                  <dt class="text-sm font-medium text-gray-500 mb-2">Logo</dt>
+                  <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Logo</dt>
                   <div class="w-20 h-20 rounded-lg overflow-hidden border border-gray-200">
                     @if($chamber->logo_path)
                       <img src="{{ asset('storage/' . $chamber->logo_path) }}" 
@@ -105,20 +105,20 @@
                            class="w-full h-full object-cover">
                     @else
                       <!-- Fallback pour le logo -->
-                      <div class="w-full h-full bg-gray-100 flex items-center justify-center">
+                      <div class="w-full h-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
                         <div class="text-center">
                           <i data-lucide="building-2" class="h-8 w-8 text-gray-400 mx-auto mb-1"></i>
-                          <span class="text-xs text-gray-500 font-medium">{{ strtoupper(substr($chamber->name, 0, 2)) }}</span>
+                          <span class="text-xs text-gray-500 dark:text-gray-400 font-medium">{{ strtoupper(substr($chamber->name, 0, 2)) }}</span>
                         </div>
                       </div>
                     @endif
                   </div>
                 </div>
                 <div class="flex-1 pt-2">
-                  <h3 class="text-lg font-semibold text-gray-900">{{ $chamber->name }}</h3>
-                  <p class="text-sm text-gray-600">{{ $chamber->location ?? 'Localisation non définie' }}</p>
+                  <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ $chamber->name }}</h3>
+                  <p class="text-sm text-gray-600 dark:text-gray-400">{{ $chamber->location ?? 'Localisation non définie' }}</p>
                   @if($chamber->state_number)
-                    <p class="text-xs text-gray-500 mt-1">N° d'État: {{ $chamber->state_number }}</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">N° d'État: {{ $chamber->state_number }}</p>
                   @endif
                 </div>
               </div>
@@ -126,35 +126,35 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <dt class="text-sm font-medium text-gray-500 mb-1">Nom</dt>
-                <dd class="text-sm text-gray-900">{{ $chamber->name }}</dd>
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Nom</dt>
+                <dd class="text-sm text-gray-900 dark:text-white">{{ $chamber->name }}</dd>
               </div>
               <div>
-                <dt class="text-sm font-medium text-gray-500 mb-1">Localisation</dt>
-                <dd class="text-sm text-gray-900">{{ $chamber->location ?? 'Non définie' }}</dd>
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Localisation</dt>
+                <dd class="text-sm text-gray-900 dark:text-white">{{ $chamber->location ?? 'Non définie' }}</dd>
               </div>
               <div>
-                <dt class="text-sm font-medium text-gray-500 mb-1">Email</dt>
-                <dd class="text-sm text-gray-900">{{ $chamber->email ?? 'Non défini' }}</dd>
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Email</dt>
+                <dd class="text-sm text-gray-900 dark:text-white">{{ $chamber->email ?? 'Non défini' }}</dd>
               </div>
               <div>
-                <dt class="text-sm font-medium text-gray-500 mb-1">Téléphone</dt>
-                <dd class="text-sm text-gray-900">{{ $chamber->phone ?? 'Non défini' }}</dd>
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Téléphone</dt>
+                <dd class="text-sm text-gray-900 dark:text-white">{{ $chamber->phone ?? 'Non défini' }}</dd>
               </div>
               <div>
-                <dt class="text-sm font-medium text-gray-500 mb-1">Date de création</dt>
-                <dd class="text-sm text-gray-900">{{ $chamber->created_at->format('d/m/Y à H:i') }}</dd>
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Date de création</dt>
+                <dd class="text-sm text-gray-900 dark:text-white">{{ $chamber->created_at->format('d/m/Y à H:i') }}</dd>
               </div>
               @if($chamber->state_number)
               <div>
-                <dt class="text-sm font-medium text-gray-500 mb-1">Numéro d'État</dt>
-                <dd class="text-sm text-gray-900 font-medium">{{ $chamber->state_number }}</dd>
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Numéro d'État</dt>
+                <dd class="text-sm text-gray-900 dark:text-white font-medium">{{ $chamber->state_number }}</dd>
               </div>
               @endif
               @if($chamber->certification_date)
               <div>
-                <dt class="text-sm font-medium text-gray-500 mb-1">Date d'agrément</dt>
-                <dd class="text-sm text-gray-900">{{
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Date d'agrément</dt>
+                <dd class="text-sm text-gray-900 dark:text-white">{{
                   \Carbon\Carbon::parse($chamber->certification_date)->format('d/m/Y') }}</dd>
               </div>
               @endif
@@ -162,18 +162,18 @@
 
             @if($chamber->description)
             <div class="mt-6">
-              <dt class="text-sm font-medium text-gray-500 mb-2">Description</dt>
-              <dd class="text-sm text-gray-900 bg-gray-50 p-4 rounded-md">{{ $chamber->description }}</dd>
+              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Description</dt>
+              <dd class="text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-800 p-4 rounded-md">{{ $chamber->description }}</dd>
             </div>
             @endif
           </div>
         </div>
 
         <!-- Section Membres -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200">
           <div class="p-6">
             <div class="flex items-center justify-between mb-6">
-              <h2 class="text-xl font-semibold text-gray-900">Membres ({{ $chamber->members->count() }})</h2>
+              <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Membres ({{ $chamber->members->count() }})</h2>
               <button
                 class="inline-flex items-center px-4 py-2 bg-[#073066] text-white text-sm font-medium rounded-lg hover:bg-[#052347] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#073066]">
                 <i data-lucide="user-plus" class="h-4 w-4 mr-2"></i>
@@ -185,12 +185,12 @@
             @forelse($chamber->members as $member)
             <div class="flex items-center justify-between p-3 border-b border-gray-100 last:border-b-0">
               <div class="flex items-center flex-1">
-                <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center mr-3">
-                  <span class="text-sm font-medium text-gray-700">{{ strtoupper(substr($member->name, 0, 1)) }}</span>
+                <div class="h-10 w-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center mr-3">
+                  <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ strtoupper(substr($member->name, 0, 1)) }}</span>
                 </div>
                 <div class="flex-1 min-w-0">
-                  <p class="text-sm font-medium text-gray-900 truncate">{{ $member->name }}</p>
-                  <p class="text-xs text-gray-500 truncate">{{ $member->email }}</p>
+                  <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ $member->name }}</p>
+                  <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ $member->email }}</p>
                 </div>
               </div>
               <div class="flex items-center space-x-2 ml-3">
@@ -201,7 +201,7 @@
                 </div>
                 @else
                 <div class="h-6 w-6 rounded-full bg-[#073066]/10 flex items-center justify-center" title="Membre">
-                  <i data-lucide="user" class="h-3 w-3 text-[#073066]"></i>
+                  <i data-lucide="user" class="h-3 w-3 text-[#073066] dark:text-blue-400"></i>
                 </div>
                 @endif
 
@@ -247,9 +247,9 @@
               </div>
             </div>
             @empty
-            <div class="text-center py-8 text-gray-500">
+            <div class="text-center py-8 text-gray-500 dark:text-gray-400">
               <i data-lucide="users" class="h-12 w-12 mx-auto mb-4 text-gray-400"></i>
-              <p class="text-sm text-gray-500">Aucun membre dans cette chambre</p>
+              <p class="text-sm text-gray-500 dark:text-gray-400">Aucun membre dans cette chambre</p>
             </div>
             @endforelse
           </div>
@@ -259,9 +259,9 @@
       <!-- Colonne latérale - Actions -->
       <div class="space-y-6">
         <!-- Agrément -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200">
           <div class="p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Agrément</h3>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Agrément</h3>
 
             @if($chamber->verified)
             <!-- Chambre agréée -->
@@ -289,10 +289,10 @@
         </div>
 
         <!-- Gestionnaires -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200">
           <div class="p-6">
             <div class="flex items-center justify-between mb-4">
-              <h3 class="text-lg font-semibold text-gray-900">Gestionnaires</h3>
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Gestionnaires</h3>
             </div>
 
             <a href="{{ route('admin.chambers.assign-manager.show', $chamber) }}"
@@ -302,18 +302,18 @@
             </a>
 
             <div class="space-y-3">
-              <p class="text-sm text-gray-600">Gestionnaires actuels:</p>
+              <p class="text-sm text-gray-600 dark:text-gray-400">Gestionnaires actuels:</p>
 
               @forelse($chamber->members->where('pivot.role', 'manager') as $manager)
-              <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                 <div class="flex items-center flex-1">
                   <div class="h-10 w-10 rounded-full bg-[#fcb357]/20 flex items-center justify-center mr-3">
                     <span class="text-sm font-medium text-[#fcb357]">{{ strtoupper(substr($manager->name, 0, 1))
                       }}</span>
                   </div>
                   <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium text-gray-900 truncate">{{ $manager->name }}</p>
-                    <p class="text-xs text-gray-500 truncate">{{ $manager->email }}</p>
+                    <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ $manager->name }}</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ $manager->email }}</p>
                   </div>
                 </div>
                 <div class="flex items-center space-x-2 ml-3">
@@ -330,7 +330,7 @@
               @empty
               <div class="text-center py-6">
                 <i data-lucide="users" class="h-10 w-10 text-gray-400 mx-auto mb-3"></i>
-                <p class="text-sm text-gray-500">Aucun gestionnaire assigné</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Aucun gestionnaire assigné</p>
               </div>
               @endforelse
             </div>
@@ -338,7 +338,7 @@
         </div>
 
         <!-- Actions dangereuses -->
-        <div class="bg-white rounded-lg shadow-sm border border-[#b81010]/20">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-[#b81010]/20">
           <div class="p-6">
             <h3 class="text-lg font-semibold text-[#b81010] mb-4">Actions dangereuses</h3>
 
@@ -370,8 +370,8 @@
     <div class="fixed inset-0 transition-opacity bg-gray-900 bg-opacity-75" onclick="closeCertificationModal()"></div>
 
     <div
-      class="inline-block transform overflow-hidden rounded-2xl bg-white text-left align-bottom shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:align-middle">
-      <div class="bg-white px-6 pt-6 pb-4">
+      class="inline-block transform overflow-hidden rounded-2xl bg-white dark:bg-gray-800 text-left align-bottom shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:align-middle">
+      <div class="bg-white dark:bg-gray-800 px-6 pt-6 pb-4">
         <div class="flex items-center mb-6">
           <div class="flex-shrink-0">
             <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#fcb357]/10">
@@ -379,8 +379,8 @@
             </div>
           </div>
           <div class="ml-4">
-            <h3 class="text-lg leading-6 font-medium text-gray-900">Agréer la chambre</h3>
-            <p class="text-sm text-gray-500">Remplissez les informations d'agrément</p>
+            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">Agréer la chambre</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Remplissez les informations d'agrément</p>
           </div>
         </div>
 
@@ -388,27 +388,27 @@
           @csrf
           <div class="space-y-4">
             <div>
-              <label for="state_number" class="block text-sm font-medium text-gray-700 mb-1">
+              <label for="state_number" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Numéro d'État *
               </label>
               <input type="text" name="state_number" id="state_number" required
-                class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"
+                class="block w-full border-gray-300 dark:border-gray-600 dark:border-gray-400 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"
                 placeholder="Ex: RDC-CC-1627">
             </div>
             <div>
-              <label for="certification_date" class="block text-sm font-medium text-gray-700 mb-1">
+              <label for="certification_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Date d'agrément *
               </label>
               <input type="date" name="certification_date" id="certification_date" required
-                class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"
+                class="block w-full border-gray-300 dark:border-gray-600 dark:border-gray-400 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"
                 value="{{ date('Y-m-d') }}">
             </div>
             <div>
-              <label for="notes" class="block text-sm font-medium text-gray-700 mb-1">
+              <label for="notes" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Notes (optionnel)
               </label>
               <textarea name="notes" id="notes" rows="3"
-                class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"
+                class="block w-full border-gray-300 dark:border-gray-600 dark:border-gray-400 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"
                 placeholder="Notes sur l'agrément..."></textarea>
             </div>
           </div>
@@ -416,9 +416,9 @@
       </div>
 
       <div
-        class="bg-gray-50 px-6 py-4 flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-3 space-y-3 space-y-reverse sm:space-y-0">
+        class="bg-gray-50 dark:bg-gray-800 px-6 py-4 flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-3 space-y-3 space-y-reverse sm:space-y-0">
         <button type="button" onclick="closeCertificationModal()"
-          class="inline-flex w-full justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 sm:w-auto sm:text-sm">
+          class="inline-flex w-full justify-center rounded-md border border-gray-300 dark:border-gray-600 dark:border-gray-400 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:bg-gray-800 sm:w-auto sm:text-sm">
           <i data-lucide="x" class="h-4 w-4 mr-2"></i>
           Annuler
         </button>
@@ -458,7 +458,7 @@
       <div
         class="bg-gray-700 px-6 py-4 flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-3 space-y-3 space-y-reverse sm:space-y-0">
         <button type="button" onclick="closeConfirmationModal()"
-          class="inline-flex w-full justify-center rounded-lg border border-gray-600 bg-gray-700 px-4 py-2.5 text-sm font-medium text-gray-300 shadow-sm hover:bg-gray-600 sm:w-auto transition-colors">
+          class="inline-flex w-full justify-center rounded-lg border border-gray-600 dark:border-gray-400 bg-gray-700 px-4 py-2.5 text-sm font-medium text-gray-300 shadow-sm hover:bg-gray-600 sm:w-auto transition-colors">
           <i data-lucide="x" class="h-4 w-4 mr-2"></i>
           Annuler
         </button>
