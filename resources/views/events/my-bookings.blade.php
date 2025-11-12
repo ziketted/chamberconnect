@@ -153,15 +153,17 @@
                                 </a>
                             @endif
                             
-                            <form action="{{ route('events.cancel', $event) }}" method="POST" class="inline" 
-                                  onsubmit="return confirm('Êtes-vous sûr de vouloir annuler cette réservation ?')">
+                            <button type="button" 
+                                    onclick="openCancelModal({{ $event->id }}, '{{ $event->title }}')"
+                                    class="inline-flex items-center gap-1.5 rounded-lg border border-orange-200 dark:border-orange-800 bg-white dark:bg-gray-800 px-3 py-2 text-xs font-medium text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors">
+                                <i data-lucide="x" class="h-3 w-3"></i>
+                                Annuler
+                            </button>
+                            
+                            <!-- Formulaire caché pour l'annulation -->
+                            <form id="cancel-form-{{ $event->id }}" action="{{ route('events.cancel', $event) }}" method="POST" class="hidden">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" 
-                                        class="inline-flex items-center gap-1.5 rounded-lg border border-red-200 dark:border-red-800 bg-white dark:bg-gray-800 px-3 py-2 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
-                                    <i data-lucide="x" class="h-3 w-3"></i>
-                                    Annuler
-                                </button>
                             </form>
                         </div>
                         
@@ -272,8 +274,101 @@
     @endif
 </div>
 
+<!-- Modal de confirmation d'annulation -->
+<div id="cancelModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+    <!-- Overlay -->
+    <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity" onclick="closeCancelModal()"></div>
+    
+    <!-- Modal -->
+    <div class="flex min-h-full items-center justify-center p-4">
+        <div class="relative w-full max-w-md transform overflow-hidden rounded-xl bg-white dark:bg-gray-800 shadow-xl transition-all">
+            <!-- Header -->
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex items-center gap-3">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900/30">
+                        <i data-lucide="alert-triangle" class="h-5 w-5 text-orange-600 dark:text-orange-400"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Confirmer l'annulation</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Cette action est irréversible</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Body -->
+            <div class="px-6 py-4">
+                <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">
+                    Êtes-vous sûr de vouloir annuler votre réservation pour :
+                </p>
+                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 mb-4">
+                    <p class="font-medium text-gray-900 dark:text-white" id="eventTitle">
+                        <!-- Le titre sera inséré ici par JavaScript -->
+                    </p>
+                </div>
+                <div class="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800/50 rounded-lg p-3">
+                    <div class="flex items-start gap-2">
+                        <i data-lucide="info" class="h-4 w-4 text-orange-600 dark:text-orange-400 mt-0.5 flex-shrink-0"></i>
+                        <p class="text-xs text-orange-700 dark:text-orange-300">
+                            Une fois annulée, vous devrez vous réinscrire si vous souhaitez participer à cet événement.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Footer -->
+            <div class="px-6 py-4 bg-gray-50 dark:bg-gray-700/50 flex items-center justify-end gap-3">
+                <button type="button" 
+                        onclick="closeCancelModal()"
+                        class="inline-flex items-center gap-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                    Garder ma réservation
+                </button>
+                <button type="button" 
+                        onclick="confirmCancel()"
+                        class="inline-flex items-center gap-2 rounded-lg bg-orange-600 px-4 py-2 text-sm font-medium text-white hover:bg-orange-700 transition-colors">
+                    <i data-lucide="x" class="h-4 w-4"></i>
+                    Annuler la réservation
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @push('scripts')
 <script>
+let currentEventId = null;
+
+function openCancelModal(eventId, eventTitle) {
+    currentEventId = eventId;
+    document.getElementById('eventTitle').textContent = eventTitle;
+    document.getElementById('cancelModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    
+    // Animation d'entrée
+    setTimeout(() => {
+        document.getElementById('cancelModal').classList.add('opacity-100');
+    }, 10);
+}
+
+function closeCancelModal() {
+    document.getElementById('cancelModal').classList.add('hidden');
+    document.body.style.overflow = 'auto';
+    currentEventId = null;
+}
+
+function confirmCancel() {
+    if (currentEventId) {
+        // Soumettre le formulaire d'annulation
+        document.getElementById(`cancel-form-${currentEventId}`).submit();
+    }
+}
+
+// Fermer le modal avec la touche Escape
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && !document.getElementById('cancelModal').classList.contains('hidden')) {
+        closeCancelModal();
+    }
+});
+
 document.addEventListener('DOMContentLoaded', function() {
     lucide.createIcons();
 });

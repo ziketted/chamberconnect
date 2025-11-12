@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\EnsureAdmin::class,
             'chamber.manager' => \App\Http\Middleware\EnsureChamberManager::class,
             'admin.privileges' => \App\Http\Middleware\EnsureAdminPrivileges::class,
+            'regular.user' => \App\Http\Middleware\EnsureRegularUser::class,
             'locale' => \App\Http\Middleware\SetLocale::class,
         ]);
     })

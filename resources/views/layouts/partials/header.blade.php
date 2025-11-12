@@ -58,6 +58,35 @@
                     <i data-lucide="bookmark" class="h-4 w-4"></i>
                     Mes réservations
                 </a>
+
+                @if(Auth::user()->isRegularUser())
+                <!-- Portail Dropdown for Regular Users -->
+                <div class="relative" x-data="{ open: false }">
+                    <button @click="open = !open" @click.away="open = false"
+                        class="inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-neutral-700 dark:text-gray-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#073066] dark:focus-visible:ring-blue-500 {{ request()->routeIs('portal.chamber.*') ? 'bg-neutral-100 dark:bg-gray-800 text-neutral-900 dark:text-white' : '' }}">
+                        <i data-lucide="building-2" class="h-4 w-4"></i>
+                        Portail
+                        <i data-lucide="chevron-down" class="h-4 w-4"></i>
+                    </button>
+
+                    <!-- Dropdown Menu -->
+                    <div x-show="open" x-transition
+                        class="absolute left-0 mt-2 w-56 rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 dark:ring-gray-600 focus:outline-none z-50">
+                        <div class="py-1">
+                            <a href="{{ route('portal.chamber.create') }}"
+                                class="block px-4 py-2 text-sm text-neutral-700 dark:text-gray-300 hover:bg-neutral-100 dark:hover:bg-gray-700">
+                                <i data-lucide="plus" class="inline h-4 w-4 mr-2"></i>
+                                Nouvelle demande
+                            </a>
+                            <a href="{{ route('portal.index') }}"
+                                class="block px-4 py-2 text-sm text-neutral-700 dark:text-gray-300 hover:bg-neutral-100 dark:hover:bg-gray-700">
+                                <i data-lucide="file-text" class="inline h-4 w-4 mr-2"></i>
+                                Mes demandes
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                @endif
                 @endauth
             </nav>
 
@@ -196,6 +225,16 @@
                 <i data-lucide="calendar" class="h-3 w-3"></i>
                 {{ __('messages.events') }}
             </a>
+
+            @auth
+            @if(Auth::user()->isRegularUser())
+            <a href="{{ route('portal.chamber.create') }}"
+                class="whitespace-nowrap inline-flex items-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-medium text-neutral-700 dark:text-gray-300 hover:bg-neutral-100 dark:hover:bg-gray-800 {{ request()->routeIs('portal.chamber.*') ? 'bg-neutral-100 dark:bg-gray-800 text-neutral-900 dark:text-white' : '' }}">
+                <i data-lucide="building-2" class="h-3 w-3"></i>
+                Portail
+            </a>
+            @endif
+            @endauth
 
             <!-- Mobile Language Switcher -->
             {{-- <div class="sm:hidden ml-auto">

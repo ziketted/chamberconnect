@@ -374,11 +374,27 @@
             </div>
             @endforeach
         </div>
+
+        <!-- Indicateur de chargement -->
+        <div id="loading-indicator" class="hidden text-center py-8">
+            <div class="inline-flex items-center gap-3">
+                <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-[#073066]"></div>
+                <span class="text-sm text-neutral-600 dark:text-gray-400">Chargement des chambres...</span>
+            </div>
+        </div>
+
+        <!-- Message de fin -->
+        <div id="end-message" class="hidden text-center py-8">
+            <div class="text-sm text-neutral-500 dark:text-gray-500">
+                <i data-lucide="check-circle" class="h-5 w-5 inline mr-2"></i>
+                Toutes les chambres ont été chargées
+            </div>
+        </div>
     </main>
 
     <!-- Sidebar Droite - Événements du Mois -->
     <aside class="lg:col-span-3">
-        <div class="sticky top-[88px] space-y-4">
+        <div class="space-y-4">
             <!-- Section Événements du Mois -->
             <div class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800">
                 <div class="border-b border-neutral-200 dark:border-gray-700 p-4">
@@ -393,7 +409,7 @@
                 </div>
                 <div class="p-4 space-y-4">
                     @if($monthlyEvents->count() > 0)
-                    @foreach($monthlyEvents as $event)
+                    @foreach($monthlyEvents->take(3) as $event)
                     <div
                         class="group rounded-lg border border-neutral-100 dark:border-gray-600 dark:border-gray-400 p-3 hover:border-[#073066] dark:border-blue-500/20 hover:bg-[#073066]/5 transition-all duration-200">
                         <div class="flex items-start gap-3">
@@ -711,6 +727,212 @@
         
         // Démarrer le carrousel
         startCarousel();
+    });
+
+    // Variables pour le lazy loading
+    let currentPage = 1;
+    let isLoading = false;
+    let hasMoreChambers = true;
+
+    // Fonction pour charger plus de chambres
+    async function loadMoreChambers() {
+        if (isLoading || !hasMoreChambers) return;
+
+        isLoading = true;
+        document.getElementById('loading-indicator').classList.remove('hidden');
+
+        try {
+            const response = await fetch(`{{ route('chambers') }}?page=${currentPage + 1}`, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (!response.ok) throw new Error('Erreur de chargement');
+
+            const data = await response.json();
+            
+            if (data.chambers && data.chambers.length > 0) {
+                // Ajouter les nouvelles chambres au DOM
+                const chambersList = document.getElementById('chambers-list');
+                
+                data.chambers.forEach(chamber => {
+                    const chamberHtml = createChamberCard(chamber);
+                    chambersList.insertAdjacentHTML('beforeend', chamberHtml);
+                });
+
+                currentPage++;
+                hasMoreChambers = data.hasMore;
+
+                // Réinitialiser les icônes Lucide pour les nouvelles cartes
+                lucide.createIcons();
+            } else {
+                hasMoreChambers = false;
+            }
+
+            if (!hasMoreChambers) {
+                document.getElementById('end-message').classList.remove('hidden');
+            }
+
+        } catch (error) {
+            console.error('Erreur lors du chargement des chambres:', error);
+        } finally {
+            isLoading = false;
+            document.getElementById('loading-indicator').classList.add('hidden');
+        }
+    }
+
+    // Fonction pour créer le HTML d'une carte de chambre
+    function createChamberCard(chamber) {
+        const isMember = chamber.is_subscribed;
+        const isAuth = {{ auth()->check() ? 'true' : 'false' }};
+        
+        return `
+            <div class="chamber-card group rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 hover:shadow-sm transition-all duration-200 relative"
+                data-name="${chamber.name.toLowerCase()}"
+                data-description="${chamber.description.toLowerCase()}"
+                data-activity-level="${chamber.activity_level}"
+                data-events-count="${chamber.upcoming_events}"
+                data-members-count="${chamber.members_count}"
+                data-certified="${chamber.is_certified ? 'true' : 'false'}"
+                data-created="${chamber.created_at}">
+                
+                <!-- Statut d'adhésion dans le coin supérieur droit -->
+                <div class="absolute top-4 right-4">
+                    ${isAuth ? (
+                        !isMember ? `
+                            <form action="/chambers/${chamber.slug}/join" method="POST" class="inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                <button type="submit"
+                                    class="inline-flex items-center gap-1.5 rounded-full bg-[#073066] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#052347] transition-all duration-200 shadow-sm hover:shadow-md"
+                                    title="Adhérer à cette chambre">
+                                    <i data-lucide="plus" class="h-3.5 w-3.5"></i>
+                                    Adhérer
+                                </button>
+                            </form>
+                        ` : `
+                            <div class="inline-flex items-center gap-1.5 rounded-full bg-green-100 dark:bg-green-900/30 px-3 py-1.5 text-xs font-medium text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800">
+                                <i data-lucide="check" class="h-3.5 w-3.5"></i>
+                                Membre
+                            </div>
+                        `
+                    ) : `
+                        <button onclick="openModal('signin-modal')"
+                            class="inline-flex items-center gap-1.5 rounded-full bg-[#073066] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#052347] transition-all duration-200 shadow-sm hover:shadow-md">
+                            <i data-lucide="plus" class="h-3.5 w-3.5"></i>
+                            Adhérer
+                        </button>
+                    `}
+                </div>
+
+                <div class="flex items-start gap-4 flex-1 pr-20">
+                    <div class="relative">
+                        ${isAuth ? `<a href="/chamber/${chamber.slug}" class="block">` : `<button onclick="openModal('signin-modal')" class="block">`}
+                            ${chamber.logo_path ? `
+                                <img src="/storage/${chamber.logo_path}"
+                                    alt="${chamber.name}"
+                                    class="h-14 w-14 rounded-lg object-cover shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+                            ` : `
+                                <div class="relative flex h-14 w-14 items-center justify-center rounded-lg bg-gradient-to-br from-[#073066] to-[#052347] text-white shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+                                    <div class="flex flex-col items-center text-sm font-semibold leading-none">
+                                        <span>${chamber.code.substring(0, 2)}</span>
+                                        <span class="mt-0.5 text-white/80">${chamber.code.substring(chamber.code.length - 2)}</span>
+                                    </div>
+                                </div>
+                            `}
+                            ${chamber.is_certified ? `
+                                <div class="absolute -right-1 -top-1 rounded-full bg-white dark:bg-gray-800 p-0.5 shadow-sm">
+                                    <div class="flex h-5 w-5 items-center justify-center rounded-full bg-[#fcb357] text-white">
+                                        <i data-lucide="shield-check" class="h-3 w-3"></i>
+                                    </div>
+                                </div>
+                            ` : ''}
+                        ${isAuth ? '</a>' : '</button>'}
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            ${isAuth ? `
+                                <a href="/chamber/${chamber.slug}" class="hover:text-[#073066] dark:hover:text-blue-400 transition-colors">
+                                    <h3 class="text-base font-medium cursor-pointer">${chamber.name}</h3>
+                                </a>
+                            ` : `
+                                <button onclick="openModal('signin-modal')" class="hover:text-[#073066] dark:hover:text-blue-400 transition-colors">
+                                    <h3 class="text-base font-medium cursor-pointer">${chamber.name}</h3>
+                                </button>
+                            `}
+                            ${chamber.is_certified ? `
+                                <span class="inline-flex items-center gap-1 rounded-full bg-[#fcb357]/10 px-2 py-0.5 text-xs font-medium text-[#fcb357]">
+                                    <i data-lucide="shield-check" class="h-3.5 w-3.5"></i> Agréée
+                                </span>
+                            ` : ''}
+                        </div>
+                        <p class="mt-1 text-sm text-neutral-600 dark:text-gray-400 text-justify">
+                            ${chamber.description.length > 150 ? chamber.description.substring(0, 150) + '...' : chamber.description}
+                        </p>
+                        <div class="mt-3 space-y-2">
+                            <div class="flex items-center flex-wrap gap-4">
+                                <span class="inline-flex items-center gap-1.5 text-sm text-neutral-600 dark:text-gray-400">
+                                    <i data-lucide="users" class="h-4 w-4 text-neutral-400 dark:text-gray-400"></i>
+                                    ${chamber.members_count.toLocaleString()} membres
+                                </span>
+                                <span class="inline-flex items-center gap-1.5 text-sm text-neutral-600 dark:text-gray-400">
+                                    <i data-lucide="calendar" class="h-4 w-4 text-neutral-400 dark:text-gray-400"></i>
+                                    ${chamber.upcoming_events} événements
+                                </span>
+                                ${chamber.upcoming_events > 0 ? `
+                                    <div class="inline-flex items-center gap-1.5 rounded-full bg-[#fcb357]/10 px-2.5 py-1 text-xs font-medium text-[#fcb357]">
+                                        <i data-lucide="calendar-clock" class="h-3.5 w-3.5"></i>
+                                        ${chamber.activity_level}
+                                    </div>
+                                ` : ''}
+                            </div>
+                            <div class="flex items-center flex-wrap gap-4">
+                                <span class="inline-flex items-center gap-1.5 text-sm text-neutral-500 dark:text-gray-400">
+                                    <i data-lucide="calendar-plus" class="h-4 w-4 text-neutral-400 dark:text-gray-400"></i>
+                                    Fondée en ${new Date(chamber.created_at).getFullYear()}
+                                </span>
+                                <span class="inline-flex items-center gap-1.5 text-sm text-neutral-500 dark:text-gray-400">
+                                    <i data-lucide="map-pin" class="h-4 w-4 text-neutral-400 dark:text-gray-400"></i>
+                                    ${chamber.location || 'Non spécifiée'}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // Observer pour détecter quand l'utilisateur arrive en bas de page
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && hasMoreChambers && !isLoading) {
+                loadMoreChambers();
+            }
+        });
+    }, {
+        rootMargin: '100px' // Commencer à charger 100px avant d'atteindre le bas
+    });
+
+    // Observer le dernier élément de la liste
+    document.addEventListener('DOMContentLoaded', function() {
+        const chambersList = document.getElementById('chambers-list');
+        if (chambersList.children.length > 0) {
+            observer.observe(chambersList.lastElementChild);
+        }
+
+        // Réobserver le dernier élément après chaque chargement
+        const originalLoadMore = loadMoreChambers;
+        loadMoreChambers = async function() {
+            await originalLoadMore();
+            
+            // Observer le nouveau dernier élément
+            const newLastElement = chambersList.lastElementChild;
+            if (newLastElement && hasMoreChambers) {
+                observer.observe(newLastElement);
+            }
+        };
     });
 </script>
 @endpush

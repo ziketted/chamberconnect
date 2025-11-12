@@ -35,6 +35,7 @@ Route::get('/opportunities', [OpportunityController::class, 'index'])->name('opp
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/my-chambers', [DashboardController::class, 'myChambers'])->name('my-chambers');
+    Route::get('/dashboard/load-events', [DashboardController::class, 'loadEvents'])->name('dashboard.load-events');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -70,6 +71,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/admin/chambers/{chamber}/remove-manager', [\App\Http\Controllers\Admin\SuperAdminController::class, 'removeManager'])->name('admin.chambers.remove-manager');
         Route::patch('/admin/users/{user}/promote', [\App\Http\Controllers\Admin\SuperAdminController::class, 'promoteToManager'])->name('admin.users.promote');
         Route::patch('/admin/users/{user}/demote', [\App\Http\Controllers\Admin\SuperAdminController::class, 'demoteToUser'])->name('admin.users.demote');
+        
+        // Gestion des demandes de création de chambres
+        Route::get('/admin/chambers/pending-requests', [\App\Http\Controllers\Admin\SuperAdminController::class, 'pendingRequests'])->name('admin.chambers.pending-requests');
+        Route::post('/admin/chambers/{chamber}/approve-request', [\App\Http\Controllers\Admin\SuperAdminController::class, 'approveChamberRequest'])->name('admin.chambers.approve-request');
+        Route::post('/admin/chambers/{chamber}/reject-request', [\App\Http\Controllers\Admin\SuperAdminController::class, 'rejectChamberRequest'])->name('admin.chambers.reject-request');
         
         // Ancienne route pour compatibilité
         Route::get('/admin/chambers/admins', [\App\Http\Controllers\Admin\ChamberAdminController::class, 'index'])->name('admin.chambers.admins');
@@ -130,6 +136,15 @@ Route::middleware('auth')->group(function () {
     
     // Event likes routes
     Route::post('/events/{event}/like', [\App\Http\Controllers\EventLikeController::class, 'toggle'])->name('events.like');
+    
+    // Portal routes (for regular users only)
+    Route::middleware('verified')->group(function () {
+        Route::get('/portal', [\App\Http\Controllers\ChamberPortalController::class, 'index'])->name('portal.index');
+        Route::get('/portal/chamber/create', [\App\Http\Controllers\ChamberPortalController::class, 'create'])->name('portal.chamber.create');
+        Route::post('/portal/chamber/store', [\App\Http\Controllers\ChamberPortalController::class, 'store'])->name('portal.chamber.store');
+        Route::get('/portal/chamber/success', [\App\Http\Controllers\ChamberPortalController::class, 'success'])->name('portal.chamber.success');
+        Route::get('/portal/chamber/my-requests', [\App\Http\Controllers\ChamberPortalController::class, 'myRequests'])->name('portal.chamber.my-requests');
+    });
 });
 
 // Socialite Routes
@@ -153,6 +168,30 @@ Route::get('/test-user-role', function() {
         'isSuperAdmin' => $user->isSuperAdmin(),
         'isChamberManager' => $user->isChamberManager(),
         'isRegularUser' => $user->isRegularUser(),
+    ];
+})->middleware('auth');
+
+// Route de test pour vérifier le rôle utilisateur
+Route::get('/test-user-role-debug', function() {
+    if (!auth()->check()) {
+        return 'Utilisateur non connecté';
+    }
+    
+    $user = auth()->user();
+    return [
+        'name' => $user->name,
+        'email' => $user->email,
+        'is_admin' => $user->is_admin,
+        'is_admin_type' => gettype($user->is_admin),
+        'is_admin_raw' => var_export($user->is_admin, true),
+        'condition_result' => ($user->is_admin === 0 || $user->is_admin === null),
+        'condition_details' => [
+            'is_admin_equals_0' => $user->is_admin === 0,
+            'is_admin_equals_null' => $user->is_admin === null,
+        ],
+        'isRegularUser' => $user->isRegularUser(),
+        'isSuperAdmin' => $user->isSuperAdmin(),
+        'isChamberManager' => $user->isChamberManager(),
     ];
 })->middleware('auth');
 

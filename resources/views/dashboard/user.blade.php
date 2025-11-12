@@ -160,7 +160,7 @@
         </div>
 
         <div id="events-container" class="space-y-4">
-            @foreach($allEvents as $event)
+            @foreach($allEvents->take(6) as $event)
             <div class="event-card group rounded-2xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden hover:shadow-lg hover:border-blue-400 dark:hover:border-blue-500 transition-all duration-300"
                 data-type="{{ $event['type'] }}" data-verified="{{ $event['is_user_chamber'] ? 'true' : 'false' }}"
                 data-available="{{ $event['status'] !== 'complet' ? 'true' : 'false' }}"
@@ -331,11 +331,31 @@
             </div>
             @endif
         </div>
+
+        <!-- Bouton Charger plus -->
+        @if($allEvents->count() > 6)
+        <div class="text-center mt-8">
+            <button id="load-more-events" 
+                class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors shadow-lg"
+                data-page="2">
+                <i data-lucide="plus-circle" class="h-5 w-5"></i>
+                <span>Charger plus d'événements</span>
+            </button>
+        </div>
+        @endif
+
+        <!-- Loading spinner pour le lazy loading -->
+        <div id="loading-spinner" class="text-center mt-8" style="display: none;">
+            <div class="inline-flex items-center gap-2 px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-medium rounded-lg">
+                <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
+                <span>Chargement...</span>
+            </div>
+        </div>
     </main>
 
     <!-- Sidebar Droite -->
     <aside class="lg:col-span-3">
-        <div class="sticky top-[88px] space-y-4">
+        <div class="space-y-4">
             <!-- Section Chambres Suggérées -->
             <div class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800">
                 <div class="border-b border-neutral-200 dark:border-gray-700 p-4">

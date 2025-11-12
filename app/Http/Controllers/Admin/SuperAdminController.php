@@ -5,8 +5,11 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Chamber;
 use App\Models\User;
+use App\Mail\ChamberApprovedMail;
+use App\Mail\ChamberRejectedMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class SuperAdminController extends Controller
 {
@@ -181,6 +184,107 @@ class SuperAdminController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Chambre certifiée avec succès. Numéro d\'état: ' . $request->state_number);
+    }
+
+    /**
+     * Approuve une demande de création de chambre
+     */
+    public function approveChamberRequest(Request $request, Chamber $chamber)
+    {
+        $request->validate([
+            'state_number' => 'nullable|string|max:50|unique:chambers,state_number,' . $chamber->id,
+            'notes' => 'nullable|string|max:1000',
+        ]);
+
+        // Générer un numéro d'état automatique si non fourni
+        $stateNumber = $request->state_number;
+        if (!$stateNumber) {
+            $year = date('Y');
+            $lastNumber = Chamber::whereNotNull('state_number')
+                ->where('state_number', 'like', "CHMBR-{$year}-%")
+                ->count();
+            $stateNumber = sprintf('CHMBR-%s-%04d', $year, $lastNumber + 1);
+        }
+
+        // Mettre à jour la chambre
+        $chamber->update([
+            'verified' => true,
+            'state_number' => $stateNumber,
+            'certification_date' => now(),
+            'certification_notes' => $request->notes,
+        ]);
+
+        // Promouvoir le demandeur en gestionnaire de chambre
+        $applicant = $chamber->members()->wherePivot('role', 'applicant')->first();
+        if ($applicant) {
+            // Mettre à jour le rôle de l'utilisateur
+            $applicant->update(['is_admin' => User::ROLE_CHAMBER_MANAGER]);
+            
+            // Mettre à jour la relation dans la table pivot
+            $chamber->members()->updateExistingPivot($applicant->id, [
+                'role' => 'manager',
+                'status' => 'approved'
+            ]);
+
+            // Envoyer un email de validation
+            try {
+                Mail::to($applicant->email)->send(new ChamberApprovedMail($chamber, $stateNumber));
+            } catch (\Exception $e) {
+                \Log::error('Erreur lors de l\'envoi de l\'email d\'approbation: ' . $e->getMessage());
+            }
+        }
+
+        return redirect()->back()->with('success', 'Demande approuvée avec succès. Numéro d\'état: ' . $stateNumber);
+    }
+
+    /**
+     * Rejette une demande de création de chambre
+     */
+    public function rejectChamberRequest(Request $request, Chamber $chamber)
+    {
+        $request->validate([
+            'rejection_reason' => 'required|string|max:1000',
+        ]);
+
+        // Récupérer les données de la demande
+        $applicationData = json_decode($chamber->certification_notes, true) ?? [];
+        $applicationData['rejected_at'] = now();
+        $applicationData['rejection_reason'] = $request->rejection_reason;
+
+        $chamber->update([
+            'verified' => false,
+            'certification_notes' => json_encode($applicationData),
+        ]);
+
+        // Envoyer un email de refus
+        $applicant = $chamber->members()->wherePivot('role', 'applicant')->first();
+        if ($applicant) {
+            try {
+                Mail::to($applicant->email)->send(new ChamberRejectedMail($chamber, $request->rejection_reason));
+            } catch (\Exception $e) {
+                \Log::error('Erreur lors de l\'envoi de l\'email de refus: ' . $e->getMessage());
+            }
+        }
+
+        return redirect()->back()->with('success', 'Demande rejetée avec succès.');
+    }
+
+    /**
+     * Affiche les demandes de création en attente
+     */
+    public function pendingRequests()
+    {
+        $pendingChambers = Chamber::where('verified', false)
+            ->whereHas('members', function($query) {
+                $query->wherePivot('role', 'applicant');
+            })
+            ->with(['members' => function($query) {
+                $query->wherePivot('role', 'applicant');
+            }])
+            ->orderBy('created_at', 'desc')
+            ->paginate(15);
+
+        return view('admin.super-admin.pending-requests', compact('pendingChambers'));
     }
 
     /**

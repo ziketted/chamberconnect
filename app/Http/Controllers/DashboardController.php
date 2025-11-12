@@ -108,6 +108,40 @@ class DashboardController extends Controller
             'count' => $events->count()
         ]);
     }
+
+    public function loadEvents(Request $request)
+    {
+        $user = Auth::user();
+        $page = $request->get('page', 1);
+        $perPage = 6;
+        $offset = ($page - 1) * $perPage;
+        
+        // Récupérer les événements des chambres de l'utilisateur seulement
+        $userChamberIds = $user->chambers()->pluck('id');
+        
+        $query = Event::with(['chamber', 'creator', 'participants', 'likes'])
+            ->whereIn('chamber_id', $userChamberIds)
+            ->where('date', '>=', now())
+            ->whereDoesntHave('participants', function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            })
+            ->orderBy('date', 'asc');
+        
+        $events = $query->skip($offset)
+                       ->take($perPage)
+                       ->get()
+                       ->map(function ($event) {
+                           return $this->formatEventForDisplay($event, true);
+                       });
+        
+        $hasMore = $query->count() > ($offset + $perPage);
+        
+        return response()->json([
+            'events' => $events,
+            'hasMore' => $hasMore,
+            'page' => $page
+        ]);
+    }
     
     private function userDashboard()
     {
