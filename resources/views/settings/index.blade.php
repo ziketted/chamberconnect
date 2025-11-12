@@ -9,6 +9,141 @@
             <p class="mt-2 text-gray-600 dark:text-gray-400">{{ __('Gérez vos préférences et paramètres de compte') }}</p>
         </div>
 
+        <!-- Messages de succès/erreur -->
+        @if(session('success'))
+            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 mb-6">
+                <div class="flex">
+                    <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                    <div class="ml-3">
+                        <p class="text-sm font-medium text-green-800 dark:text-green-200">
+                            {{ session('success') }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        @endif
+
+        <!-- Carte du profil utilisateur -->
+        <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg mb-6">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">{{ __('Informations du profil') }}</h2>
+                <p class="text-sm text-gray-600 dark:text-gray-400">{{ __('Mettez à jour vos informations personnelles et professionnelles') }}</p>
+            </div>
+            
+            <div class="p-6">
+                <form method="POST" action="{{ route('settings.profile') }}">
+                    @csrf
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Nom -->
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                {{ __('Nom complet') }}
+                            </label>
+                            <input type="text" 
+                                   id="name" 
+                                   name="name" 
+                                   value="{{ old('name', auth()->user()->name) }}"
+                                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                                   required>
+                            @error('name')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Email -->
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                {{ __('Email') }}
+                            </label>
+                            <input type="email" 
+                                   id="email" 
+                                   name="email" 
+                                   value="{{ old('email', auth()->user()->email) }}"
+                                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                                   required>
+                            @error('email')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Téléphone -->
+                        <div>
+                            <label for="phone" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                {{ __('Numéro de téléphone') }}
+                            </label>
+                            <input type="tel" 
+                                   id="phone" 
+                                   name="phone" 
+                                   value="{{ old('phone', auth()->user()->phone) }}"
+                                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                                   placeholder="+33 1 23 45 67 89">
+                            @error('phone')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Entreprise -->
+                        <div>
+                            <label for="company" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                {{ __('Entreprise') }}
+                            </label>
+                            <input type="text" 
+                                   id="company" 
+                                   name="company" 
+                                   value="{{ old('company', auth()->user()->company) }}"
+                                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                                   placeholder="Nom de votre entreprise">
+                            @error('company')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Nationalité -->
+                        <div>
+                            <label for="nationality" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                {{ __('Nationalité') }}
+                            </label>
+                            <input type="text" 
+                                   id="nationality" 
+                                   name="nationality" 
+                                   value="{{ old('nationality', auth()->user()->nationality) }}"
+                                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                                   placeholder="Française, Belge, etc.">
+                            @error('nationality')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Email professionnel -->
+                        <div>
+                            <label for="professional_email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                {{ __('Email professionnel') }}
+                            </label>
+                            <input type="email" 
+                                   id="professional_email" 
+                                   name="professional_email" 
+                                   value="{{ old('professional_email', auth()->user()->professional_email) }}"
+                                   class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                                   placeholder="votre.email@entreprise.com">
+                            @error('professional_email')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex justify-end">
+                        <button type="submit" 
+                                class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800">
+                            {{ __('Mettre à jour le profil') }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <!-- Carte des paramètres de thème -->
         <div class="bg-white dark:bg-gray-800 shadow-sm rounded-lg mb-6">
             <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
@@ -85,7 +220,7 @@
             </div>
         </div>
 
-        <!-- Message de succès -->
+        <!-- Message de succès pour le thème -->
         <div id="success-message" class="hidden bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 mb-6">
             <div class="flex">
                 <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
@@ -93,7 +228,7 @@
                 </svg>
                 <div class="ml-3">
                     <p class="text-sm font-medium text-green-800 dark:text-green-200">
-                        {{ __('Paramètres mis à jour avec succès !') }}
+                        {{ __('Thème mis à jour avec succès !') }}
                     </p>
                 </div>
             </div>

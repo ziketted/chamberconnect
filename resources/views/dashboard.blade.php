@@ -243,6 +243,13 @@
         </div>
         @endif
 
+        <!-- Skeleton loading pour le feed des chambres -->
+        <div id="chambers-feed-skeleton" class="space-y-4" style="display: none;">
+            @for($i = 0; $i < 4; $i++)
+            <x-skeleton.chamber-feed />
+            @endfor
+        </div>
+
         <!-- Chambres Feed -->
         <div class="space-y-4">
             @forelse($chambers as $chamber)
@@ -379,6 +386,13 @@
                     <span class="text-xs text-blue-400 font-medium">Nov 2025</span>
                 </div>
                 <p class="text-xs text-gray-300 mb-4">Les 5 événements les plus populaires</p>
+
+                <!-- Skeleton loading pour les événements -->
+                <div id="sidebar-events-skeleton" class="space-y-4" style="display: none;">
+                    @for($i = 0; $i < 3; $i++)
+                    <x-skeleton.sidebar-event />
+                    @endfor
+                </div>
 
                 <div class="space-y-4">
                     @forelse($popularEvents ?? [] as $event)

@@ -126,6 +126,7 @@ Route::middleware('auth')->group(function () {
     // Settings routes
     Route::get('/settings', [\App\Http\Controllers\SettingsController::class, 'index'])->name('settings');
     Route::post('/settings/theme', [\App\Http\Controllers\SettingsController::class, 'updateTheme'])->name('settings.theme');
+    Route::post('/settings/profile', [\App\Http\Controllers\SettingsController::class, 'updateProfile'])->name('settings.profile');
     
     // Event likes routes
     Route::post('/events/{event}/like', [\App\Http\Controllers\EventLikeController::class, 'toggle'])->name('events.like');

@@ -29,6 +29,13 @@
                     <p class="mt-1 text-xs text-neutral-600 dark:text-gray-400">{{ $userChambersCount }} chambre(s)
                         rejointe(s)</p>
                 </div>
+                <!-- Skeleton loading pour les chambres -->
+                <div id="chambers-skeleton" class="p-4 space-y-3" style="display: none;">
+                    @for($i = 0; $i < 3; $i++)
+                    <x-skeleton.chamber-list />
+                    @endfor
+                </div>
+
                 <div class="p-4 space-y-3">
                     @forelse($userChambers->take(3) as $chamber)
                     <div
@@ -143,6 +150,13 @@
                 <i data-lucide="x" class="h-3 w-3 mr-1"></i>
                 Effacer filtres
             </button>
+        </div>
+
+        <!-- Skeleton loading pour les événements -->
+        <div id="events-skeleton" class="space-y-4" style="display: none;">
+            @for($i = 0; $i < 3; $i++)
+            <x-skeleton.event-card />
+            @endfor
         </div>
 
         <div id="events-container" class="space-y-4">
