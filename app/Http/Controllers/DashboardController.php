@@ -116,30 +116,45 @@ class DashboardController extends Controller
         $perPage = 6;
         $offset = ($page - 1) * $perPage;
         
-        // Récupérer les événements des chambres de l'utilisateur seulement
-        $userChamberIds = $user->chambers()->pluck('id');
-        
-        $query = Event::with(['chamber', 'creator', 'participants', 'likes'])
-            ->whereIn('chamber_id', $userChamberIds)
-            ->where('date', '>=', now())
-            ->whereDoesntHave('participants', function ($query) use ($user) {
-                $query->where('user_id', $user->id);
-            })
-            ->orderBy('date', 'asc');
+        // Si c'est un admin, récupérer tous les événements des chambres vérifiées
+        if ($user->isSuperAdmin() || $user->isChamberManager()) {
+            $query = Event::with(['chamber', 'creator', 'participants', 'likes'])
+                ->whereHas('chamber', function($q) {
+                    $q->where('verified', true);
+                })
+                ->where('date', '>=', now())
+                ->orderBy('date', 'asc');
+        } else {
+            // Pour les utilisateurs normaux, récupérer les événements des chambres de l'utilisateur
+            $userChamberIds = $user->chambers()->pluck('id');
+            
+            $query = Event::with(['chamber', 'creator', 'participants', 'likes'])
+                ->whereIn('chamber_id', $userChamberIds)
+                ->where('date', '>=', now())
+                ->whereDoesntHave('participants', function ($query) use ($user) {
+                    $query->where('user_id', $user->id);
+                })
+                ->orderBy('date', 'asc');
+        }
         
         $events = $query->skip($offset)
                        ->take($perPage)
                        ->get()
-                       ->map(function ($event) {
-                           return $this->formatEventForDisplay($event, true);
+                       ->map(function ($event) use ($user) {
+                           $userChamberIds = $user->chambers()->pluck('chambers.id');
+                           $isUserChamber = $userChamberIds->contains($event->chamber_id);
+                           return $this->formatEventForDisplay($event, $isUserChamber);
                        });
         
-        $hasMore = $query->count() > ($offset + $perPage);
+        // Calculer s'il y a plus d'événements
+        $totalEvents = $query->count();
+        $hasMore = $totalEvents > ($offset + $perPage);
         
         return response()->json([
             'events' => $events,
             'hasMore' => $hasMore,
-            'page' => $page
+            'page' => $page,
+            'total' => $totalEvents
         ]);
     }
     

@@ -81,8 +81,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/admin/chambers/admins', [\App\Http\Controllers\Admin\ChamberAdminController::class, 'index'])->name('admin.chambers.admins');
     });
     Route::middleware('chamber.manager')->group(function () {
-        // Tableau de bord gestionnaire
-        Route::get('/chamber-manager/dashboard', [\App\Http\Controllers\ChamberManagerController::class, 'dashboard'])->name('chamber-manager.dashboard');
+        // Section "Gestion des chambres" - Point d'entrée principal
+        Route::get('/manage-chambers', [\App\Http\Controllers\ChamberManagerController::class, 'index'])->name('manage-chambers.index');
+        
+        // Tableau de bord gestionnaire pour une chambre spécifique
+        Route::get('/chambers/{chamber}/dashboard', [\App\Http\Controllers\ChamberManagerController::class, 'dashboard'])->name('chamber-manager.dashboard');
         
         // Gestion des chambres
         Route::get('/chambers/{chamber}/edit', [ChamberController::class, 'edit'])->name('chambers.edit');
@@ -128,6 +131,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/events/{event}/cancel', [\App\Http\Controllers\EventBookingController::class, 'cancel'])->name('events.cancel');
     Route::patch('/events/{event}/confirm', [\App\Http\Controllers\EventBookingController::class, 'confirm'])->name('events.confirm');
     Route::get('/my-bookings', [\App\Http\Controllers\EventBookingController::class, 'myBookings'])->name('events.my-bookings');
+    
+    // API route for event details
+    Route::get('/api/events/{event}/details', [\App\Http\Controllers\EventController::class, 'getEventDetails'])->name('api.events.details');
     
     // Settings routes
     Route::get('/settings', [\App\Http\Controllers\SettingsController::class, 'index'])->name('settings');

@@ -43,7 +43,7 @@ class ChamberController extends Controller
         if ($request->hasFile('cover')) {
             $chamber->cover_image_path = $request->file('cover')->store('chambers/covers', 'public');
         }
-
+        
         $chamber->save();
 
         // assign creator as manager
@@ -56,11 +56,51 @@ class ChamberController extends Controller
     public function show(Chamber $chamber)
     {
         // Route model binding by slug
-        $chamber = $chamber->load(['partners', 'events' => function ($q) {
-            $q->latest()->take(5);
-        }]);
+        $chamber = $chamber->load([
+            'partners' => function ($q) {
+                $q->latest();
+            },
+            'events' => function ($q) {
+                $q->latest();
+            },
+            'approvedMembers' => function ($q) {
+                $q->take(10);
+            }
+        ]);
 
-        return view('chamber', compact('chamber'));
+        // Compter les membres approuvés
+        $membersCount = $chamber->approvedMembers()->count();
+        
+        // Vérifier si l'utilisateur actuel est membre
+        $isMember = false;
+        $membershipStatus = null;
+        if (auth()->check()) {
+            $membership = $chamber->members()->where('user_id', auth()->id())->first();
+            if ($membership) {
+                $isMember = true;
+                $membershipStatus = $membership->pivot->status;
+            }
+        }
+
+        // Ajouter les informations de réservation pour les événements
+        $user = auth()->user();
+        if ($user) {
+            $chamber->events->each(function ($event) use ($user) {
+                $event->is_booked = $event->isBookedBy($user);
+                $event->booking_status = $event->getBookingStatus($user);
+                $event->participants_count = $event->participants()->count();
+                $event->available_spots = $event->availableSpots();
+            });
+        } else {
+            $chamber->events->each(function ($event) {
+                $event->is_booked = false;
+                $event->booking_status = null;
+                $event->participants_count = $event->participants()->count();
+                $event->available_spots = $event->availableSpots();
+            });
+        }
+
+        return view('chamber', compact('chamber', 'membersCount', 'isMember', 'membershipStatus'));
     }
 
     public function edit(Chamber $chamber)

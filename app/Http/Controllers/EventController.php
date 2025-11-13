@@ -100,4 +100,42 @@ class EventController extends Controller
 
         return view('events.index', compact('upcoming_events', 'past_events', 'user_chambers', 'tab', 'stats'));
     }
+
+    /**
+     * Récupérer les détails d'un événement pour l'API
+     */
+    public function getEventDetails(Request $request, Event $event)
+    {
+        try {
+            $user = Auth::user();
+            
+            // Charger les relations nécessaires
+            $event->load(['chamber', 'participants']);
+            
+            // Ajouter les informations de réservation si l'utilisateur est connecté
+            if ($user) {
+                $event->is_booked = $event->isBookedBy($user);
+                $event->booking_status = $event->getBookingStatus($user);
+            } else {
+                $event->is_booked = false;
+                $event->booking_status = null;
+            }
+            
+            // Ajouter les statistiques
+            $event->participants_count = $event->participants()->count();
+            $event->available_spots = $event->availableSpots();
+            $event->is_authenticated = $user !== null;
+            
+            return response()->json([
+                'success' => true,
+                'event' => $event
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Erreur lors de la récupération des détails de l\'événement'
+            ], 500);
+        }
+    }
 }

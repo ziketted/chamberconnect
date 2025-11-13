@@ -36,8 +36,10 @@
                     </div>
                     <div class="ml-5 w-0 flex-1">
                         <dl>
-                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Chambres gérées</dt>
-                            <dd class="text-lg font-medium text-gray-900 dark:text-white">{{ $stats['total_chambers'] }}</dd>
+                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Chambres gérées
+                            </dt>
+                            <dd class="text-lg font-medium text-gray-900 dark:text-white">{{ $stats['total_chambers'] }}
+                            </dd>
                         </dl>
                     </div>
                 </div>
@@ -56,7 +58,8 @@
                     <div class="ml-5 w-0 flex-1">
                         <dl>
                             <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Total membres</dt>
-                            <dd class="text-lg font-medium text-gray-900 dark:text-white">{{ $stats['total_members'] }}</dd>
+                            <dd class="text-lg font-medium text-gray-900 dark:text-white">{{ $stats['total_members'] }}
+                            </dd>
                         </dl>
                     </div>
                 </div>
@@ -75,7 +78,8 @@
                     <div class="ml-5 w-0 flex-1">
                         <dl>
                             <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Événements</dt>
-                            <dd class="text-lg font-medium text-gray-900 dark:text-white">{{ $stats['total_events'] }}</dd>
+                            <dd class="text-lg font-medium text-gray-900 dark:text-white">{{ $stats['total_events'] }}
+                            </dd>
                         </dl>
                     </div>
                 </div>
@@ -94,7 +98,8 @@
                     <div class="ml-5 w-0 flex-1">
                         <dl>
                             <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Publications</dt>
-                            <dd class="text-lg font-medium text-gray-900 dark:text-white">{{ $stats['total_posts'] }}</dd>
+                            <dd class="text-lg font-medium text-gray-900 dark:text-white">{{ $stats['total_posts'] }}
+                            </dd>
                         </dl>
                     </div>
                 </div>
@@ -116,8 +121,10 @@
                                 <img src="{{ $chamber->logo_path ?? 'https://ui-avatars.com/api/?name=' . urlencode($chamber->name) . '&background=073066&color=fff' }}"
                                     alt="{{ $chamber->name }}" class="h-12 w-12 rounded-lg object-cover">
                                 <div>
-                                    <h4 class="text-sm font-medium text-gray-900 dark:text-white">{{ $chamber->name }}</h4>
-                                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ $chamber->location ?? 'Localisation non définie'
+                                    <h4 class="text-sm font-medium text-gray-900 dark:text-white">{{ $chamber->name }}
+                                    </h4>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ $chamber->location ??
+                                        'Localisation non définie'
                                         }}</p>
                                     <div class="flex items-center space-x-4 mt-1">
                                         <span class="text-xs text-gray-500 dark:text-gray-400">
@@ -156,11 +163,13 @@
                     </div>
                     @empty
                     <div class="text-center py-8">
-                        <div class="mx-auto h-12 w-12 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center mb-4">
+                        <div
+                            class="mx-auto h-12 w-12 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center mb-4">
                             <i data-lucide="building" class="h-6 w-6 text-gray-400"></i>
                         </div>
                         <h3 class="text-sm font-medium text-gray-900 dark:text-white mb-2">Aucune chambre gérée</h3>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Vous ne gérez actuellement aucune chambre de commerce.</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Vous ne gérez actuellement aucune
+                            chambre de commerce.</p>
                         <a href="{{ route('chambers.create') }}"
                             class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#073066] hover:bg-[#052347] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#073066]">
                             <i data-lucide="plus" class="mr-2 h-4 w-4"></i>
@@ -221,7 +230,8 @@
                     </div>
                     @empty
                     <div class="text-center py-6">
-                        <div class="mx-auto h-10 w-10 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center mb-3">
+                        <div
+                            class="mx-auto h-10 w-10 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center mb-3">
                             <i data-lucide="user-check" class="h-5 w-5 text-gray-400"></i>
                         </div>
                         <p class="text-sm text-gray-500 dark:text-gray-400">Aucune demande en attente</p>

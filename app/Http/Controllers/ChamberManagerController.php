@@ -10,41 +10,192 @@ use Illuminate\Support\Facades\Auth;
 class ChamberManagerController extends Controller
 {
     /**
-     * Tableau de bord du gestionnaire de chambre
+     * Section "Gestion des chambres" - Point d'entrée principal
+     * Inspiré de Facebook Pages
      */
-    public function dashboard()
+    public function index()
     {
         $user = Auth::user();
         
         // Récupérer les chambres gérées par l'utilisateur
         $managedChambers = $user->chambers()
             ->wherePivot('role', 'manager')
-            ->withCount(['members', 'events', 'posts'])
-            ->get();
+            ->withCount(['members', 'events'])
+            ->with(['events' => function($query) {
+                $query->where('date', '>=', now())->orderBy('date', 'asc')->limit(3);
+            }])
+            ->get()
+            ->map(function($chamber) {
+                // Calculer les statistiques pour chaque chambre
+                $pendingMembersCount = $chamber->members()->wherePivot('status', 'pending')->count();
+                $upcomingEventsCount = $chamber->events()->where('date', '>=', now())->count();
+                
+                return [
+                    'id' => $chamber->id,
+                    'name' => $chamber->name,
+                    'slug' => $chamber->slug,
+                    'logo_path' => $chamber->logo_path,
+                    'cover_image_path' => $chamber->cover_image_path,
+                    'description' => $chamber->description,
+                    'location' => $chamber->location,
+                    'members_count' => $chamber->members_count,
+                    'events_count' => $chamber->events_count,
+                    'pending_members_count' => $pendingMembersCount,
+                    'upcoming_events_count' => $upcomingEventsCount,
+                    'recent_events' => $chamber->events,
+                    'created_at' => $chamber->created_at,
+                ];
+            });
 
         // Statistiques globales
-        $stats = [
+        $globalStats = [
             'total_chambers' => $managedChambers->count(),
             'total_members' => $managedChambers->sum('members_count'),
-            'total_events' => $managedChambers->sum('events_count'),
-            'total_posts' => $managedChambers->sum('posts_count'),
+            'total_pending' => $managedChambers->sum('pending_members_count'),
+            'total_upcoming_events' => $managedChambers->sum('upcoming_events_count'),
         ];
 
-        // Membres en attente d'approbation
-        $pendingMembers = collect();
-        foreach ($managedChambers as $chamber) {
-            $pending = $chamber->members()
-                ->wherePivot('status', 'pending')
-                ->get()
-                ->map(function ($member) use ($chamber) {
-                    $member->chamber_name = $chamber->name;
-                    $member->chamber_slug = $chamber->slug;
-                    return $member;
-                });
-            $pendingMembers = $pendingMembers->merge($pending);
+        return view('chamber-manager.index', compact('managedChambers', 'globalStats'));
+    }
+
+    /**
+     * Tableau de bord analytique pour une chambre spécifique
+     */
+    public function dashboard(Chamber $chamber)
+    {
+        // Vérifier que l'utilisateur gère cette chambre
+        if (!Auth::user()->managesChamber($chamber)) {
+            abort(403, 'Vous n\'êtes pas autorisé à gérer cette chambre.');
         }
 
-        return view('chamber-manager.dashboard', compact('managedChambers', 'stats', 'pendingMembers'));
+        // 🧱 Zone de synthèse (cartes principales KPI)
+        $totalMembers = $chamber->members()->wherePivot('status', 'approved')->count();
+        $pendingRequests = $chamber->members()->wherePivot('status', 'pending')->count();
+        $upcomingEvents = $chamber->events()->where('date', '>=', now())->count();
+        
+        // Calculer le taux de participation moyen
+        $eventsWithParticipants = $chamber->events()
+            ->withCount('participants')
+            ->where('date', '<', now())
+            ->get();
+        $averageParticipation = $eventsWithParticipants->count() > 0 
+            ? round($eventsWithParticipants->avg('participants_count'), 1) 
+            : 0;
+
+        $kpiCards = [
+            'total_members' => $totalMembers,
+            'pending_requests' => $pendingRequests,
+            'upcoming_events' => $upcomingEvents,
+            'average_participation' => $averageParticipation
+        ];
+
+        // 📈 Données pour les graphiques
+        
+        // 1. Histogramme – Évolution des membres (12 derniers mois)
+        $memberEvolution = [];
+        for ($i = 11; $i >= 0; $i--) {
+            $date = now()->subMonths($i);
+            $count = $chamber->members()
+                ->wherePivot('status', 'approved')
+                ->wherePivot('created_at', '<=', $date->endOfMonth())
+                ->count();
+            $memberEvolution[] = [
+                'month' => $date->format('M Y'),
+                'count' => $count
+            ];
+        }
+
+        // 2. Pie Chart – Répartition des rôles
+        $managersCount = $chamber->members()->wherePivot('role', 'manager')->count();
+        $membersCount = $chamber->members()->wherePivot('role', 'member')->wherePivot('status', 'approved')->count();
+        $pendingCount = $chamber->members()->wherePivot('status', 'pending')->count();
+        
+        $roleDistribution = [
+            ['label' => 'Gestionnaires', 'value' => $managersCount, 'color' => '#3B82F6'],
+            ['label' => 'Membres', 'value' => $membersCount, 'color' => '#10B981'],
+            ['label' => 'En attente', 'value' => $pendingCount, 'color' => '#F59E0B']
+        ];
+
+        // 3. Line Chart – Taux de participation aux événements (6 derniers événements)
+        $participationRates = $chamber->events()
+            ->withCount('participants')
+            ->where('date', '<', now())
+            ->orderBy('date', 'desc')
+            ->limit(6)
+            ->get()
+            ->reverse()
+            ->map(function($event) {
+                $participationRate = $event->max_participants > 0 
+                    ? round(($event->participants_count / $event->max_participants) * 100, 1)
+                    : 0;
+                return [
+                    'event' => substr($event->title, 0, 20) . '...',
+                    'date' => $event->date->format('d/m'),
+                    'rate' => $participationRate
+                ];
+            });
+
+        // 4. Bar Chart – Répartition géographique (optionnel)
+        $geographicDistribution = $chamber->members()
+            ->wherePivot('status', 'approved')
+            ->selectRaw('COUNT(*) as count, COALESCE(city, "Non spécifié") as city')
+            ->groupBy('city')
+            ->orderBy('count', 'desc')
+            ->limit(5)
+            ->get()
+            ->map(function($item) {
+                return [
+                    'city' => $item->city,
+                    'count' => $item->count
+                ];
+            });
+
+        // 🧮 Tableau analytique détaillé des membres
+        $detailedMembers = $chamber->members()
+            ->withPivot(['role', 'status', 'created_at'])
+            ->withCount(['events as events_participated' => function($query) {
+                $query->wherePivot('status', 'confirmed');
+            }])
+            ->orderBy('pivot_created_at', 'desc')
+            ->get()
+            ->map(function($member) {
+                return [
+                    'id' => $member->id,
+                    'name' => $member->name,
+                    'email' => $member->email,
+                    'role' => $member->pivot->role,
+                    'status' => $member->pivot->status,
+                    'joined_at' => $member->pivot->created_at,
+                    'events_participated' => $member->events_participated ?? 0,
+                    'is_active' => $member->pivot->created_at > now()->subMonths(3)
+                ];
+            });
+
+        // Membres en attente d'approbation
+        $pendingMembers = $chamber->members()
+            ->wherePivot('status', 'pending')
+            ->withPivot(['created_at'])
+            ->orderBy('pivot_created_at', 'desc')
+            ->get();
+
+        // Événements récents et à venir
+        $recentEvents = $chamber->events()
+            ->withCount('participants')
+            ->orderBy('date', 'desc')
+            ->limit(5)
+            ->get();
+
+        return view('chamber-manager.dashboard', compact(
+            'chamber',
+            'kpiCards',
+            'memberEvolution',
+            'roleDistribution',
+            'participationRates',
+            'geographicDistribution',
+            'detailedMembers',
+            'pendingMembers',
+            'recentEvents'
+        ));
     }
 
     /**

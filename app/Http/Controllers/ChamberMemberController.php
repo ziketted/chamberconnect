@@ -51,9 +51,26 @@ class ChamberMemberController extends Controller
     {
         $userId = $request->user()->id;
         $exists = $chamber->members()->where('user_id', $userId)->exists();
-        if (!$exists) {
-            $chamber->members()->attach($userId, ['role' => 'member', 'status' => 'pending']);
+        
+        if ($exists) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Vous êtes déjà membre de cette chambre ou avez déjà une demande en cours.'
+                ]);
+            }
+            return back()->with('error', 'Vous êtes déjà membre de cette chambre ou avez déjà une demande en cours.');
         }
+        
+        $chamber->members()->attach($userId, ['role' => 'member', 'status' => 'pending']);
+        
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Demande d\'adhésion envoyée avec succès !'
+            ]);
+        }
+        
         return back()->with('status', 'Demande d\'adhésion envoyée');
     }
 

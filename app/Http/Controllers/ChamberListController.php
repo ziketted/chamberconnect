@@ -17,7 +17,6 @@ class ChamberListController extends Controller
             ->whereYear('date', now()->year)
             ->where('date', '>=', now())
             ->orderBy('date', 'asc')
-            ->take(5)
             ->get()
             ->map(function($event) {
                 return [
@@ -35,8 +34,9 @@ class ChamberListController extends Controller
         $chambersQuery = \App\Models\Chamber::where('verified', true)
             ->withCount('members')
             ->with(['events' => function($query) {
-                $query->where('date', '>=', now())->take(5);
-            }]);
+                $query->where('date', '>=', now());
+            }])
+            ->orderBy('created_at', 'desc'); // Trier par date de création (plus récentes en premier)
 
         // Si c'est une requête AJAX pour le lazy loading
         if (request()->ajax()) {
