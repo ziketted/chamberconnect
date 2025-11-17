@@ -54,12 +54,6 @@
                     <i data-lucide="shield" class="mr-2 h-4 w-4"></i>
                     Super Admin
                 </div>
-                @elseif(Auth::user()->isChamberManager())
-                <div
-                    class="inline-flex items-center rounded-md bg-orange-500/20 px-3 py-2 text-sm font-medium text-orange-300 mb-3">
-                    <i data-lucide="briefcase" class="mr-2 h-4 w-4"></i>
-                    Gestionnaire de chambre
-                </div>
                 @else
                 <div
                     class="inline-flex items-center rounded-md bg-blue-500/20 px-3 py-2 text-sm font-medium text-blue-300 mb-3">
@@ -76,11 +70,6 @@
                 <a href="{{ route('admin.dashboard') }}"
                     class="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md text-sm font-medium transition-colors">
                     Administration
-                </a>
-                @elseif(Auth::user()->isChamberManager())
-                <a href="{{ route('chamber-manager.dashboard') }}"
-                    class="block w-full text-center bg-orange-600 hover:bg-orange-700 text-white py-2 px-4 rounded-md text-sm font-medium transition-colors">
-                    Tableau de bord gestionnaire
                 </a>
                 @endif
             </div>
@@ -245,8 +234,8 @@
 
         <!-- Skeleton loading pour le feed des chambres -->
         <div id="chambers-feed-skeleton" class="space-y-4" style="display: none;">
-            @for($i = 0; $i < 4; $i++)
-            <x-skeleton.chamber-feed />
+            @for($i = 0; $i
+            < 4; $i++) <x-skeleton.chamber-feed />
             @endfor
         </div>
 
@@ -389,8 +378,8 @@
 
                 <!-- Skeleton loading pour les événements -->
                 <div id="sidebar-events-skeleton" class="space-y-4" style="display: none;">
-                    @for($i = 0; $i < 3; $i++)
-                    <x-skeleton.sidebar-event />
+                    @for($i = 0; $i
+                    < 3; $i++) <x-skeleton.sidebar-event />
                     @endfor
                 </div>
 
@@ -403,7 +392,8 @@
                             <div class="flex items-center gap-3">
                                 <div
                                     class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <span class="text-white font-bold text-sm">{{ strtoupper(substr($event['chamber_name'], 0, 2)) }}</span>
+                                    <span class="text-white font-bold text-sm">{{
+                                        strtoupper(substr($event['chamber_name'], 0, 2)) }}</span>
                                 </div>
                                 <div>
                                     @if($event['is_user_chamber'])
@@ -438,7 +428,8 @@
                             </div>
                             <div class="flex items-center gap-2 text-sm text-gray-300">
                                 <i data-lucide="users" class="h-4 w-4"></i>
-                                <span>{{ $event['participants'] }}@if($event['max_participants'])/{{ $event['max_participants'] }}@endif participants</span>
+                                <span>{{ $event['participants'] }}@if($event['max_participants'])/{{
+                                    $event['max_participants'] }}@endif participants</span>
                             </div>
                             <div class="flex items-center gap-2 text-sm text-gray-300">
                                 <i data-lucide="tag" class="h-4 w-4"></i>
@@ -451,11 +442,12 @@
 
                         <!-- Actions -->
                         <div class="flex items-center gap-3">
-                            <button onclick="toggleEventLike(this, {{ $event['id'] }})" 
+                            <button onclick="toggleEventLike(this, {{ $event['id'] }})"
                                 data-event-id="{{ $event['id'] }}"
                                 class="like-btn flex items-center gap-2 px-3 py-2 text-sm text-gray-300 hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-200 rounded-lg border border-gray-600 {{ $event['is_liked'] ? 'liked' : '' }}"
                                 style="{{ $event['is_liked'] ? 'color: #f87171; border-color: #f87171; background-color: rgba(254, 226, 226, 0.3);' : '' }}">
-                                <i data-lucide="heart" class="h-4 w-4 {{ $event['is_liked'] ? 'fill-current' : '' }}"></i>
+                                <i data-lucide="heart"
+                                    class="h-4 w-4 {{ $event['is_liked'] ? 'fill-current' : '' }}"></i>
                                 <span class="like-count">{{ $event['likes_count'] }}</span>
                             </button>
                             @if($event['status'] !== 'complet')
@@ -704,44 +696,44 @@
 
 @push('styles')
 <style>
-/* Style pour les boutons like dans le dashboard principal */
-.like-btn {
-    position: relative;
-    overflow: hidden;
-    transition: all 0.2s ease;
-}
+    /* Style pour les boutons like dans le dashboard principal */
+    .like-btn {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.2s ease;
+    }
 
-/* Style par défaut - gris */
-.like-btn {
-    color: #9ca3af !important;
-    border-color: #4b5563 !important;
-    background-color: transparent !important;
-}
+    /* Style par défaut - gris */
+    .like-btn {
+        color: #9ca3af !important;
+        border-color: #4b5563 !important;
+        background-color: transparent !important;
+    }
 
-/* Style au hover - rouge */
-.like-btn:hover {
-    color: #ef4444 !important;
-    border-color: #f87171 !important;
-    background-color: rgba(127, 29, 29, 0.3) !important;
-}
+    /* Style au hover - rouge */
+    .like-btn:hover {
+        color: #ef4444 !important;
+        border-color: #f87171 !important;
+        background-color: rgba(127, 29, 29, 0.3) !important;
+    }
 
-/* Style quand liké - rouge permanent mais subtil */
-.like-btn.liked {
-    color: #f87171 !important;
-    border-color: #f87171 !important;
-    background-color: rgba(127, 29, 29, 0.2) !important;
-}
+    /* Style quand liké - rouge permanent mais subtil */
+    .like-btn.liked {
+        color: #f87171 !important;
+        border-color: #f87171 !important;
+        background-color: rgba(127, 29, 29, 0.2) !important;
+    }
 
-.like-btn.liked:hover {
-    color: #ef4444 !important;
-    border-color: #f87171 !important;
-    background-color: rgba(127, 29, 29, 0.4) !important;
-}
+    .like-btn.liked:hover {
+        color: #ef4444 !important;
+        border-color: #f87171 !important;
+        background-color: rgba(127, 29, 29, 0.4) !important;
+    }
 
-/* Animation pour le bouton like */
-.like-btn:active {
-    transform: scale(0.95);
-}
+    /* Animation pour le bouton like */
+    .like-btn:active {
+        transform: scale(0.95);
+    }
 </style>
 @endpush
 
@@ -790,26 +782,26 @@
             button.addEventListener('click', function() {
                 const eventId = this.dataset.eventId;
                 const eventTitle = this.dataset.eventTitle;
-                
+
                 // Afficher une confirmation
                 if (confirm(`Voulez-vous réserver une place pour "${eventTitle}" ?`)) {
                     // Désactiver le bouton temporairement
                     this.disabled = true;
                     this.innerHTML = '<i data-lucide="loader-2" class="h-4 w-4 animate-spin mr-2"></i>Réservation...';
-                    
+
                     // Simuler un appel API (remplacez par un vrai appel AJAX)
                     setTimeout(() => {
                         // Succès de la réservation
                         this.innerHTML = '<i data-lucide="check" class="h-4 w-4 mr-2"></i>Réservé';
                         this.classList.remove('bg-blue-600', 'hover:bg-blue-700');
                         this.classList.add('bg-green-600', 'hover:bg-green-700');
-                        
+
                         // Réinitialiser les icônes Lucide
                         lucide.createIcons();
-                        
+
                         // Afficher un message de succès
                         showNotification('Réservation confirmée !', 'success');
-                        
+
                         // Optionnel : réactiver le bouton après quelques secondes
                         setTimeout(() => {
                             this.disabled = false;
@@ -823,17 +815,17 @@
         const chambersSearch = document.getElementById('chambersSearch');
         const chambersList = document.getElementById('chambersList');
         const noResults = document.getElementById('noResults');
-        
+
         if (chambersSearch && chambersList) {
             chambersSearch.addEventListener('input', function() {
                 const searchTerm = this.value.toLowerCase().trim();
                 const chamberItems = chambersList.querySelectorAll('.chamber-item');
                 let visibleCount = 0;
-                
+
                 chamberItems.forEach((item, index) => {
                     const chamberName = item.dataset.name.toLowerCase();
                     const shouldShow = searchTerm === '' ? index < 3 : chamberName.includes(searchTerm);
-                    
+
                     if (shouldShow) {
                         item.classList.remove('hidden');
                         item.classList.add('flex');
@@ -843,7 +835,7 @@
                         item.classList.remove('flex');
                     }
                 });
-                
+
                 // Afficher/masquer le message "Aucun résultat"
                 if (visibleCount === 0 && searchTerm !== '') {
                     noResults.classList.remove('hidden');
@@ -859,10 +851,10 @@
         const icon = button.querySelector('i[data-lucide="heart"]');
         const likeCountElement = button.querySelector('.like-count');
         const isLiked = button.classList.contains('text-red-400');
-        
+
         // Désactiver le bouton temporairement
         button.disabled = true;
-        
+
         // Faire l'appel AJAX
         fetch(`/events/${eventId}/like`, {
             method: 'POST',
@@ -883,18 +875,18 @@
                 button.classList.remove('text-red-400');
                 icon.classList.remove('fill-current');
             }
-            
+
             // Mettre à jour le compteur
             if (likeCountElement) {
                 likeCountElement.textContent = data.likes_count;
             }
-            
+
             // Animation du bouton
             button.style.transform = 'scale(0.95)';
             setTimeout(() => {
                 button.style.transform = 'scale(1)';
             }, 150);
-            
+
             // Réinitialiser les icônes Lucide
             if (typeof lucide !== 'undefined') {
                 lucide.createIcons();
@@ -914,7 +906,7 @@
     function showNotification(message, type = 'info') {
         const notification = document.createElement('div');
         notification.className = `fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg text-white transition-all duration-300 transform translate-x-full`;
-        
+
         if (type === 'success') {
             notification.classList.add('bg-green-600');
         } else if (type === 'error') {
@@ -922,21 +914,21 @@
         } else {
             notification.classList.add('bg-blue-600');
         }
-        
+
         notification.innerHTML = `
             <div class="flex items-center gap-2">
                 <i data-lucide="${type === 'success' ? 'check-circle' : type === 'error' ? 'x-circle' : 'info'}" class="h-5 w-5"></i>
                 <span>${message}</span>
             </div>
         `;
-        
+
         document.body.appendChild(notification);
-        
+
         // Animer l'entrée
         setTimeout(() => {
             notification.classList.remove('translate-x-full');
         }, 100);
-        
+
         // Supprimer après 3 secondes
         setTimeout(() => {
             notification.classList.add('translate-x-full');
@@ -944,7 +936,7 @@
                 document.body.removeChild(notification);
             }, 300);
         }, 3000);
-        
+
         // Réinitialiser les icônes Lucide
         lucide.createIcons();
     }
@@ -954,19 +946,19 @@
         console.log('Opening modal for:', chamberSlug);
         const modal = document.getElementById('certificationModal');
         const form = document.getElementById('certificationForm');
-        
+
         if (!modal || !form) {
             console.error('Modal ou formulaire non trouvé');
             return;
         }
-        
+
         // Définir l'action du formulaire avec le slug de la chambre
         form.action = `/admin/chambers/${chamberSlug}/certify`;
-        
+
         // Générer un numéro d'état suggéré basé sur le slug
         const currentYear = new Date().getFullYear();
         let suggestedNumber = '';
-        
+
         if (chamberSlug.includes('abidjan')) {
             suggestedNumber = `CCI-AB-${currentYear}-001`;
         } else if (chamberSlug.includes('dakar')) {
@@ -978,9 +970,9 @@
             const randomNum = Math.floor(Math.random() * 999) + 1;
             suggestedNumber = `CCI-XX-${currentYear}-${randomNum.toString().padStart(3, '0')}`;
         }
-        
+
         document.getElementById('state_number').value = suggestedNumber;
-        
+
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
     }
@@ -989,7 +981,7 @@
         const modal = document.getElementById('certificationModal');
         modal.classList.add('hidden');
         document.body.style.overflow = 'auto';
-        
+
         // Réinitialiser le formulaire
         document.getElementById('certificationForm').reset();
     }
@@ -1006,10 +998,10 @@
         const icon = button.querySelector('i[data-lucide="heart"]');
         const likeCountElement = button.querySelector('.like-count');
         const isLiked = button.classList.contains('liked');
-        
+
         // Désactiver le bouton temporairement
         button.disabled = true;
-        
+
         // Faire l'appel AJAX
         fetch(`/events/${eventId}/like`, {
             method: 'POST',
@@ -1036,18 +1028,18 @@
                 icon.classList.remove('fill-current');
                 icon.style.fill = '';
             }
-            
+
             // Mettre à jour le compteur
             if (likeCountElement) {
                 likeCountElement.textContent = data.likes_count;
             }
-            
+
             // Animation du bouton
             button.style.transform = 'scale(0.95)';
             setTimeout(() => {
                 button.style.transform = 'scale(1)';
             }, 150);
-            
+
             // Réinitialiser les icônes Lucide
             if (typeof lucide !== 'undefined') {
                 lucide.createIcons();

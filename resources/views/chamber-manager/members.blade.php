@@ -1,256 +1,327 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <!-- Header -->
-    <div class="mb-8">
-        <nav class="flex" aria-label="Breadcrumb">
-            <ol class="flex items-center space-x-4">
-                <li>
-                    <a href="{{ route('chamber-manager.dashboard') }}" class="text-gray-400 hover:text-gray-500 dark:text-gray-400">
-                        <i data-lucide="home" class="flex-shrink-0 h-5 w-5"></i>
-                        <span class="sr-only">Tableau de bord</span>
-                    </a>
-                </li>
-                <li>
-                    <div class="flex items-center">
-                        <i data-lucide="chevron-right" class="flex-shrink-0 h-5 w-5 text-gray-400"></i>
-                        <span class="ml-4 text-sm font-medium text-gray-500 dark:text-gray-400">Gestion des membres</span>
-                    </div>
-                </li>
-            </ol>
-        </nav>
-        
-        <div class="mt-4 md:flex md:items-center md:justify-between">
-            <div class="flex-1 min-w-0">
-                <h1 class="text-2xl font-bold leading-7 text-gray-900 dark:text-white sm:text-3xl sm:truncate">
-                    Membres - {{ $chamber->name }}
-                </h1>
-                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    Gérez les membres et leurs rôles dans cette chambre
-                </p>
-            </div>
-            <div class="mt-4 flex space-x-3 md:mt-0 md:ml-4">
-                <a href="{{ route('chambers.members.create', $chamber) }}" 
-                   class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#073066] hover:bg-[#052347] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#073066]">
-                    <i data-lucide="user-plus" class="mr-2 h-4 w-4"></i>
-                    Ajouter un membre
-                </a>
-            </div>
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-neutral-900 dark:text-white">Membres — {{ $chamber->name }}</h1>
+            <p class="text-sm text-neutral-600 dark:text-gray-400">Valider, retirer ou changer le rôle des membres.</p>
         </div>
-    </div>
-
-    <!-- Messages de succès/erreur -->
-    @if(session('success'))
-        <div class="mb-6 rounded-md bg-green-50 p-4">
-            <div class="flex">
-                <div class="flex-shrink-0">
-                    <i data-lucide="check-circle" class="h-5 w-5 text-green-400"></i>
-                </div>
-                <div class="ml-3">
-                    <p class="text-sm font-medium text-green-800">{{ session('success') }}</p>
-                </div>
-            </div>
-        </div>
-    @endif
-
-    <!-- Demandes en attente -->
-    @if($pendingMembers->count() > 0)
-    <div class="mb-8 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-        <div class="flex">
-            <div class="flex-shrink-0">
-                <i data-lucide="clock" class="h-5 w-5 text-yellow-400"></i>
-            </div>
-            <div class="ml-3 flex-1">
-                <h3 class="text-sm font-medium text-yellow-800">
-                    {{ $pendingMembers->count() }} demande(s) d'adhésion en attente
-                </h3>
-                <div class="mt-4 space-y-3">
-                    @foreach($pendingMembers as $member)
-                    <div class="flex items-center justify-between bg-white dark:bg-gray-800 rounded-md p-3">
-                        <div class="flex items-center space-x-3">
-                            <img src="https://ui-avatars.com/api/?name={{ urlencode($member->name) }}&background=E71D36&color=fff" 
-                                 alt="{{ $member->name }}" 
-                                 class="h-8 w-8 rounded-full">
-                            <div>
-                                <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $member->name }}</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">{{ $member->email }}</p>
-                            </div>
-                        </div>
-                        <div class="flex space-x-2">
-                            <form action="{{ route('chambers.members.approve', [$chamber, $member]) }}" method="POST" class="inline">
-                                @csrf
-                                <button type="submit" 
-                                        class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded text-white bg-green-600 hover:bg-green-700">
-                                    <i data-lucide="check" class="mr-1 h-3 w-3"></i>
-                                    Approuver
-                                </button>
-                            </form>
-                            <form action="{{ route('chambers.members.reject', [$chamber, $member]) }}" method="POST" class="inline">
-                                @csrf
-                                <button type="submit" 
-                                        class="inline-flex items-center px-3 py-1.5 border border-gray-300 dark:border-gray-600 dark:border-gray-400 text-xs font-medium rounded text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:bg-gray-800">
-                                    <i data-lucide="x" class="mr-1 h-3 w-3"></i>
-                                    Rejeter
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
-            </div>
-        </div>
-    </div>
-    @endif
-
-    <!-- Liste des membres -->
-    <div class="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-md">
-        <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
-            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">
-                Membres actifs ({{ $members->where('pivot.status', 'approved')->count() }})
-            </h3>
-        </div>
-        
-        @if($members->where('pivot.status', 'approved')->count() > 0)
-        <ul class="divide-y divide-gray-200">
-            @foreach($members->where('pivot.status', 'approved') as $member)
-            <li class="px-4 py-4 sm:px-6">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-4">
-                        <img src="https://ui-avatars.com/api/?name={{ urlencode($member->name) }}&background=E71D36&color=fff" 
-                             alt="{{ $member->name }}" 
-                             class="h-10 w-10 rounded-full">
-                        <div>
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $member->name }}</p>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">{{ $member->email }}</p>
-                            <div class="flex items-center space-x-2 mt-1">
-                                @if($member->pivot->role === 'manager')
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
-                                        <i data-lucide="briefcase" class="mr-1 h-3 w-3"></i>
-                                        Gestionnaire
-                                    </span>
-                                @else
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
-                                        <i data-lucide="user" class="mr-1 h-3 w-3"></i>
-                                        Membre
-                                    </span>
-                                @endif
-                                <span class="text-xs text-gray-500 dark:text-gray-400">
-                                    Membre depuis {{ \Carbon\Carbon::parse($member->pivot->created_at)->format('M Y') }}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="flex items-center space-x-2">
-                        <!-- Dropdown pour changer le rôle -->
-                        <div class="relative inline-block text-left">
-                            <button type="button" 
-                                    class="inline-flex items-center px-3 py-1.5 border border-gray-300 dark:border-gray-600 dark:border-gray-400 shadow-sm text-xs font-medium rounded text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#073066]"
-                                    onclick="toggleDropdown('role-{{ $member->id }}')">
-                                <i data-lucide="settings" class="mr-1 h-3 w-3"></i>
-                                Actions
-                                <i data-lucide="chevron-down" class="ml-1 h-3 w-3"></i>
-                            </button>
-                            
-                            <div id="role-{{ $member->id }}" class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-10">
-                                <div class="py-1">
-                                    @if($member->pivot->role !== 'manager')
-                                    <form action="{{ route('chambers.members.change-role', [$chamber, $member]) }}" method="POST" class="block">
-                                        @csrf
-                                        @method('PATCH')
-                                        <input type="hidden" name="role" value="manager">
-                                        <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:bg-gray-700">
-                                            <i data-lucide="arrow-up" class="inline mr-2 h-3 w-3"></i>
-                                            Promouvoir gestionnaire
-                                        </button>
-                                    </form>
-                                    @else
-                                    <form action="{{ route('chambers.members.change-role', [$chamber, $member]) }}" method="POST" class="block">
-                                        @csrf
-                                        @method('PATCH')
-                                        <input type="hidden" name="role" value="member">
-                                        <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:bg-gray-700">
-                                            <i data-lucide="arrow-down" class="inline mr-2 h-3 w-3"></i>
-                                            Rétrograder membre
-                                        </button>
-                                    </form>
-                                    @endif
-                                    
-                                    <form action="{{ route('chambers.members.remove', [$chamber, $member]) }}" method="POST" class="block">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" 
-                                                onclick="return confirm('Êtes-vous sûr de vouloir retirer ce membre ?')"
-                                                class="w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-red-50">
-                                            <i data-lucide="user-minus" class="inline mr-2 h-3 w-3"></i>
-                                            Retirer de la chambre
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </li>
-            @endforeach
-        </ul>
-        @else
-        <div class="text-center py-12">
-            <div class="mx-auto h-12 w-12 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center mb-4">
-                <i data-lucide="users" class="h-6 w-6 text-gray-400"></i>
-            </div>
-            <h3 class="text-sm font-medium text-gray-900 dark:text-white mb-2">Aucun membre actif</h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Cette chambre n'a pas encore de membres approuvés.</p>
-            <a href="{{ route('chambers.members.create', $chamber) }}" 
-               class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#073066] hover:bg-[#052347]">
-                <i data-lucide="user-plus" class="mr-2 h-4 w-4"></i>
-                Ajouter le premier membre
+        <div class="flex items-center gap-2">
+            <a href="{{ route('chamber-manager.dashboard', $chamber) }}"
+                class="inline-flex items-center gap-2 px-3 py-2 rounded-md border border-neutral-300 dark:border-gray-600 text-sm text-neutral-800 dark:text-gray-200 hover:bg-neutral-100 dark:hover:bg-gray-700">
+                <i data-lucide="layout-dashboard" class="h-4 w-4"></i> Tableau de bord
+            </a>
+            <a href="{{ route('chambers.members.create', $chamber) }}"
+                class="inline-flex items-center gap-2 px-3 py-2 rounded-md bg-[#073066] text-white text-sm hover:bg-[#052347]">
+                <i data-lucide="user-plus" class="h-4 w-4"></i> Ajouter un membre
             </a>
         </div>
-        @endif
+    </div>
+
+    <!-- Pending requests -->
+    <div
+        class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden mb-8">
+        <div class="p-4 border-b border-neutral-200 dark:border-gray-700">
+            <h3 class="text-sm font-medium text-neutral-900 dark:text-white">Demandes en attente</h3>
+        </div>
+        <div class="p-4">
+            @if($pendingMembers->isEmpty())
+            <p class="text-sm text-neutral-600 dark:text-gray-400">Aucune demande d’adhésion en attente.</p>
+            @else
+            <ul class="space-y-3">
+                @foreach($pendingMembers as $pm)
+                <li class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-neutral-900 dark:text-white">{{ $pm->name }}</p>
+                        <p class="text-xs text-neutral-600 dark:text-gray-400">{{ $pm->email }}</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <form method="POST" action="{{ route('chambers.members.approve', [$chamber, $pm]) }}">
+                            @csrf
+                            <button
+                                class="px-2 py-1 text-xs rounded-md bg-green-600 text-white hover:bg-green-700">Valider</button>
+                        </form>
+                        <form method="POST" action="{{ route('chambers.members.reject', [$chamber, $pm]) }}">
+                            @csrf
+                            <button
+                                class="px-2 py-1 text-xs rounded-md bg-rose-600 text-white hover:bg-rose-700">Refuser</button>
+                        </form>
+                    </div>
+                </li>
+                @endforeach
+            </ul>
+            @endif
+        </div>
+    </div>
+
+    <!-- All members -->
+    <div class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden">
+        <div class="p-4 border-b border-neutral-200 dark:border-gray-700">
+            <div class="flex items-center justify-between gap-3">
+                <h3 class="text-sm font-medium text-neutral-900 dark:text-white">Tous les membres</h3>
+                <div class="relative">
+                    <input type="text" id="manager-members-search" placeholder="Rechercher des membres"
+                        class="w-56 rounded-md border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 pl-8 pr-3 py-1.5 text-xs focus:border-[#073066] dark:focus:border-blue-500 focus:ring-2 focus:ring-[#073066]/20 dark:focus:ring-blue-500/20">
+                    <span
+                        class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2 text-neutral-400 dark:text-gray-400">
+                        <i data-lucide="search" class="h-3.5 w-3.5"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="p-4 overflow-x-auto">
+            <table class="min-w-full text-sm">
+                <thead class="text-left text-neutral-600 dark:text-gray-300">
+                    <tr>
+                        <th class="py-2 pr-4">Membre</th>
+                        <th class="py-2 pr-4">Rôle</th>
+                        <th class="py-2 pr-4">Statut</th>
+                        <th class="py-2 pr-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="text-neutral-800 dark:text-gray-100">
+                    @foreach($members as $m)
+                    <tr class="border-t border-neutral-100 dark:border-gray-700 js-member-row cursor-pointer hover:bg-neutral-50 dark:hover:bg-gray-700"
+                        data-user-id="{{ $m->id }}" data-name="{{ strtolower($m->name) }}"
+                        data-email="{{ strtolower($m->email) }}">
+                        <td class="py-3 pr-4">
+                            <div class="flex flex-col">
+                                <span class="font-medium">{{ $m->name }}</span>
+                                <span class="text-xs text-neutral-500">{{ $m->email }}</span>
+                            </div>
+                        </td>
+                        <td class="py-3 pr-4">
+                            <form method="POST" action="{{ route('chambers.members.change-role', [$chamber, $m]) }}"
+                                class="flex items-center gap-2 js-change-role" data-user-id="{{ $m->id }}">
+                                @csrf
+                                @method('PATCH')
+                                <select name="role"
+                                    class="rounded-md border-neutral-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 text-sm">
+                                    <option value="member" @selected($m->pivot->role === 'member')>Membre</option>
+                                    <option value="manager" @selected($m->pivot->role === 'manager')>Gestionnaire
+                                    </option>
+                                </select>
+                                <button
+                                    class="px-2 py-1 text-xs rounded-md bg-neutral-100 dark:bg-gray-700 hover:bg-neutral-200 dark:hover:bg-gray-600">Appliquer</button>
+                            </form>
+                        </td>
+                        <td class="py-3 pr-4">
+                            @if($m->pivot->status === 'approved')
+                            <span
+                                class="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">Actif</span>
+                            @elseif($m->pivot->status === 'pending')
+                            <span
+                                class="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">En
+                                attente</span>
+                            @else
+                            <span
+                                class="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs bg-neutral-100 text-neutral-800 dark:bg-gray-700 dark:text-gray-300">{{
+                                $m->pivot->status }}</span>
+                            @endif
+                        </td>
+                        <td class="py-3 pr-4">
+                            <div class="flex items-center gap-2">
+                                @if($m->pivot->status === 'pending')
+                                <form method="POST" action="{{ route('chambers.members.approve', [$chamber, $m]) }}">
+                                    @csrf
+                                    <button
+                                        class="px-2 py-1 text-xs rounded-md bg-green-600 text-white hover:bg-green-700">Valider</button>
+                                </form>
+                                @endif
+                                <form method="POST" action="{{ route('chambers.members.remove', [$chamber, $m]) }}"
+                                    class="js-remove-member" data-member-name="{{ $m->name }}">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="button"
+                                        class="px-2 py-1 text-xs rounded-md bg-rose-600 text-white hover:bg-rose-700 js-remove-btn">Retirer</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
+@endsection
 
 @push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    // Initialiser les icônes Lucide
-    lucide.createIcons({
-        attrs: {
-            'stroke-width': 1.5
+    document.addEventListener('DOMContentLoaded', () => {
+    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    // AJAX role change
+    document.querySelectorAll('.js-change-role').forEach(form => {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const url = form.action;
+            const formData = new FormData(form);
+            try {
+                const res = await fetch(url, { method: 'POST', headers: { 'X-CSRF-TOKEN': token, 'X-Requested-With': 'XMLHttpRequest' }, body: formData });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    showToast('Rôle mis à jour', 'success');
+                } else {
+                    showToast(data.message || 'Erreur lors de la mise à jour', 'error');
+                }
+            } catch {
+                showToast('Erreur réseau', 'error');
         }
     });
 });
-
-// Fonction pour toggle les dropdowns
-function toggleDropdown(id) {
-    const dropdown = document.getElementById(id);
-    const isHidden = dropdown.classList.contains('hidden');
-    
-    // Fermer tous les autres dropdowns
-    document.querySelectorAll('[id^="role-"]').forEach(el => {
-        if (el.id !== id) {
-            el.classList.add('hidden');
-        }
+    // Member details
+    document.querySelectorAll('.js-member-row').forEach(row => {
+        row.addEventListener('click', async (e) => {
+            if (e.target.closest('form') || e.target.closest('button') || e.target.tagName === 'SELECT') return;
+            const userId = row.dataset.userId;
+            const url = `{{ route('chambers.members.details', [$chamber, 'USER_ID']) }}`.replace('USER_ID', userId);
+            try {
+                const res = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' }});
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    openMemberModal(data.member);
+                } else {
+                    showToast('Impossible de charger les détails', 'error');
+                }
+            } catch {
+                showToast('Erreur réseau', 'error');
+            }
+        });
     });
-    
-    // Toggle le dropdown actuel
-    if (isHidden) {
-        dropdown.classList.remove('hidden');
-    } else {
-        dropdown.classList.add('hidden');
+    function openMemberModal(member) {
+        const modal = document.getElementById('member-modal');
+        const body = document.getElementById('member-modal-body');
+        body.innerHTML = `
+            <div class="space-y-3 text-sm">
+                <div class="flex items-center gap-3">
+                    <div class="h-10 w-10 rounded-full bg-[#073066] text-white flex items-center justify-center font-semibold">
+                        ${(member.name||'U').slice(0,1).toUpperCase()}
+                    </div>
+                    <div>
+                        <div class="font-medium text-neutral-900 dark:text-white">${member.name||''}</div>
+                        <div class="text-neutral-600 dark:text-gray-300">${member.email||''}</div>
+                        ${member.phone ? `<a href="tel:${member.phone}" class="text-[#073066] dark:text-blue-400 hover:underline block">${member.phone}</a>` : ''}
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3 mt-2">
+                    <div class="rounded-md border border-neutral-200 dark:border-gray-700 p-3">
+                        <div class="text-xs text-neutral-500 dark:text-gray-400">Rôle</div>
+                        <div class="text-sm font-medium">${member.role}</div>
+                    </div>
+                    <div class="rounded-md border border-neutral-200 dark:border-gray-700 p-3">
+                        <div class="text-xs text-neutral-500 dark:text-gray-400">Statut</div>
+                        <div class="text-sm font-medium">${member.status}</div>
+                    </div>
+                    <div class="rounded-md border border-neutral-200 dark:border-gray-700 p-3">
+                        <div class="text-xs text-neutral-500 dark:text-gray-400">Confirmés</div>
+                        <div class="text-sm font-medium">${member.events_confirmed}</div>
+                    </div>
+                    <div class="rounded-md border border-neutral-200 dark:border-gray-700 p-3">
+                        <div class="text-xs text-neutral-500 dark:text-gray-400">Réservés</div>
+                        <div class="text-sm font-medium">${member.events_reserved}</div>
+                    </div>
+                </div>
+                <div class="rounded-md border border-neutral-200 dark:border-gray-700 p-3">
+                    <div class="text-xs text-neutral-500 dark:text-gray-400">Société</div>
+                    <div class="text-sm font-medium">${member.company || '-'}</div>
+                </div>
+                <div class="rounded-md border border-neutral-200 dark:border-gray-700 p-3">
+                    <div class="text-xs text-neutral-500 dark:text-gray-400">Nationalité</div>
+                    <div class="text-sm font-medium">${member.nationality || '-'}</div>
+                </div>
+            </div>
+        `;
+        modal.classList.remove('hidden');
+        if (window.lucide) lucide.createIcons();
     }
-}
+    function showToast(message, type='info') {
+        const toast = document.createElement('div');
+        toast.className = 'fixed top-4 right-4 z-50 px-4 py-2 rounded-md text-white shadow-lg';
+        toast.style.backgroundColor = type === 'success' ? '#16a34a' : (type === 'error' ? '#dc2626' : '#2563eb');
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        setTimeout(()=>toast.remove(), 2500);
+    }
+    document.getElementById('member-modal-close')?.addEventListener('click', () => {
+        document.getElementById('member-modal').classList.add('hidden');
+    });
+    document.getElementById('member-modal')?.addEventListener('click', (e) => {
+        if (e.target.id === 'member-modal') e.target.classList.add('hidden');
+    });
 
-// Fermer les dropdowns en cliquant ailleurs
-document.addEventListener('click', function(e) {
-    if (!e.target.closest('[onclick^="toggleDropdown"]') && !e.target.closest('[id^="role-"]')) {
-        document.querySelectorAll('[id^="role-"]').forEach(el => {
-            el.classList.add('hidden');
+    // Remove confirmation modal logic
+    const removeModal = document.getElementById('remove-modal');
+    const removeBody = document.getElementById('remove-modal-body');
+    let pendingRemoveForm = null;
+    document.querySelectorAll('.js-remove-member .js-remove-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const form = e.target.closest('form');
+            pendingRemoveForm = form;
+            const name = form.dataset.memberName || 'ce membre';
+            removeBody.innerHTML = `
+                <p class="text-sm text-neutral-700 dark:text-gray-300">Êtes-vous sûr de vouloir retirer <span class="font-semibold">${name}</span> de cette chambre ?</p>
+                <p class="text-xs text-neutral-500 dark:text-gray-400 mt-2">Cette action est irréversible et supprimera l'accès du membre aux ressources de la chambre.</p>
+            `;
+            removeModal.classList.remove('hidden');
+        });
+    });
+    document.getElementById('remove-cancel')?.addEventListener('click', ()=> removeModal.classList.add('hidden'));
+    document.getElementById('remove-confirm')?.addEventListener('click', ()=> {
+        if (pendingRemoveForm) pendingRemoveForm.submit();
+    });
+    removeModal?.addEventListener('click', (e)=> { if (e.target.id === 'remove-modal') removeModal.classList.add('hidden'); });
+
+    // Search in members table
+    const searchInput = document.getElementById('manager-members-search');
+    if (searchInput) {
+        const rows = Array.from(document.querySelectorAll('tbody tr.js-member-row'));
+        searchInput.addEventListener('input', () => {
+            const q = searchInput.value.trim().toLowerCase();
+            rows.forEach(row => {
+                const name = row.dataset.name || '';
+                const email = row.dataset.email || '';
+                const show = q === '' || name.includes(q) || email.includes(q);
+                row.style.display = show ? '' : 'none';
+            });
         });
     }
 });
 </script>
 @endpush
-@endsection
+
+<!-- Member details modal -->
+<div id="member-modal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+    <div class="w-full max-w-md rounded-xl bg-white dark:bg-gray-800 shadow-xl">
+        <div class="flex items-center justify-between border-b border-neutral-200 dark:border-gray-700 p-4">
+            <h3 class="text-sm font-semibold text-neutral-900 dark:text-white">Détails du membre</h3>
+            <button id="member-modal-close" class="text-neutral-500 hover:text-neutral-700 dark:text-gray-400">
+                <i data-lucide="x" class="h-5 w-5"></i>
+            </button>
+        </div>
+        <div id="member-modal-body" class="p-4"></div>
+    </div>
+</div>
+
+<!-- Remove confirmation modal -->
+<div id="remove-modal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+    <div class="w-full max-w-md rounded-xl bg-white dark:bg-gray-800 shadow-xl">
+        <div class="flex items-center justify-between border-b border-neutral-200 dark:border-gray-700 p-4">
+            <h3 class="text-sm font-semibold text-neutral-900 dark:text-white">Retirer le membre</h3>
+            <button id="remove-cancel" class="text-neutral-500 hover:text-neutral-700 dark:text-gray-400">
+                <i data-lucide="x" class="h-5 w-5"></i>
+            </button>
+        </div>
+        <div id="remove-modal-body" class="p-4"></div>
+        <div class="flex items-center justify-end gap-2 p-4 border-t border-neutral-200 dark:border-gray-700">
+            <button id="remove-cancel"
+                class="inline-flex items-center rounded-md border border-neutral-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-1.5 text-sm font-medium text-neutral-800 dark:text-gray-200 hover:bg-neutral-50 dark:hover:bg-gray-700">
+                Annuler
+            </button>
+            <button id="remove-confirm"
+                class="inline-flex items-center rounded-md bg-rose-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-rose-700">
+                Confirmer
+            </button>
+        </div>
+    </div>
+</div>

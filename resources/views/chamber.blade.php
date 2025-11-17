@@ -45,6 +45,21 @@
                             </span>
                             @endif
                         </div>
+                        <div class="mt-2 flex items-center gap-2">
+                            @php($typeLabel = $chamber->type === 'bilateral' ? 'Bilatérale' : 'Nationale')
+                            <span
+                                class="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-2.5 py-1 text-xs font-medium text-white backdrop-blur">
+                                <i data-lucide="layers" class="h-3.5 w-3.5"></i>
+                                {{ $typeLabel }}
+                            </span>
+                            @if($chamber->type === 'bilateral' && $chamber->embassy_country)
+                            <span
+                                class="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-2.5 py-1 text-xs font-medium text-white backdrop-blur">
+                                <i data-lucide="flag" class="h-3.5 w-3.5"></i>
+                                {{ $chamber->embassy_country }}
+                            </span>
+                            @endif
+                        </div>
                     </div>
                 </div>
                 <div class="flex gap-2">
@@ -53,7 +68,7 @@
                         <i data-lucide="share-2" class="h-4 w-4"></i> Partager
                     </button>
                     @if(!$isMember)
-                    <button onclick="joinChamber({{ $chamber->id }})"
+                    <button onclick="joinChamber('{{ $chamber->slug }}')"
                         class="inline-flex items-center gap-2 rounded-md bg-[#073066] px-3 py-2 text-sm font-semibold text-white hover:bg-[#052347]">
                         <i data-lucide="user-plus" class="h-4 w-4"></i> Rejoindre
                     </button>
@@ -76,11 +91,6 @@
 
 <!-- Sub Nav -->
 <div class="mt-6 rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm">
-    <div class="border-b border-neutral-200 dark:border-gray-700 px-4 py-2 flex justify-end">
-        <button
-            class="inline-flex items-center gap-2 rounded-md bg-[#073066] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#052347]"><i
-                data-lucide="user-plus" class="h-4 w-4"></i> Adhérer</button>
-    </div>
     <div class="flex flex-wrap items-center gap-1 border-b border-neutral-200 dark:border-gray-700 px-4 py-2">
         <button onclick="switchChamberTab('overview')" data-chamber-link="overview"
             class="cham-link active inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium text-neutral-900 dark:text-white hover:bg-neutral-100 dark:bg-gray-700"><i
@@ -104,7 +114,8 @@
                 <section class="space-y-2">
                     <h3 class="text-lg font-semibold tracking-tight" style="letter-spacing:-0.01em;">À propos de la
                         chambre</h3>
-                    <p class="text-sm text-neutral-700 dark:text-gray-300">
+                    <p
+                        class="text-sm text-neutral-700 dark:text-gray-300 break-all line-clamp-4 max-h-24 overflow-hidden">
                         {{ $chamber->description ?: 'Cette chambre de commerce connecte les entreprises avec des
                         opportunités de croissance et de développement. Nous fournissons un accès aux informations
                         politiques, à l\'intelligence de marché et au réseautage pour catalyser une croissance durable.'
@@ -254,6 +265,42 @@
 
                 <section
                     class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 shadow-sm">
+                    <h3 class="text-sm font-semibold tracking-tight" style="letter-spacing:-0.01em;">Informations
+                        complémentaires</h3>
+                    <div class="mt-3 space-y-3 text-sm text-neutral-700 dark:text-gray-300">
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="layers" class="h-4 w-4 text-neutral-500 dark:text-gray-400"></i>
+                            <span class="font-medium">Type:</span>
+                            <span class="ml-1">{{ $chamber->type === 'bilateral' ? 'Bilatérale' : 'Nationale' }}</span>
+                        </div>
+                        @if($chamber->type === 'bilateral' && $chamber->embassy_country)
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="flag" class="h-4 w-4 text-neutral-500 dark:text-gray-400"></i>
+                            <span class="font-medium">Pays:</span>
+                            <span class="ml-1">{{ $chamber->embassy_country }}</span>
+                        </div>
+                        @endif
+                        @if($chamber->type === 'bilateral' && $chamber->embassy_address)
+                        <div class="flex items-start gap-2">
+                            <i data-lucide="map-pin" class="h-4 w-4 text-neutral-500 dark:text-gray-400 mt-0.5"></i>
+                            <div>
+                                <div class="font-medium">Adresse de l'ambassade</div>
+                                <div class="text-sm">{{ $chamber->embassy_address }}</div>
+                                <div class="mt-2">
+                                    <button onclick="getDirections('{{ addslashes($chamber->embassy_address) }}')"
+                                        class="inline-flex items-center gap-2 rounded-md border border-neutral-300 bg-white dark:bg-gray-800 px-2.5 py-1.5 text-xs font-medium hover:bg-neutral-50 dark:hover:bg-gray-700">
+                                        <i data-lucide="map" class="h-3.5 w-3.5"></i>
+                                        Itinéraire
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+                    </div>
+                </section>
+
+                <section
+                    class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 shadow-sm">
                     <h3 class="text-sm font-semibold tracking-tight" style="letter-spacing:-0.01em;">Suivez-nous</h3>
                     @if($chamber->social_links && count($chamber->social_links) > 0)
                     <div class="mt-3 flex items-center gap-2 flex-wrap">
@@ -333,7 +380,8 @@
             @foreach($chamber->events as $event)
             <article
                 class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
-{{--                 <img src="{{ $event->image_path ? asset('storage/' . $event->image_path) : 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=1600&auto=format&fit=crop' }}"
+                {{-- <img
+                    src="{{ $event->image_path ? asset('storage/' . $event->image_path) : 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=1600&auto=format&fit=crop' }}"
                     class="h-40 w-full object-cover" alt="{{ $event->title }}"> --}}
                 <div class="p-4">
                     <h4 class="text-base font-semibold tracking-tight" style="letter-spacing:-0.01em;">{{ $event->title
@@ -367,14 +415,10 @@
                         @endif
                     </div>
                     <div class="mt-4 flex gap-2">
-                        @auth
-                        @php
-                        $isBooked = $event->isBookedBy(auth()->user());
-                        $bookingStatus = $event->getBookingStatus(auth()->user());
-                        @endphp
-
+                        @if(auth()->check())
+                        @php($isBooked = $event->isBookedBy(auth()->user()))
+                        @php($bookingStatus = $event->getBookingStatus(auth()->user()))
                         @if($isBooked)
-                        <!-- Utilisateur déjà inscrit -->
                         <div class="flex items-center gap-2">
                             @if($bookingStatus === 'reserved')
                             <form action="{{ route('events.confirm', $event) }}" method="POST" class="inline">
@@ -387,7 +431,6 @@
                                 </button>
                             </form>
                             @endif
-
                             @if($event->mode === 'online' && $event->lien_live && $bookingStatus === 'confirmed')
                             <a href="{{ $event->lien_live }}" target="_blank"
                                 class="inline-flex items-center gap-2 rounded-md bg-green-600 px-3 py-2 text-sm font-medium text-white hover:bg-green-700 transition-colors">
@@ -395,14 +438,11 @@
                                 Rejoindre
                             </a>
                             @endif
-
                             <button type="button" onclick="openCancelModal({{ $event->id }}, '{{ $event->title }}')"
                                 class="inline-flex items-center gap-2 rounded-md border border-orange-200 dark:border-orange-800 bg-white dark:bg-gray-800 px-3 py-2 text-sm font-medium text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors">
                                 <i data-lucide="x" class="h-4 w-4"></i>
                                 Annuler
                             </button>
-
-                            <!-- Formulaire caché pour l'annulation -->
                             <form id="cancel-form-{{ $event->id }}" action="{{ route('events.cancel', $event) }}"
                                 method="POST" class="hidden">
                                 @csrf
@@ -410,7 +450,6 @@
                             </form>
                         </div>
                         @else
-                        <!-- Utilisateur non inscrit -->
                         @if($event->status === 'full')
                         <button disabled
                             class="inline-flex items-center gap-2 rounded-md bg-gray-400 px-3 py-2 text-sm font-medium text-white cursor-not-allowed">
@@ -434,7 +473,7 @@
                             <i data-lucide="calendar-plus" class="h-4 w-4"></i>
                             Réserver place
                         </button>
-                        @endauth
+                        @endif
 
                         <button onclick="viewEventDetails({{ $event->id }})"
                             class="inline-flex items-center gap-2 rounded-md border border-neutral-300 bg-white dark:bg-gray-800 px-3 py-2 text-sm font-medium hover:bg-neutral-50 dark:hover:bg-gray-700">
@@ -604,34 +643,48 @@
     }
 
     // Rejoindre une chambre
-    function joinChamber(chamberId) {
+    function joinChamber(chamberSlug) {
+        if (!document.querySelector('meta[name="csrf-token"]')) {
+            showNotification('Erreur de sécurité. Veuillez recharger la page.', 'error');
+            return;
+        }
         if (!confirm('Voulez-vous vraiment rejoindre cette chambre ?')) {
             return;
         }
 
-        fetch(`/chambers/${chamberId}/join`, {
+        const url = `${window.location.origin}/chambers/${encodeURIComponent(chamberSlug)}/join`;
+        fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            }
+            },
+            body: JSON.stringify({})
         })
-        .then(response => response.json())
+        .then(async (response) => {
+            if (response.status === 401) {
+                // non authentifié
+                if (typeof openModal === 'function') openModal('signin-modal');
+                return { success: false, message: 'Authentification requise.' };
+            }
+            let payload = {};
+            try { payload = await response.json(); } catch (_) {}
+            if (!response.ok) {
+                throw new Error(payload.message || 'Erreur serveur');
+            }
+            return payload;
+        })
         .then(data => {
-            if (data.success) {
+            if (data && data.success) {
                 showNotification('Demande d\'adhésion envoyée avec succès !', 'success');
-                // Recharger la page après 2 secondes
-                setTimeout(() => {
-                    window.location.reload();
-                }, 2000);
-            } else {
-                showNotification(data.message || 'Erreur lors de la demande d\'adhésion', 'error');
+                setTimeout(() => window.location.reload(), 1200);
+            } else if (data && data.message) {
+                showNotification(data.message, 'error');
             }
         })
-        .catch(error => {
-            console.error('Erreur:', error);
-            showNotification('Erreur lors de la demande d\'adhésion', 'error');
-        });
+        .catch(() => showNotification('Erreur lors de la demande d\'adhésion', 'error'));
     }
 
     // S'inscrire à un événement
@@ -682,14 +735,14 @@
             membersSearch.addEventListener('input', function() {
                 const searchTerm = this.value.toLowerCase().trim();
                 const memberRows = document.querySelectorAll('.member-row');
-                
+
                 memberRows.forEach(row => {
                     const memberName = row.dataset.memberName;
                     const memberEmail = row.dataset.memberEmail;
-                    const shouldShow = searchTerm === '' || 
-                                     memberName.includes(searchTerm) || 
+                    const shouldShow = searchTerm === '' ||
+                                     memberName.includes(searchTerm) ||
                                      memberEmail.includes(searchTerm);
-                    
+
                     row.style.display = shouldShow ? '' : 'none';
                 });
             });
@@ -705,7 +758,7 @@
     function showNotification(message, type = 'info') {
         const notification = document.createElement('div');
         notification.className = `fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg text-white transition-all duration-300 transform translate-x-full max-w-sm`;
-        
+
         if (type === 'success') {
             notification.classList.add('bg-green-600');
         } else if (type === 'error') {
@@ -713,7 +766,7 @@
         } else {
             notification.classList.add('bg-blue-600');
         }
-        
+
         notification.innerHTML = `
             <div class="flex items-center gap-2">
                 <i data-lucide="${type === 'success' ? 'check-circle' : type === 'error' ? 'x-circle' : 'info'}" class="h-5 w-5"></i>
@@ -723,14 +776,14 @@
                 </button>
             </div>
         `;
-        
+
         document.body.appendChild(notification);
-        
+
         // Animer l'entrée
         setTimeout(() => {
             notification.classList.remove('translate-x-full');
         }, 100);
-        
+
         // Supprimer après 5 secondes
         setTimeout(() => {
             notification.classList.add('translate-x-full');
@@ -740,7 +793,7 @@
                 }
             }, 300);
         }, 5000);
-        
+
         // Réinitialiser les icônes Lucide
         if (typeof lucide !== 'undefined') {
             lucide.createIcons();
@@ -808,7 +861,7 @@
 // Fonction pour ouvrir les détails d'un événement
 function viewEventDetails(eventId) {
     currentEventId = eventId;
-    
+
     // Afficher le modal avec un loader
     document.getElementById('event-details-modal').classList.remove('hidden');
     document.getElementById('event-details-content').innerHTML = `
@@ -817,7 +870,7 @@ function viewEventDetails(eventId) {
             <span class="ml-3 text-gray-600 dark:text-gray-400">Chargement...</span>
         </div>
     `;
-    
+
     // Charger les détails via AJAX
     fetch(`/api/events/${eventId}/details`)
         .then(response => response.json())
@@ -848,12 +901,12 @@ function viewEventDetails(eventId) {
 function displayEventDetails(event) {
     const isBooked = event.is_booked;
     const bookingStatus = event.booking_status;
-    
+
     const content = `
         <div class="space-y-6">
             <!-- Image de couverture -->
             ${event.cover_image_path ? `
-                <img src="/storage/${event.cover_image_path}" alt="${event.title}" 
+                <img src="/storage/${event.cover_image_path}" alt="${event.title}"
                      class="w-full h-48 object-cover rounded-lg">
             ` : `
                 <div class="w-full h-48 bg-gradient-to-br from-[#073066] to-[#052347] rounded-lg flex items-center justify-center">
@@ -863,7 +916,7 @@ function displayEventDetails(event) {
                     </div>
                 </div>
             `}
-            
+
             <!-- Titre et statut -->
             <div class="flex items-start justify-between">
                 <div>
@@ -890,7 +943,7 @@ function displayEventDetails(event) {
                     </div>
                 </div>
             </div>
-            
+
             <!-- Informations principales -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="space-y-3">
@@ -926,7 +979,7 @@ function displayEventDetails(event) {
                     </div>
                 </div>
             </div>
-            
+
             <!-- Description -->
             ${event.description ? `
                 <div>
@@ -934,7 +987,7 @@ function displayEventDetails(event) {
                     <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">${event.description}</p>
                 </div>
             ` : ''}
-            
+
             <!-- Adresse complète si présentiel -->
             ${event.mode !== 'online' && event.address ? `
                 <div>
@@ -942,16 +995,16 @@ function displayEventDetails(event) {
                     <p class="text-sm text-gray-600 dark:text-gray-400">${event.address}</p>
                 </div>
             ` : ''}
-            
+
             <!-- Actions -->
             <div class="flex gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
                 ${generateEventActions(event, isBooked, bookingStatus)}
             </div>
         </div>
     `;
-    
+
     document.getElementById('event-details-content').innerHTML = content;
-    
+
     // Réinitialiser les icônes Lucide
     if (typeof lucide !== 'undefined') {
         lucide.createIcons();
@@ -962,23 +1015,23 @@ function displayEventDetails(event) {
 function generateEventActions(event, isBooked, bookingStatus) {
     if (!event.is_authenticated) {
         return `
-            <button onclick="openModal('signin-modal')" 
+            <button onclick="openModal('signin-modal')"
                 class="flex-1 inline-flex items-center justify-center gap-2 rounded-md bg-[#073066] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#052347] transition-colors">
                 <i data-lucide="calendar-plus" class="h-4 w-4"></i>
                 Réserver une place
             </button>
         `;
     }
-    
+
     if (isBooked) {
         let actions = '';
-        
+
         if (bookingStatus === 'reserved') {
             actions += `
                 <form action="/events/${event.id}/confirm" method="POST" class="flex-1">
                     <input type="hidden" name="_token" value="${document.querySelector('meta[name="csrf-token"]').getAttribute('content')}">
                     <input type="hidden" name="_method" value="PATCH">
-                    <button type="submit" 
+                    <button type="submit"
                         class="w-full inline-flex items-center justify-center gap-2 rounded-md bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700 transition-colors">
                         <i data-lucide="check" class="h-4 w-4"></i>
                         Confirmer participation
@@ -986,30 +1039,30 @@ function generateEventActions(event, isBooked, bookingStatus) {
                 </form>
             `;
         }
-        
+
         if (event.mode === 'online' && event.lien_live && bookingStatus === 'confirmed') {
             actions += `
-                <a href="${event.lien_live}" target="_blank" 
+                <a href="${event.lien_live}" target="_blank"
                     class="flex-1 inline-flex items-center justify-center gap-2 rounded-md bg-green-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-green-700 transition-colors">
                     <i data-lucide="external-link" class="h-4 w-4"></i>
                     Rejoindre l'événement
                 </a>
             `;
         }
-        
+
         actions += `
-            <button onclick="openCancelModal(${event.id}, '${event.title}')" 
+            <button onclick="openCancelModal(${event.id}, '${event.title}')"
                 class="inline-flex items-center justify-center gap-2 rounded-md border border-orange-200 dark:border-orange-800 bg-white dark:bg-gray-800 px-4 py-2.5 text-sm font-medium text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors">
                 <i data-lucide="x" class="h-4 w-4"></i>
                 Annuler réservation
             </button>
         `;
-        
+
         return actions;
     } else {
         if (event.status === 'full') {
             return `
-                <button disabled 
+                <button disabled
                     class="flex-1 inline-flex items-center justify-center gap-2 rounded-md bg-gray-400 px-4 py-2.5 text-sm font-medium text-white cursor-not-allowed">
                     <i data-lucide="users-x" class="h-4 w-4"></i>
                     Événement complet
@@ -1019,7 +1072,7 @@ function generateEventActions(event, isBooked, bookingStatus) {
             return `
                 <form action="/events/${event.id}/book" method="POST" class="flex-1">
                     <input type="hidden" name="_token" value="${document.querySelector('meta[name="csrf-token"]').getAttribute('content')}">
-                    <button type="submit" 
+                    <button type="submit"
                         class="w-full inline-flex items-center justify-center gap-2 rounded-md bg-[#073066] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#052347] transition-colors">
                         <i data-lucide="calendar-plus" class="h-4 w-4"></i>
                         Réserver une place
@@ -1070,11 +1123,11 @@ function getEventIcon(type) {
 
 function formatDate(dateString) {
     const date = new Date(dateString);
-    const options = { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
+    const options = {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
     };
     return date.toLocaleDateString('fr-FR', options);
 }
@@ -1085,14 +1138,14 @@ function joinChamber(chamberId) {
         alert('Erreur de sécurité. Veuillez recharger la page.');
         return;
     }
-    
+
     const button = event.target;
     const originalText = button.innerHTML;
-    
+
     // Désactiver le bouton et afficher un loader
     button.disabled = true;
     button.innerHTML = '<i data-lucide="loader-2" class="h-4 w-4 animate-spin"></i> Traitement...';
-    
+
     fetch(`/chambers/${chamberId}/join`, {
         method: 'POST',
         headers: {
@@ -1132,20 +1185,20 @@ function switchChamberTab(tabName) {
     document.querySelectorAll('[data-chamber-tab]').forEach(tab => {
         tab.classList.add('hidden');
     });
-    
+
     // Afficher l'onglet sélectionné
     const targetTab = document.querySelector(`[data-chamber-tab="${tabName}"]`);
     if (targetTab) {
         targetTab.classList.remove('hidden');
     }
-    
+
     // Mettre à jour les liens de navigation
     document.querySelectorAll('.cham-link').forEach(link => {
         link.classList.remove('active');
         link.classList.add('text-neutral-600', 'dark:text-gray-400');
         link.classList.remove('text-neutral-900', 'dark:text-white');
     });
-    
+
     const activeLink = document.querySelector(`[data-chamber-link="${tabName}"]`);
     if (activeLink) {
         activeLink.classList.add('active');
@@ -1161,11 +1214,11 @@ document.addEventListener('DOMContentLoaded', function() {
         membersSearch.addEventListener('input', function() {
             const searchTerm = this.value.toLowerCase();
             const memberRows = document.querySelectorAll('.member-row');
-            
+
             memberRows.forEach(row => {
                 const memberName = row.getAttribute('data-member-name') || '';
                 const memberEmail = row.getAttribute('data-member-email') || '';
-                
+
                 if (memberName.includes(searchTerm) || memberEmail.includes(searchTerm)) {
                     row.style.display = '';
                 } else {

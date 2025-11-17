@@ -18,6 +18,9 @@ class ChamberController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
+            'type' => ['nullable', 'in:national,bilateral'],
+            'embassy_country' => ['nullable', 'string', 'max:255'],
+            'embassy_address' => ['nullable', 'string', 'max:255'],
             'location' => ['nullable', 'string', 'max:255'],
             'address' => ['nullable', 'string', 'max:255'],
             'website' => ['nullable', 'string', 'max:255'],
@@ -37,13 +40,22 @@ class ChamberController extends Controller
         $chamber = new Chamber();
         $chamber->fill(array_merge($data, ['slug' => $slug]));
 
+        // Valeurs par défaut/cohérence
+        if (empty($chamber->type)) {
+            $chamber->type = 'national';
+        }
+        if ($chamber->type !== 'bilateral') {
+            $chamber->embassy_country = null;
+            $chamber->embassy_address = null;
+        }
+
         if ($request->hasFile('logo')) {
             $chamber->logo_path = $request->file('logo')->store('chambers/logos', 'public');
         }
         if ($request->hasFile('cover')) {
             $chamber->cover_image_path = $request->file('cover')->store('chambers/covers', 'public');
         }
-        
+
         $chamber->save();
 
         // assign creator as manager
@@ -70,12 +82,12 @@ class ChamberController extends Controller
 
         // Compter les membres approuvés
         $membersCount = $chamber->approvedMembers()->count();
-        
+
         // Vérifier si l'utilisateur actuel est membre
         $isMember = false;
         $membershipStatus = null;
-        if (auth()->check()) {
-            $membership = $chamber->members()->where('user_id', auth()->id())->first();
+        if (\Illuminate\Support\Facades\Auth::check()) {
+            $membership = $chamber->members()->where('user_id', \Illuminate\Support\Facades\Auth::id())->first();
             if ($membership) {
                 $isMember = true;
                 $membershipStatus = $membership->pivot->status;
@@ -83,7 +95,7 @@ class ChamberController extends Controller
         }
 
         // Ajouter les informations de réservation pour les événements
-        $user = auth()->user();
+        $user = \Illuminate\Support\Facades\Auth::user();
         if ($user) {
             $chamber->events->each(function ($event) use ($user) {
                 $event->is_booked = $event->isBookedBy($user);
@@ -113,6 +125,9 @@ class ChamberController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
+            'type' => ['nullable', 'in:national,bilateral'],
+            'embassy_country' => ['nullable', 'string', 'max:255'],
+            'embassy_address' => ['nullable', 'string', 'max:255'],
             'location' => ['nullable', 'string', 'max:255'],
             'address' => ['nullable', 'string', 'max:255'],
             'website' => ['nullable', 'string', 'max:255'],
@@ -125,6 +140,13 @@ class ChamberController extends Controller
         ]);
 
         $chamber->fill($data);
+        if (empty($chamber->type)) {
+            $chamber->type = 'national';
+        }
+        if ($chamber->type !== 'bilateral') {
+            $chamber->embassy_country = null;
+            $chamber->embassy_address = null;
+        }
         if ($request->hasFile('logo')) {
             $chamber->logo_path = $request->file('logo')->store('chambers/logos', 'public');
         }

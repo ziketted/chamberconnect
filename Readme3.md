@@ -5,10 +5,10 @@
 
 Un gestionnaire est un utilisateur standard (users.is_admin = 2), mais il dispose de droits étendus pour administrer une ou plusieurs chambres.
 
-Il garde le même profil utilisateur que les autres (comme sur Facebook), mais accède à une section spéciale appelée “Gestion des chambres”, visible uniquement pour les gestionnaires.
+Il garde le même profil utilisateur que les autres , mais accède à une section spéciale appelée “Gestion des chambres”, visible uniquement pour les gestionnaires.
 C’est en entrant dans cette section qu’il “active” son rôle de gestionnaire.
 
-🚪 Principe d’accès et navigation (inspiré de Facebook Pages)
+🚪 Principe d’accès et navigation
 🔹 Comportement attendu :
 
 Le gestionnaire se connecte comme tout utilisateur.
@@ -40,6 +40,7 @@ Espace personnel → profil classique
 Espace gestion → tableau de bord + outils de gestion
 
 ⚙️ Fonctionnalités principales
+
 1. ✅ Validation des demandes d’adhésion
 
 Voir les utilisateurs souhaitant rejoindre la chambre.
@@ -133,6 +134,7 @@ Taux de participation moyen
 (affiché sous forme de 4 cartes KPI en haut du dashboard)
 
 📈 Graphiques et analyses
+
 1. Histogramme – Évolution des membres
 
 Axe X : Mois
@@ -166,9 +168,9 @@ Afficher le nombre de membres par ville/pays
 But : comprendre la portée géographique de la chambre
 
 🧮 Tableau analytique détaillé
-Membre	Rôle	Date d’inscription	Événements participés	Statut
-Jean K.	Membre	12/03/2024	5	Actif
-Marie D.	Gestionnaire	02/01/2024	8	Actif
+Membre Rôle Date d’inscription Événements participés Statut
+Jean K. Membre 12/03/2024 5 Actif
+Marie D. Gestionnaire 02/01/2024 8 Actif
 
 Filtres dynamiques + recherche
 
@@ -218,7 +220,7 @@ Traçabilité des actions : log interne des modifications.
 
 Créer ou mettre à jour le module de gestion des chambres pour les utilisateurs is_admin=2, intégrant :
 
-Accès via profil utilisateur (comme Facebook Pages)
+Accès via profil utilisateur
 
 Section “Gestion des chambres” pour basculer en mode gestionnaire
 

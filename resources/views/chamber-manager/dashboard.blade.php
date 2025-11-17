@@ -1,258 +1,306 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <!-- Header -->
-    <div class="mb-8">
-        <div class="md:flex md:items-center md:justify-between">
-            <div class="flex-1 min-w-0">
-                <h1 class="text-2xl font-bold leading-7 text-gray-900 dark:text-white sm:text-3xl sm:truncate">
-                    Tableau de bord gestionnaire
-                </h1>
-                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    Gérez vos chambres de commerce et leurs membres
-                </p>
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-neutral-900 dark:text-white">Tableau de bord — {{ $chamber->name }}</h1>
+            <p class="text-sm text-neutral-600 dark:text-gray-400">Vue analytique et actions rapides.</p>
+        </div>
+        <div class="flex items-center gap-2">
+            <a href="{{ route('chambers.manage-members', $chamber) }}"
+                class="inline-flex items-center gap-2 px-3 py-2 rounded-md border border-neutral-300 dark:border-gray-600 text-sm text-neutral-800 dark:text-gray-200 hover:bg-neutral-100 dark:hover:bg-gray-700">
+                <i data-lucide="users" class="h-4 w-4"></i> Gérer les membres
+            </a>
+            <a href="{{ route('chambers.events.create', $chamber) }}"
+                class="inline-flex items-center gap-2 px-3 py-2 rounded-md bg-[#073066] text-white text-sm hover:bg-[#052347]">
+                <i data-lucide="calendar-plus" class="h-4 w-4"></i> Nouvel événement
+            </a>
+            <a href="{{ route('chambers.edit', $chamber) }}"
+                class="inline-flex items-center gap-2 px-3 py-2 rounded-md border border-neutral-300 dark:border-gray-600 text-sm text-neutral-800 dark:text-gray-200 hover:bg-neutral-100 dark:hover:bg-gray-700">
+                <i data-lucide="settings" class="h-4 w-4"></i> Paramètres
+            </a>
+        </div>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div class="rounded-lg border border-neutral-200 dark:border-gray-700 p-4 bg-white dark:bg-gray-800">
+            <p class="text-sm text-neutral-600 dark:text-gray-400">Total des membres</p>
+            <p class="mt-1 text-2xl font-semibold text-neutral-900 dark:text-white">{{ $kpiCards['total_members'] }}</p>
+        </div>
+        <div class="rounded-lg border border-neutral-200 dark:border-gray-700 p-4 bg-white dark:bg-gray-800">
+            <p class="text-sm text-neutral-600 dark:text-gray-400">Demandes en attente</p>
+            <p class="mt-1 text-2xl font-semibold text-amber-600 dark:text-amber-400">{{ $kpiCards['pending_requests']
+                }}</p>
+        </div>
+        <div class="rounded-lg border border-neutral-200 dark:border-gray-700 p-4 bg-white dark:bg-gray-800">
+            <p class="text-sm text-neutral-600 dark:text-gray-400">Événements à venir</p>
+            <p class="mt-1 text-2xl font-semibold text-neutral-900 dark:text-white">{{ $kpiCards['upcoming_events'] }}
+            </p>
+        </div>
+        <div class="rounded-lg border border-neutral-200 dark:border-gray-700 p-4 bg-white dark:bg-gray-800">
+            <p class="text-sm text-neutral-600 dark:text-gray-400">Taux de participation moyen</p>
+            <p class="mt-1 text-2xl font-semibold text-neutral-900 dark:text-white">{{
+                $kpiCards['average_participation'] }}%</p>
+        </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div class="rounded-xl border border-neutral-200 dark:border-gray-700 p-4 bg-white dark:bg-gray-800">
+            <h3 class="text-sm font-medium text-neutral-900 dark:text-white mb-3">Évolution des membres (12 mois)</h3>
+            <div class="relative h-72 md:h-80">
+                <canvas id="membersHistogram" class="absolute inset-0 h-full w-full"></canvas>
             </div>
-            <div class="mt-4 flex md:mt-0 md:ml-4">
-                <a href="{{ route('chambers.create') }}"
-                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#073066] hover:bg-[#052347] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#073066]">
-                    <i data-lucide="plus" class="mr-2 h-4 w-4"></i>
-                    Nouvelle chambre
-                </a>
+        </div>
+        <div class="rounded-xl border border-neutral-200 dark:border-gray-700 p-4 bg-white dark:bg-gray-800">
+            <h3 class="text-sm font-medium text-neutral-900 dark:text-white mb-3">Répartition des rôles</h3>
+            <div class="relative h-72 md:h-80">
+                <canvas id="rolesPie" class="absolute inset-0 h-full w-full"></canvas>
+            </div>
+        </div>
+        <div class="rounded-xl border border-neutral-200 dark:border-gray-700 p-4 bg-white dark:bg-gray-800">
+            <h3 class="text-sm font-medium text-neutral-900 dark:text-white mb-3">Taux de participation (6 derniers
+                événements)</h3>
+            <div class="relative h-72 md:h-80">
+                <canvas id="participationLine" class="absolute inset-0 h-full w-full"></canvas>
+            </div>
+        </div>
+        <div class="rounded-xl border border-neutral-200 dark:border-gray-700 p-4 bg-white dark:bg-gray-800">
+            <h3 class="text-sm font-medium text-neutral-900 dark:text-white mb-3">Répartition géographique (Top 5)</h3>
+            <div class="relative h-72 md:h-80">
+                <canvas id="geoBar" class="absolute inset-0 h-full w-full"></canvas>
             </div>
         </div>
     </div>
 
-    <!-- Statistiques -->
-    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
-        <!-- Total Chambres -->
-        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
-            <div class="p-5">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <div class="w-8 h-8 bg-[#073066] rounded-md flex items-center justify-center">
-                            <i data-lucide="building" class="h-5 w-5 text-white"></i>
-                        </div>
-                    </div>
-                    <div class="ml-5 w-0 flex-1">
-                        <dl>
-                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Chambres gérées
-                            </dt>
-                            <dd class="text-lg font-medium text-gray-900 dark:text-white">{{ $stats['total_chambers'] }}
-                            </dd>
-                        </dl>
-                    </div>
+    <!-- Members table -->
+    <div class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden">
+        <div class="p-4 border-b border-neutral-200 dark:border-gray-700">
+            <div class="flex items-center justify-between gap-3">
+                <h3 class="text-sm font-medium text-neutral-900 dark:text-white">Membres et activité</h3>
+                <div class="relative">
+                    <input type="text" id="dashboard-members-search" placeholder="Rechercher des membres"
+                        class="w-56 rounded-md border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 pl-8 pr-3 py-1.5 text-xs focus:border-[#073066] dark:focus:border-blue-500 focus:ring-2 focus:ring-[#073066]/20 dark:focus:ring-blue-500/20">
+                    <span
+                        class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2 text-neutral-400 dark:text-gray-400">
+                        <i data-lucide="search" class="h-3.5 w-3.5"></i>
+                    </span>
                 </div>
             </div>
         </div>
-
-        <!-- Total Membres -->
-        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
-            <div class="p-5">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <div class="w-8 h-8 bg-[#fcb357] rounded-md flex items-center justify-center">
-                            <i data-lucide="users" class="h-5 w-5 text-white"></i>
-                        </div>
-                    </div>
-                    <div class="ml-5 w-0 flex-1">
-                        <dl>
-                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Total membres</dt>
-                            <dd class="text-lg font-medium text-gray-900 dark:text-white">{{ $stats['total_members'] }}
-                            </dd>
-                        </dl>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Total Événements -->
-        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
-            <div class="p-5">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <div class="w-8 h-8 bg-[#b81010] rounded-md flex items-center justify-center">
-                            <i data-lucide="calendar" class="h-5 w-5 text-white"></i>
-                        </div>
-                    </div>
-                    <div class="ml-5 w-0 flex-1">
-                        <dl>
-                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Événements</dt>
-                            <dd class="text-lg font-medium text-gray-900 dark:text-white">{{ $stats['total_events'] }}
-                            </dd>
-                        </dl>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Total Posts -->
-        <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
-            <div class="p-5">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <div class="w-8 h-8 bg-[#fcb357] rounded-md flex items-center justify-center">
-                            <i data-lucide="file-text" class="h-5 w-5 text-white"></i>
-                        </div>
-                    </div>
-                    <div class="ml-5 w-0 flex-1">
-                        <dl>
-                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Publications</dt>
-                            <dd class="text-lg font-medium text-gray-900 dark:text-white">{{ $stats['total_posts'] }}
-                            </dd>
-                        </dl>
-                    </div>
-                </div>
-            </div>
+        <div class="p-4 overflow-x-auto">
+            <table class="min-w-full text-sm">
+                <thead class="text-left text-neutral-600 dark:text-gray-300">
+                    <tr>
+                        <th class="py-2 pr-4">Membre</th>
+                        <th class="py-2 pr-4">Rôle</th>
+                        <th class="py-2 pr-4">Inscription</th>
+                        <th class="py-2 pr-4">Événements participés</th>
+                        <th class="py-2 pr-4">Statut</th>
+                    </tr>
+                </thead>
+                <tbody class="text-neutral-800 dark:text-gray-100">
+                    @foreach($detailedMembers as $m)
+                    <tr class="border-t border-neutral-100 dark:border-gray-700 js-dm-row"
+                        data-name="{{ strtolower($m['name']) }}" data-email="{{ strtolower($m['email']) }}"
+                        data-role="{{ strtolower($m['role']) }}" data-status="{{ strtolower($m['status']) }}">
+                        <td class="py-3 pr-4">
+                            <div class="flex flex-col">
+                                <span class="font-medium">{{ $m['name'] }}</span>
+                                <span class="text-xs text-neutral-500">{{ $m['email'] }}</span>
+                            </div>
+                        </td>
+                        <td class="py-3 pr-4 capitalize">{{ $m['role'] }}</td>
+                        <td class="py-3 pr-4">{{ \Carbon\Carbon::parse($m['joined_at'])->format('d/m/Y') }}</td>
+                        <td class="py-3 pr-4">{{ $m['events_participated'] }}</td>
+                        <td class="py-3 pr-4">
+                            @if($m['status'] === 'approved')
+                            <span
+                                class="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">Actif</span>
+                            @elseif($m['status'] === 'pending')
+                            <span
+                                class="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">En
+                                attente</span>
+                            @else
+                            <span
+                                class="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs bg-neutral-100 text-neutral-800 dark:bg-gray-700 dark:text-gray-300">{{
+                                $m['status'] }}</span>
+                            @endif
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Mes Chambres -->
-        <div class="lg:col-span-2">
-            <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
-                <div class="px-4 py-5 sm:p-6">
-                    <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white mb-4">Mes chambres</h3>
-
-                    @forelse($managedChambers as $chamber)
-                    <div class="border border-gray-200 rounded-lg p-4 mb-4 last:mb-0">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center space-x-4">
-                                <img src="{{ $chamber->logo_path ?? 'https://ui-avatars.com/api/?name=' . urlencode($chamber->name) . '&background=073066&color=fff' }}"
-                                    alt="{{ $chamber->name }}" class="h-12 w-12 rounded-lg object-cover">
-                                <div>
-                                    <h4 class="text-sm font-medium text-gray-900 dark:text-white">{{ $chamber->name }}
-                                    </h4>
-                                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ $chamber->location ??
-                                        'Localisation non définie'
-                                        }}</p>
-                                    <div class="flex items-center space-x-4 mt-1">
-                                        <span class="text-xs text-gray-500 dark:text-gray-400">
-                                            <i data-lucide="users" class="inline h-3 w-3 mr-1"></i>
-                                            {{ $chamber->members_count }} membres
-                                        </span>
-                                        @if($chamber->verified)
-                                        <span
-                                            class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[#fcb357]/10 text-[#fcb357]">
-                                            <i data-lucide="check-circle" class="mr-1 h-3 w-3"></i>
-                                            Vérifiée
-                                        </span>
-                                        @else
-                                        <span
-                                            class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[#b81010]/10 text-[#b81010]">
-                                            <i data-lucide="clock" class="mr-1 h-3 w-3"></i>
-                                            En attente
-                                        </span>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <a href="{{ route('chambers.manage-members', $chamber) }}"
-                                    class="inline-flex items-center px-3 py-1.5 border border-gray-300 dark:border-gray-600 dark:border-gray-400 shadow-sm text-xs font-medium rounded text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#073066]">
-                                    <i data-lucide="users" class="mr-1 h-3 w-3"></i>
-                                    Gérer
-                                </a>
-                                <a href="{{ route('chamber.show', $chamber) }}"
-                                    class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded text-white bg-[#073066] hover:bg-[#052347] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#073066]">
-                                    <i data-lucide="eye" class="mr-1 h-3 w-3"></i>
-                                    Voir
-                                </a>
-                            </div>
+    <!-- Side sections -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+        <div
+            class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden">
+            <div class="p-4 border-b border-neutral-200 dark:border-gray-700 flex items-center justify-between">
+                <h3 class="text-sm font-medium text-neutral-900 dark:text-white">Demandes d’adhésion</h3>
+                <a href="{{ route('chambers.members.pending', $chamber) }}"
+                    class="text-xs text-[#073066] dark:text-blue-400 hover:underline">Voir tout</a>
+            </div>
+            <div class="p-4">
+                @if($pendingMembers->isEmpty())
+                <p class="text-sm text-neutral-600 dark:text-gray-400">Aucune demande en attente.</p>
+                @else
+                <ul class="space-y-3">
+                    @foreach($pendingMembers as $pm)
+                    <li class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-neutral-900 dark:text-white">{{ $pm->name }}</p>
+                            <p class="text-xs text-neutral-600 dark:text-gray-400">{{ $pm->email }}</p>
                         </div>
-                    </div>
-                    @empty
-                    <div class="text-center py-8">
-                        <div
-                            class="mx-auto h-12 w-12 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center mb-4">
-                            <i data-lucide="building" class="h-6 w-6 text-gray-400"></i>
+                        <div class="flex items-center gap-2">
+                            <form method="POST" action="{{ route('chambers.members.approve', [$chamber, $pm]) }}">
+                                @csrf
+                                <button
+                                    class="px-2 py-1 text-xs rounded-md bg-green-600 text-white hover:bg-green-700">Valider</button>
+                            </form>
+                            <form method="POST" action="{{ route('chambers.members.reject', [$chamber, $pm]) }}">
+                                @csrf
+                                <button
+                                    class="px-2 py-1 text-xs rounded-md bg-rose-600 text-white hover:bg-rose-700">Refuser</button>
+                            </form>
                         </div>
-                        <h3 class="text-sm font-medium text-gray-900 dark:text-white mb-2">Aucune chambre gérée</h3>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Vous ne gérez actuellement aucune
-                            chambre de commerce.</p>
-                        <a href="{{ route('chambers.create') }}"
-                            class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#073066] hover:bg-[#052347] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#073066]">
-                            <i data-lucide="plus" class="mr-2 h-4 w-4"></i>
-                            Créer une chambre
-                        </a>
-                    </div>
-                    @endforelse
-                </div>
+                    </li>
+                    @endforeach
+                </ul>
+                @endif
             </div>
         </div>
-
-        <!-- Membres en attente -->
-        <div class="lg:col-span-1">
-            <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
-                <div class="px-4 py-5 sm:p-6">
-                    <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white mb-4">
-                        Demandes d'adhésion
-                        @if($pendingMembers->count() > 0)
-                        <span
-                            class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#b81010]/10 text-[#b81010]">
-                            {{ $pendingMembers->count() }}
-                        </span>
-                        @endif
-                    </h3>
-
-                    @forelse($pendingMembers as $member)
-                    <div class="border border-gray-200 rounded-lg p-3 mb-3 last:mb-0">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center space-x-3">
-                                <img src="https://ui-avatars.com/api/?name={{ urlencode($member->name) }}&background=073066&color=fff"
-                                    alt="{{ $member->name }}" class="h-8 w-8 rounded-full">
-                                <div>
-                                    <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $member->name }}</p>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $member->chamber_name }}</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mt-3 flex space-x-2">
-                            <form action="{{ route('chambers.members.approve', [$member->chamber_slug, $member->id]) }}"
-                                method="POST" class="inline">
-                                @csrf
-                                <button type="submit"
-                                    class="inline-flex items-center px-2 py-1 border border-transparent text-xs font-medium rounded text-white bg-[#fcb357] hover:bg-[#f5a742] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#fcb357]">
-                                    <i data-lucide="check" class="mr-1 h-3 w-3"></i>
-                                    Approuver
-                                </button>
-                            </form>
-                            <form action="{{ route('chambers.members.reject', [$member->chamber_slug, $member->id]) }}"
-                                method="POST" class="inline">
-                                @csrf
-                                <button type="submit"
-                                    class="inline-flex items-center px-2 py-1 border border-gray-300 dark:border-gray-600 dark:border-gray-400 text-xs font-medium rounded text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#073066]">
-                                    <i data-lucide="x" class="mr-1 h-3 w-3"></i>
-                                    Rejeter
-                                </button>
-                            </form>
-                        </div>
+        <div
+            class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden">
+            <div class="p-4 border-b border-neutral-200 dark:border-gray-700 flex items-center justify-between">
+                <h3 class="text-sm font-medium text-neutral-900 dark:text-white">Événements récents</h3>
+                <a href="{{ route('chambers.events.create', $chamber) }}"
+                    class="text-xs text-[#073066] dark:text-blue-400 hover:underline">Créer</a>
+            </div>
+            <div class="divide-y divide-neutral-200 dark:divide-gray-700">
+                @forelse($recentEvents as $ev)
+                <div class="p-4 flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-neutral-900 dark:text-white">{{ $ev->title }}</p>
+                        <p class="text-xs text-neutral-600 dark:text-gray-400">{{ $ev->date?->format('d/m/Y') }} • {{
+                            ucfirst($ev->mode ?? '—') }}</p>
                     </div>
-                    @empty
-                    <div class="text-center py-6">
-                        <div
-                            class="mx-auto h-10 w-10 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center mb-3">
-                            <i data-lucide="user-check" class="h-5 w-5 text-gray-400"></i>
-                        </div>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">Aucune demande en attente</p>
-                    </div>
-                    @endforelse
+                    <span class="text-xs text-neutral-600 dark:text-gray-400">{{ $ev->participants_count }}
+                        participants</span>
                 </div>
+                @empty
+                <p class="p-4 text-sm text-neutral-600 dark:text-gray-400">Aucun événement pour le moment.</p>
+                @endforelse
             </div>
         </div>
     </div>
 </div>
 
-@push('scripts')
+<!-- Charts.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-    // Initialiser les icônes Lucide
-    lucide.createIcons({
-        attrs: {
-            'stroke-width': 1.5
+    // Styles dark mode pour grilles/axes Chart.js
+    const isDark = document.documentElement.classList.contains('dark');
+    const gridColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)';
+    const tickColor = isDark ? '#cbd5e1' : '#475569';
+    const baseOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: tickColor } } },
+        scales: {
+            x: { grid: { color: gridColor }, ticks: { color: tickColor } },
+            y: { grid: { color: gridColor }, ticks: { color: tickColor }, beginAtZero: true }
         }
+    };
+    const memberEvolution = @json($memberEvolution);
+	const roleDistribution = @json($roleDistribution);
+	const participationRates = @json($participationRates);
+	const geoDistribution = @json($geographicDistribution);
+
+	const ctxMembers = document.getElementById('membersHistogram').getContext('2d');
+	new Chart(ctxMembers, {
+		type: 'bar',
+		data: {
+			labels: memberEvolution.map(i => i.month),
+			datasets: [{
+				label: 'Membres',
+				data: memberEvolution.map(i => i.count),
+				backgroundColor: '#073066',
+                borderRadius: 6,
+                maxBarThickness: 28
+			}]
+		},
+		options: baseOptions
+	});
+
+	const ctxRoles = document.getElementById('rolesPie').getContext('2d');
+	new Chart(ctxRoles, {
+		type: 'pie',
+		data: {
+			labels: roleDistribution.map(i => i.label),
+			datasets: [{
+				data: roleDistribution.map(i => i.value),
+				backgroundColor: roleDistribution.map(i => i.color),
+                borderWidth: 0
+			}]
+		},
+		options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: tickColor } } } }
+	});
+
+	const ctxPart = document.getElementById('participationLine').getContext('2d');
+	new Chart(ctxPart, {
+		type: 'line',
+		data: {
+			labels: participationRates.map(i => i.date),
+			datasets: [{
+				label: 'Participation (%)',
+				data: participationRates.map(i => i.rate),
+				borderColor: '#10B981',
+				backgroundColor: 'rgba(16,185,129,0.15)',
+				fill: true,
+				tension: 0.35,
+                pointRadius: 3,
+                pointHoverRadius: 4
+			}]
+		},
+		options: baseOptions
+	});
+
+	const ctxGeo = document.getElementById('geoBar').getContext('2d');
+	new Chart(ctxGeo, {
+		type: 'bar',
+		data: {
+			labels: geoDistribution.map(i => i.city),
+			datasets: [{
+				label: 'Membres',
+				data: geoDistribution.map(i => i.count),
+				backgroundColor: '#6366F1',
+                borderRadius: 6,
+                maxBarThickness: 28
+			}]
+		},
+		options: baseOptions
+	});
+    // Search members table (dashboard)
+    (function(){
+        const input = document.getElementById('dashboard-members-search');
+        if (!input) return;
+        const rows = Array.from(document.querySelectorAll('tbody tr.js-dm-row'));
+        input.addEventListener('input', () => {
+            const q = input.value.trim().toLowerCase();
+            rows.forEach(row => {
+                const name = row.dataset.name || '';
+                const email = row.dataset.email || '';
+                const role = row.dataset.role || '';
+                const status = row.dataset.status || '';
+                const show = q === '' || name.includes(q) || email.includes(q) || role.includes(q) || status.includes(q);
+                row.style.display = show ? '' : 'none';
     });
 });
+    })();
 </script>
-@endpush
 @endsection

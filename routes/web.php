@@ -46,62 +46,63 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/admin/dashboard', [\App\Http\Controllers\Admin\SuperAdminController::class, 'dashboard'])->name('admin.dashboard');
         Route::get('/admin/chambers', [\App\Http\Controllers\Admin\SuperAdminController::class, 'chambers'])->name('admin.chambers');
         Route::get('/admin/users', [\App\Http\Controllers\Admin\SuperAdminController::class, 'users'])->name('admin.users');
-        
+
         // Gestion des chambres
         Route::get('/chambers/create', [ChamberController::class, 'create'])->name('chambers.create');
         Route::post('/chambers', [ChamberController::class, 'store'])->name('chambers.store');
         Route::patch('/admin/chambers/{chamber}/verify', [\App\Http\Controllers\Admin\SuperAdminController::class, 'verifyChamber'])->name('admin.chambers.verify');
         Route::patch('/admin/chambers/{chamber}/unverify', [\App\Http\Controllers\Admin\SuperAdminController::class, 'unverifyChamber'])->name('admin.chambers.unverify');
         Route::patch('/admin/chambers/{chamber}/suspend', [\App\Http\Controllers\Admin\SuperAdminController::class, 'suspendChamber'])->name('admin.chambers.suspend');
-        
+
         // Certification des chambres avec numéro d'état (utilise slug)
         Route::post('/admin/chambers/{chamber:slug}/certify', [\App\Http\Controllers\Admin\SuperAdminController::class, 'certifyChamber'])->name('admin.chambers.certify');
         Route::patch('/admin/chambers/{chamber:slug}/uncertify', [\App\Http\Controllers\Admin\SuperAdminController::class, 'uncertifyChamber'])->name('admin.chambers.uncertify');
-        
+
         // API pour autocomplétion des utilisateurs
         Route::get('/api/users/search', [\App\Http\Controllers\ChamberMemberController::class, 'searchUsers'])->name('api.users.search');
-        
+
         // Gestion détaillée d'une chambre (page dédiée)
         Route::get('/admin/chambers/{chamber}/manage', [\App\Http\Controllers\Admin\SuperAdminController::class, 'manageChamber'])->name('admin.chambers.manage');
         Route::post('/admin/chambers/{chamber}/remove-member', [\App\Http\Controllers\Admin\SuperAdminController::class, 'removeMember'])->name('admin.chambers.remove-member');
-        
+
         // Gestion des gestionnaires
         Route::get('/admin/chambers/{chamber}/assign-manager', [\App\Http\Controllers\Admin\SuperAdminController::class, 'showAssignManager'])->name('admin.chambers.assign-manager.show');
         Route::post('/admin/chambers/{chamber}/assign-manager', [\App\Http\Controllers\Admin\SuperAdminController::class, 'assignManager'])->name('admin.chambers.assign-manager');
         Route::delete('/admin/chambers/{chamber}/remove-manager', [\App\Http\Controllers\Admin\SuperAdminController::class, 'removeManager'])->name('admin.chambers.remove-manager');
         Route::patch('/admin/users/{user}/promote', [\App\Http\Controllers\Admin\SuperAdminController::class, 'promoteToManager'])->name('admin.users.promote');
         Route::patch('/admin/users/{user}/demote', [\App\Http\Controllers\Admin\SuperAdminController::class, 'demoteToUser'])->name('admin.users.demote');
-        
+
         // Gestion des demandes de création de chambres
         Route::get('/admin/chambers/pending-requests', [\App\Http\Controllers\Admin\SuperAdminController::class, 'pendingRequests'])->name('admin.chambers.pending-requests');
         Route::post('/admin/chambers/{chamber}/approve-request', [\App\Http\Controllers\Admin\SuperAdminController::class, 'approveChamberRequest'])->name('admin.chambers.approve-request');
         Route::post('/admin/chambers/{chamber}/reject-request', [\App\Http\Controllers\Admin\SuperAdminController::class, 'rejectChamberRequest'])->name('admin.chambers.reject-request');
-        
+
         // Ancienne route pour compatibilité
         Route::get('/admin/chambers/admins', [\App\Http\Controllers\Admin\ChamberAdminController::class, 'index'])->name('admin.chambers.admins');
     });
     Route::middleware('chamber.manager')->group(function () {
         // Section "Gestion des chambres" - Point d'entrée principal
         Route::get('/manage-chambers', [\App\Http\Controllers\ChamberManagerController::class, 'index'])->name('manage-chambers.index');
-        
+
         // Tableau de bord gestionnaire pour une chambre spécifique
         Route::get('/chambers/{chamber}/dashboard', [\App\Http\Controllers\ChamberManagerController::class, 'dashboard'])->name('chamber-manager.dashboard');
-        
+
         // Gestion des chambres
         Route::get('/chambers/{chamber}/edit', [ChamberController::class, 'edit'])->name('chambers.edit');
         Route::put('/chambers/{chamber}', [ChamberController::class, 'update'])->name('chambers.update');
-        
+
         // Gestion des membres
         Route::get('/chambers/{chamber}/manage-members', [\App\Http\Controllers\ChamberManagerController::class, 'manageMembers'])->name('chambers.manage-members');
         Route::post('/chambers/{chamber}/members/{user}/approve', [\App\Http\Controllers\ChamberManagerController::class, 'approveMember'])->name('chambers.members.approve');
         Route::post('/chambers/{chamber}/members/{user}/reject', [\App\Http\Controllers\ChamberManagerController::class, 'rejectMember'])->name('chambers.members.reject');
         Route::delete('/chambers/{chamber}/members/{user}', [\App\Http\Controllers\ChamberManagerController::class, 'removeMember'])->name('chambers.members.remove');
         Route::patch('/chambers/{chamber}/members/{user}/role', [\App\Http\Controllers\ChamberManagerController::class, 'changeRole'])->name('chambers.members.change-role');
-        
+
         Route::get('/chambers/{chamber}/members/create', [\App\Http\Controllers\ChamberMemberController::class, 'create'])->name('chambers.members.create');
         Route::post('/chambers/{chamber}/members', [\App\Http\Controllers\ChamberMemberController::class, 'store'])->name('chambers.members.store');
         Route::get('/chambers/{chamber}/members/pending', [\App\Http\Controllers\ChamberMemberController::class, 'pending'])->name('chambers.members.pending');
-        
+        Route::get('/chambers/{chamber}/members/{user}/details', [\App\Http\Controllers\ChamberManagerController::class, 'memberDetails'])->name('chambers.members.details');
+
         // Events
         Route::get('/chambers/{chamber}/events/create', [\App\Http\Controllers\ChamberEventController::class, 'create'])->name('chambers.events.create');
         Route::post('/chambers/{chamber}/events', [\App\Http\Controllers\ChamberEventController::class, 'store'])->name('chambers.events.store');
@@ -125,24 +126,24 @@ Route::middleware(['auth', 'verified'])->group(function () {
 // Membership join (auth only, not requiring email verification)
 Route::middleware('auth')->group(function () {
     Route::post('/chambers/{chamber}/join', [\App\Http\Controllers\ChamberMemberController::class, 'join'])->name('chambers.members.join');
-    
+
     // Event booking routes
     Route::post('/events/{event}/book', [\App\Http\Controllers\EventBookingController::class, 'book'])->name('events.book');
     Route::delete('/events/{event}/cancel', [\App\Http\Controllers\EventBookingController::class, 'cancel'])->name('events.cancel');
     Route::patch('/events/{event}/confirm', [\App\Http\Controllers\EventBookingController::class, 'confirm'])->name('events.confirm');
     Route::get('/my-bookings', [\App\Http\Controllers\EventBookingController::class, 'myBookings'])->name('events.my-bookings');
-    
+
     // API route for event details
     Route::get('/api/events/{event}/details', [\App\Http\Controllers\EventController::class, 'getEventDetails'])->name('api.events.details');
-    
+
     // Settings routes
     Route::get('/settings', [\App\Http\Controllers\SettingsController::class, 'index'])->name('settings');
     Route::post('/settings/theme', [\App\Http\Controllers\SettingsController::class, 'updateTheme'])->name('settings.theme');
     Route::post('/settings/profile', [\App\Http\Controllers\SettingsController::class, 'updateProfile'])->name('settings.profile');
-    
+
     // Event likes routes
     Route::post('/events/{event}/like', [\App\Http\Controllers\EventLikeController::class, 'toggle'])->name('events.like');
-    
+
     // Portal routes (for regular users only)
     Route::middleware('verified')->group(function () {
         Route::get('/portal', [\App\Http\Controllers\ChamberPortalController::class, 'index'])->name('portal.index');
@@ -161,11 +162,11 @@ Route::get('auth/facebook', [FacebookController::class, 'redirectToFacebook'])->
 Route::get('auth/facebook/callback', [FacebookController::class, 'handleFacebookCallback']);
 
 // Route de test temporaire
-Route::get('/test-user-role', function() {
+Route::get('/test-user-role', function () {
     if (!auth()->check()) {
         return 'Utilisateur non connecté';
     }
-    
+
     $user = auth()->user();
     return [
         'name' => $user->name,
@@ -178,11 +179,11 @@ Route::get('/test-user-role', function() {
 })->middleware('auth');
 
 // Route de test pour vérifier le rôle utilisateur
-Route::get('/test-user-role-debug', function() {
+Route::get('/test-user-role-debug', function () {
     if (!auth()->check()) {
         return 'Utilisateur non connecté';
     }
-    
+
     $user = auth()->user();
     return [
         'name' => $user->name,
@@ -202,15 +203,15 @@ Route::get('/test-user-role-debug', function() {
 })->middleware('auth');
 
 // Route de test pour les fonctionnalités super admin
-Route::get('/test-super-admin-features', function() {
+Route::get('/test-super-admin-features', function () {
     if (!auth()->check() || !auth()->user()->isSuperAdmin()) {
         return 'Accès refusé - Super Admin requis';
     }
-    
-    $chambers = \App\Models\Chamber::with(['members' => function($query) {
+
+    $chambers = \App\Models\Chamber::with(['members' => function ($query) {
         $query->wherePivot('role', 'manager');
     }])->get();
-    
+
     $stats = [
         'total_chambers' => \App\Models\Chamber::count(),
         'verified_chambers' => \App\Models\Chamber::where('verified', true)->count(),
@@ -220,11 +221,11 @@ Route::get('/test-super-admin-features', function() {
         'chamber_managers' => \App\Models\User::where('is_admin', \App\Models\User::ROLE_CHAMBER_MANAGER)->count(),
         'regular_users' => \App\Models\User::where('is_admin', \App\Models\User::ROLE_USER)->count(),
     ];
-    
+
     return [
         'message' => 'Fonctionnalités Super Admin disponibles',
         'stats' => $stats,
-        'chambers_sample' => $chambers->take(3)->map(function($chamber) {
+        'chambers_sample' => $chambers->take(3)->map(function ($chamber) {
             return [
                 'id' => $chamber->id,
                 'name' => $chamber->name,

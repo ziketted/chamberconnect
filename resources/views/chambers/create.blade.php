@@ -23,8 +23,32 @@
                     class="mt-1 w-full rounded-md border border-neutral-300 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-[#073066] dark:focus:border-blue-500 focus:ring-2 focus:ring-[#073066]/20 dark:focus:ring-blue-500/20" />
             </div>
             <div>
+                <label class="text-xs font-medium text-neutral-700 dark:text-gray-300">Type</label>
+                <select name="type" id="chamber_type_create"
+                    class="mt-1 w-full rounded-md border border-neutral-300 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-[#073066] dark:focus:border-blue-500 focus:ring-2 focus:ring-[#073066]/20 dark:focus:ring-blue-500/20">
+                    <option value="national">National</option>
+                    <option value="bilateral">Bilatérale</option>
+                </select>
+            </div>
+            <div>
+                <label class="text-xs font-medium text-neutral-700 dark:text-gray-300">Pays (si bilatérale)</label>
+                <select name="embassy_country" data-bilateral-create
+                    class="mt-1 w-full rounded-md border border-neutral-300 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-[#073066] dark:focus:border-blue-500 focus:ring-2 focus:ring-[#073066]/20 dark:focus:ring-blue-500/20">
+                    <option value="">Sélectionnez un pays</option>
+                    @foreach(config('countries') as $country)
+                    <option value="{{ $country }}">{{ $country }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div>
                 <label class="text-xs font-medium text-neutral-700 dark:text-gray-300">Address</label>
                 <input name="address"
+                    class="mt-1 w-full rounded-md border border-neutral-300 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-[#073066] dark:focus:border-blue-500 focus:ring-2 focus:ring-[#073066]/20 dark:focus:ring-blue-500/20" />
+            </div>
+            <div>
+                <label class="text-xs font-medium text-neutral-700 dark:text-gray-300">Adresse de l'ambassade (si
+                    bilatérale)</label>
+                <input name="embassy_address" data-bilateral-create
                     class="mt-1 w-full rounded-md border border-neutral-300 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-[#073066] dark:focus:border-blue-500 focus:ring-2 focus:ring-[#073066]/20 dark:focus:ring-blue-500/20" />
             </div>
             <div>
@@ -54,58 +78,78 @@
         <div class="grid sm:grid-cols-2 gap-6">
             <!-- Logo Upload -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Logo de la chambre</label>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Logo de la
+                    chambre</label>
                 <div class="relative">
-                    <div id="logo-dropzone" class="group relative flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 dark:border-gray-600 dark:border-gray-400 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:bg-gray-700 transition-colors duration-200">
+                    <div id="logo-dropzone"
+                        class="group relative flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 dark:border-gray-600 dark:border-gray-400 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:bg-gray-700 transition-colors duration-200">
                         <div id="logo-placeholder" class="flex flex-col items-center justify-center pt-5 pb-6">
-                            <svg class="w-8 h-8 mb-2 text-gray-400 group-hover:text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+                            <svg class="w-8 h-8 mb-2 text-gray-400 group-hover:text-gray-500 dark:text-gray-400"
+                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
                             </svg>
-                            <p class="mb-1 text-sm text-gray-500 dark:text-gray-400 group-hover:text-gray-600 dark:text-gray-400">
+                            <p
+                                class="mb-1 text-sm text-gray-500 dark:text-gray-400 group-hover:text-gray-600 dark:text-gray-400">
                                 <span class="font-semibold">Cliquez pour télécharger</span> ou glissez-déposez
                             </p>
                             <p class="text-xs text-gray-500 dark:text-gray-400">PNG, JPG ou JPEG (MAX. 2MB)</p>
                         </div>
                         <div id="logo-preview" class="hidden absolute inset-0 rounded-lg overflow-hidden">
                             <img id="logo-image" class="w-full h-full object-cover" alt="Logo preview">
-                            <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                                <button type="button" id="logo-remove" class="bg-red-500 hover:bg-red-600 text-white rounded-full p-2 transition-colors duration-200">
+                            <div
+                                class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                <button type="button" id="logo-remove"
+                                    class="bg-red-500 hover:bg-red-600 text-white rounded-full p-2 transition-colors duration-200">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M6 18L18 6M6 6l12 12"></path>
                                     </svg>
                                 </button>
                             </div>
                         </div>
-                        <input type="file" id="logo-input" name="logo" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                        <input type="file" id="logo-input" name="logo" accept="image/*"
+                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
                     </div>
                 </div>
             </div>
 
             <!-- Cover Image Upload -->
             <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Image de couverture</label>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Image de
+                    couverture</label>
                 <div class="relative">
-                    <div id="cover-dropzone" class="group relative flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 dark:border-gray-600 dark:border-gray-400 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:bg-gray-700 transition-colors duration-200">
+                    <div id="cover-dropzone"
+                        class="group relative flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 dark:border-gray-600 dark:border-gray-400 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:bg-gray-700 transition-colors duration-200">
                         <div id="cover-placeholder" class="flex flex-col items-center justify-center pt-5 pb-6">
-                            <svg class="w-8 h-8 mb-2 text-gray-400 group-hover:text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0ZM3 3l1.5 1.5M16.5 16.5L15 15"/>
+                            <svg class="w-8 h-8 mb-2 text-gray-400 group-hover:text-gray-500 dark:text-gray-400"
+                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0ZM3 3l1.5 1.5M16.5 16.5L15 15" />
                             </svg>
-                            <p class="mb-1 text-sm text-gray-500 dark:text-gray-400 group-hover:text-gray-600 dark:text-gray-400">
+                            <p
+                                class="mb-1 text-sm text-gray-500 dark:text-gray-400 group-hover:text-gray-600 dark:text-gray-400">
                                 <span class="font-semibold">Cliquez pour télécharger</span> ou glissez-déposez
                             </p>
                             <p class="text-xs text-gray-500 dark:text-gray-400">PNG, JPG ou JPEG (MAX. 5MB)</p>
                         </div>
                         <div id="cover-preview" class="hidden absolute inset-0 rounded-lg overflow-hidden">
                             <img id="cover-image" class="w-full h-full object-cover" alt="Cover preview">
-                            <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                                <button type="button" id="cover-remove" class="bg-red-500 hover:bg-red-600 text-white rounded-full p-2 transition-colors duration-200">
+                            <div
+                                class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                <button type="button" id="cover-remove"
+                                    class="bg-red-500 hover:bg-red-600 text-white rounded-full p-2 transition-colors duration-200">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M6 18L18 6M6 6l12 12"></path>
                                     </svg>
                                 </button>
                             </div>
                         </div>
-                        <input type="file" id="cover-input" name="cover" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                        <input type="file" id="cover-input" name="cover" accept="image/*"
+                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
                     </div>
                 </div>
             </div>
@@ -143,7 +187,20 @@
 
 @push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function() {
+    // Toggle bilateral fields
+    const typeSelect = document.getElementById('chamber_type_create');
+    const toggleBilateral = () => {
+        const isBil = typeSelect.value === 'bilateral';
+        document.querySelectorAll('[data-bilateral-create]').forEach(el => {
+            el.closest('div').style.display = isBil ? '' : 'none';
+        });
+    };
+    if (typeSelect) {
+        toggleBilateral();
+        typeSelect.addEventListener('change', toggleBilateral);
+    }
+
     // Configuration pour les deux zones de upload
     const uploadConfigs = [
         {
@@ -188,7 +245,7 @@ document.addEventListener('DOMContentLoaded', function() {
         dropzone.addEventListener('drop', (e) => {
             e.preventDefault();
             dropzone.classList.remove('border-[#073066] dark:border-blue-500', 'bg-red-50');
-            
+
             const files = e.dataTransfer.files;
             if (files.length > 0) {
                 handleFile(files[0], config);
@@ -246,7 +303,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Réinitialiser l'input
         input.value = '';
-        
+
         // Réinitialiser l'affichage
         image.src = '';
         preview.classList.add('hidden');
@@ -256,7 +313,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Validation du formulaire
     document.querySelector('form').addEventListener('submit', function(e) {
         const name = document.querySelector('input[name="name"]').value.trim();
-        
+
         if (!name) {
             e.preventDefault();
             alert('Le nom de la chambre est obligatoire.');
@@ -286,5 +343,3 @@ document.addEventListener('DOMContentLoaded', function() {
 @endpush
 
 @endsection
-
-

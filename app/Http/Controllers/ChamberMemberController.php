@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Chamber;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Notifications\MembershipApproved;
 
 class ChamberMemberController extends Controller
 {
@@ -33,7 +34,7 @@ class ChamberMemberController extends Controller
 
         // Ajouter le membre avec le statut approprié
         $status = 'approved'; // Les membres ajoutés par un gestionnaire sont automatiquement approuvés
-        
+
         $chamber->members()->attach($user->id, [
             'role' => $data['role'],
             'status' => $status
@@ -51,7 +52,7 @@ class ChamberMemberController extends Controller
     {
         $userId = $request->user()->id;
         $exists = $chamber->members()->where('user_id', $userId)->exists();
-        
+
         if ($exists) {
             if ($request->expectsJson()) {
                 return response()->json([
@@ -61,16 +62,16 @@ class ChamberMemberController extends Controller
             }
             return back()->with('error', 'Vous êtes déjà membre de cette chambre ou avez déjà une demande en cours.');
         }
-        
+
         $chamber->members()->attach($userId, ['role' => 'member', 'status' => 'pending']);
-        
+
         if ($request->expectsJson()) {
             return response()->json([
                 'success' => true,
                 'message' => 'Demande d\'adhésion envoyée avec succès !'
             ]);
         }
-        
+
         return back()->with('status', 'Demande d\'adhésion envoyée');
     }
 
@@ -81,6 +82,8 @@ class ChamberMemberController extends Controller
             abort(403);
         }
         $chamber->members()->updateExistingPivot($user->id, ['status' => 'approved']);
+        // Notification
+        $user->notify(new MembershipApproved($chamber));
         return back()->with('status', 'Adhésion approuvée');
     }
 
@@ -96,7 +99,7 @@ class ChamberMemberController extends Controller
     public function searchUsers(Request $request)
     {
         $query = $request->get('q', '');
-        
+
         if (strlen($query) < 2) {
             return response()->json([]);
         }

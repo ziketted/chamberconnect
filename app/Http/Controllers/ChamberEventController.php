@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Chamber;
 use App\Models\Event;
 use Illuminate\Http\Request;
+use App\Notifications\EventPublished;
+use Illuminate\Support\Facades\Notification;
 
 class ChamberEventController extends Controller
 {
@@ -42,13 +44,22 @@ class ChamberEventController extends Controller
 
         $event = new Event($data);
         $event->chamber_id = $chamber->id;
-        $event->created_by = $request->user()->id;
-        
+        $event->created_by = \Illuminate\Support\Facades\Auth::id();
+
         if ($request->hasFile('cover')) {
             $event->cover_image_path = $request->file('cover')->store('events/covers', 'public');
         }
-        
+
         $event->save();
+
+        // Notifier tous les membres approuvés (envoi synchrone)
+        $approvedMembers = $chamber->members()
+            ->wherePivot('status', 'approved')
+            ->whereNotNull('email')
+            ->get();
+        if ($approvedMembers->isNotEmpty()) {
+            Notification::sendNow($approvedMembers, new EventPublished($event, 'created'));
+        }
 
         return redirect()->route('chamber.show', $chamber)->with('success', 'Événement créé avec succès !');
     }
@@ -58,11 +69,6 @@ class ChamberEventController extends Controller
      */
     public function participants(Chamber $chamber, Event $event)
     {
-        // Vérifier que l'utilisateur peut gérer cette chambre
-        if (!auth()->user()->isSuperAdmin() && !auth()->user()->managesChamber($chamber)) {
-            abort(403, 'Vous n\'avez pas l\'autorisation de voir les participants de cet événement.');
-        }
-
         // Vérifier que l'événement appartient à cette chambre
         if ($event->chamber_id !== $chamber->id) {
             abort(404);
@@ -81,11 +87,6 @@ class ChamberEventController extends Controller
      */
     public function updateParticipantStatus(Request $request, Chamber $chamber, Event $event, $userId)
     {
-        // Vérifier que l'utilisateur peut gérer cette chambre
-        if (!auth()->user()->isSuperAdmin() && !auth()->user()->managesChamber($chamber)) {
-            abort(403);
-        }
-
         $request->validate([
             'status' => ['required', 'in:reserved,confirmed,attended,cancelled']
         ]);
@@ -98,5 +99,3 @@ class ChamberEventController extends Controller
         return back()->with('success', 'Statut du participant mis à jour.');
     }
 }
-
-

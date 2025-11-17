@@ -329,7 +329,7 @@
                                         data-lucide="shield-check" class="h-3.5 w-3.5"></i> Agréée</span>
                                 @endif
                             </div>
-                            <p class="mt-1 text-sm text-neutral-600 dark:text-gray-400 text-justify">
+                            <p class="mt-1 text-sm text-neutral-600 dark:text-gray-400 text-justify break-all line-clamp-2 max-h-12 overflow-hidden">
                                 {{ Str::limit($chamber['description'], 150, '...') }}
                             </p>
                             <div class="mt-3 space-y-2">
@@ -867,7 +867,7 @@
                                 </span>
                             ` : ''}
                         </div>
-                        <p class="mt-1 text-sm text-neutral-600 dark:text-gray-400 text-justify">
+                        <p class="mt-1 text-sm text-neutral-600 dark:text-gray-400 text-justify break-all line-clamp-2 max-h-12 overflow-hidden">
                             ${chamber.description.length > 150 ? chamber.description.substring(0, 150) + '...' : chamber.description}
                         </p>
                         <div class="mt-3 space-y-2">

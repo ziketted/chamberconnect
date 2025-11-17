@@ -59,7 +59,7 @@
                     Mes réservations
                 </a>
 
-                @if(Auth::user()->isRegularUser())
+                @if(Auth::user()->isRegularUser() || Auth::user()->isChamberManager())
                 <!-- Portail Dropdown for Regular Users -->
                 <div class="relative" x-data="{ open: false }">
                     <button @click="open = !open" @click.away="open = false"
@@ -164,7 +164,7 @@
                                 </a>
                                 @elseif(Auth::user()->isChamberManager())
                                 <hr class="my-1 border-gray-200 dark:border-gray-600 dark:border-gray-400">
-                                <a href="{{ route('dashboard') }}"
+                                <a href="{{ route('manage-chambers.index') }}"
                                     class="block px-4 py-2 text-sm text-neutral-700 dark:text-gray-300 hover:bg-neutral-100 dark:hover:bg-gray-700">
                                     <i data-lucide="briefcase" class="inline h-4 w-4 mr-2"></i>
                                     Gestion des chambres
@@ -227,7 +227,7 @@
             </a>
 
             @auth
-            @if(Auth::user()->isRegularUser())
+            @if(Auth::user()->isRegularUser() || Auth::user()->isChamberManager())
             <a href="{{ route('portal.chamber.create') }}"
                 class="whitespace-nowrap inline-flex items-center gap-1 rounded-md px-2.5 py-1.5 text-xs font-medium text-neutral-700 dark:text-gray-300 hover:bg-neutral-100 dark:hover:bg-gray-800 {{ request()->routeIs('portal.chamber.*') ? 'bg-neutral-100 dark:bg-gray-800 text-neutral-900 dark:text-white' : '' }}">
                 <i data-lucide="building-2" class="h-3 w-3"></i>

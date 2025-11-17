@@ -6,6 +6,7 @@ use App\Models\Chamber;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ChamberManagerController extends Controller
 {
@@ -16,20 +17,20 @@ class ChamberManagerController extends Controller
     public function index()
     {
         $user = Auth::user();
-        
+
         // Récupérer les chambres gérées par l'utilisateur
         $managedChambers = $user->chambers()
             ->wherePivot('role', 'manager')
             ->withCount(['members', 'events'])
-            ->with(['events' => function($query) {
+            ->with(['events' => function ($query) {
                 $query->where('date', '>=', now())->orderBy('date', 'asc')->limit(3);
             }])
             ->get()
-            ->map(function($chamber) {
+            ->map(function ($chamber) {
                 // Calculer les statistiques pour chaque chambre
                 $pendingMembersCount = $chamber->members()->wherePivot('status', 'pending')->count();
                 $upcomingEventsCount = $chamber->events()->where('date', '>=', now())->count();
-                
+
                 return [
                     'id' => $chamber->id,
                     'name' => $chamber->name,
@@ -72,14 +73,14 @@ class ChamberManagerController extends Controller
         $totalMembers = $chamber->members()->wherePivot('status', 'approved')->count();
         $pendingRequests = $chamber->members()->wherePivot('status', 'pending')->count();
         $upcomingEvents = $chamber->events()->where('date', '>=', now())->count();
-        
+
         // Calculer le taux de participation moyen
         $eventsWithParticipants = $chamber->events()
             ->withCount('participants')
             ->where('date', '<', now())
             ->get();
-        $averageParticipation = $eventsWithParticipants->count() > 0 
-            ? round($eventsWithParticipants->avg('participants_count'), 1) 
+        $averageParticipation = $eventsWithParticipants->count() > 0
+            ? round($eventsWithParticipants->avg('participants_count'), 1)
             : 0;
 
         $kpiCards = [
@@ -90,7 +91,7 @@ class ChamberManagerController extends Controller
         ];
 
         // 📈 Données pour les graphiques
-        
+
         // 1. Histogramme – Évolution des membres (12 derniers mois)
         $memberEvolution = [];
         for ($i = 11; $i >= 0; $i--) {
@@ -109,7 +110,7 @@ class ChamberManagerController extends Controller
         $managersCount = $chamber->members()->wherePivot('role', 'manager')->count();
         $membersCount = $chamber->members()->wherePivot('role', 'member')->wherePivot('status', 'approved')->count();
         $pendingCount = $chamber->members()->wherePivot('status', 'pending')->count();
-        
+
         $roleDistribution = [
             ['label' => 'Gestionnaires', 'value' => $managersCount, 'color' => '#3B82F6'],
             ['label' => 'Membres', 'value' => $membersCount, 'color' => '#10B981'],
@@ -124,8 +125,8 @@ class ChamberManagerController extends Controller
             ->limit(6)
             ->get()
             ->reverse()
-            ->map(function($event) {
-                $participationRate = $event->max_participants > 0 
+            ->map(function ($event) {
+                $participationRate = $event->max_participants > 0
                     ? round(($event->participants_count / $event->max_participants) * 100, 1)
                     : 0;
                 return [
@@ -135,41 +136,45 @@ class ChamberManagerController extends Controller
                 ];
             });
 
-        // 4. Bar Chart – Répartition géographique (optionnel)
-        $geographicDistribution = $chamber->members()
-            ->wherePivot('status', 'approved')
-            ->selectRaw('COUNT(*) as count, COALESCE(city, "Non spécifié") as city')
+        // 4. Bar Chart – Répartition géographique (approx. par nationalité)
+        // Utiliser une requête de base pour éviter la sélection automatique des colonnes pivot
+        $geographicDistribution = DB::table('users')
+            ->join('chamber_user', 'users.id', '=', 'chamber_user.user_id')
+            ->where('chamber_user.chamber_id', $chamber->id)
+            ->where('chamber_user.status', 'approved')
+            ->selectRaw('COALESCE(users.nationality, "Non spécifié") as city, COUNT(*) as count')
             ->groupBy('city')
-            ->orderBy('count', 'desc')
+            ->orderByDesc('count')
             ->limit(5)
             ->get()
-            ->map(function($item) {
+            ->map(function ($row) {
                 return [
-                    'city' => $item->city,
-                    'count' => $item->count
+                    'city' => $row->city,
+                    'count' => (int) $row->count,
                 ];
             });
 
         // 🧮 Tableau analytique détaillé des membres
-        $detailedMembers = $chamber->members()
+        // Évite withCount + wherePivot (source d'erreur SQL ici) et calcule par membre
+        $approvedMembers = $chamber->members()
+            ->wherePivot('status', 'approved')
             ->withPivot(['role', 'status', 'created_at'])
-            ->withCount(['events as events_participated' => function($query) {
-                $query->wherePivot('status', 'confirmed');
-            }])
             ->orderBy('pivot_created_at', 'desc')
-            ->get()
-            ->map(function($member) {
-                return [
-                    'id' => $member->id,
-                    'name' => $member->name,
-                    'email' => $member->email,
-                    'role' => $member->pivot->role,
-                    'status' => $member->pivot->status,
-                    'joined_at' => $member->pivot->created_at,
-                    'events_participated' => $member->events_participated ?? 0,
-                    'is_active' => $member->pivot->created_at > now()->subMonths(3)
-                ];
-            });
+            ->get();
+
+        $detailedMembers = $approvedMembers->map(function ($member) {
+            $eventsParticipated = $member->events()->wherePivot('status', 'confirmed')->count();
+            return [
+                'id' => $member->id,
+                'name' => $member->name,
+                'email' => $member->email,
+                'role' => $member->pivot->role,
+                'status' => $member->pivot->status,
+                'joined_at' => $member->pivot->created_at,
+                'events_participated' => $eventsParticipated,
+                'is_active' => $member->pivot->created_at > now()->subMonths(3)
+            ];
+        });
 
         // Membres en attente d'approbation
         $pendingMembers = $chamber->members()
@@ -283,6 +288,43 @@ class ChamberManagerController extends Controller
             $user->update(['is_admin' => User::ROLE_CHAMBER_MANAGER]);
         }
 
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Rôle mis à jour avec succès.',
+                'role' => $request->role
+            ]);
+        }
         return redirect()->back()->with('success', 'Rôle mis à jour avec succès.');
+    }
+
+    /**
+     * Détails d'un membre (AJAX)
+     */
+    public function memberDetails(Chamber $chamber, User $user)
+    {
+        if (!Auth::user()->managesChamber($chamber)) {
+            abort(403);
+        }
+        $membership = $chamber->members()->where('user_id', $user->id)->firstOrFail();
+        $eventsConfirmed = $user->events()->wherePivot('status', 'confirmed')->count();
+        $eventsReserved = $user->events()->wherePivot('status', 'reserved')->count();
+
+        return response()->json([
+            'success' => true,
+            'member' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'company' => $user->company,
+                'nationality' => $user->nationality,
+                'role' => $membership->pivot->role,
+                'status' => $membership->pivot->status,
+                'joined_at' => optional($membership->pivot->created_at)?->toDateString(),
+                'events_confirmed' => $eventsConfirmed,
+                'events_reserved' => $eventsReserved,
+            ]
+        ]);
     }
 }

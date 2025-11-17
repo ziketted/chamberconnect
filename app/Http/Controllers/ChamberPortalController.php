@@ -18,15 +18,15 @@ class ChamberPortalController extends Controller
      */
     public function index()
     {
-        // Vérifier que l'utilisateur est un utilisateur normal
-        if (!Auth::user()->isRegularUser()) {
-            abort(403, 'Accès refusé. Cette fonctionnalité est réservée aux utilisateurs réguliers.');
+        // Autoriser utilisateur normal ou gestionnaire
+        if (!(Auth::user()->isRegularUser() || Auth::user()->isChamberManager())) {
+            abort(403, 'Accès refusé. Cette fonctionnalité est réservée aux utilisateurs réguliers et gestionnaires.');
         }
 
         // Récupérer les demandes de l'utilisateur
         $userRequests = Auth::user()->chambers()
             ->wherePivot('role', 'applicant')
-            ->with(['members' => function($query) {
+            ->with(['members' => function ($query) {
                 $query->wherePivot('role', 'applicant');
             }])
             ->latest()
@@ -48,9 +48,9 @@ class ChamberPortalController extends Controller
      */
     public function create()
     {
-        // Vérifier que l'utilisateur est un utilisateur normal
-        if (!Auth::user()->isRegularUser()) {
-            abort(403, 'Accès refusé. Cette fonctionnalité est réservée aux utilisateurs réguliers.');
+        // Autoriser utilisateur normal ou gestionnaire
+        if (!(Auth::user()->isRegularUser() || Auth::user()->isChamberManager())) {
+            abort(403, 'Accès refusé. Cette fonctionnalité est réservée aux utilisateurs réguliers et gestionnaires.');
         }
 
         return view('portal.chamber.create');
@@ -61,14 +61,17 @@ class ChamberPortalController extends Controller
      */
     public function store(Request $request)
     {
-        // Vérifier que l'utilisateur est un utilisateur normal
-        if (!Auth::user()->isRegularUser()) {
-            abort(403, 'Accès refusé. Cette fonctionnalité est réservée aux utilisateurs réguliers.');
+        // Autoriser utilisateur normal ou gestionnaire
+        if (!(Auth::user()->isRegularUser() || Auth::user()->isChamberManager())) {
+            abort(403, 'Accès refusé. Cette fonctionnalité est réservée aux utilisateurs réguliers et gestionnaires.');
         }
 
         $request->validate([
             // Étape 1 - Informations générales
             'name' => 'required|string|max:255',
+            'type' => 'required|in:national,bilateral',
+            'embassy_country' => 'nullable|string|max:255',
+            'embassy_address' => 'nullable|string|max:255',
             'sigle' => 'required|string|max:20',
             'location' => 'required|string|max:255',
             'address' => 'required|string|max:500',
@@ -78,7 +81,7 @@ class ChamberPortalController extends Controller
             'description' => 'required|string|max:2000',
             'creation_date' => 'required|date',
             'nina_number' => 'required|string|max:50',
-            
+
             // Étape 2 - Documents
             'statuts' => 'required|file|mimes:pdf,doc,docx|max:10240',
             'reglement_interieur' => 'required|file|mimes:pdf,doc,docx|max:10240',
@@ -93,7 +96,7 @@ class ChamberPortalController extends Controller
         $slug = Str::slug($request->name);
         $originalSlug = $slug;
         $counter = 1;
-        
+
         while (Chamber::where('slug', $slug)->exists()) {
             $slug = $originalSlug . '-' . $counter;
             $counter++;
@@ -103,6 +106,9 @@ class ChamberPortalController extends Controller
         $chamber = Chamber::create([
             'name' => $request->name,
             'slug' => $slug,
+            'type' => $request->type ?? 'national',
+            'embassy_country' => $request->type === 'bilateral' ? $request->embassy_country : null,
+            'embassy_address' => $request->type === 'bilateral' ? $request->embassy_address : null,
             'location' => $request->location,
             'address' => $request->address,
             'phone' => $request->phone,
@@ -189,14 +195,14 @@ class ChamberPortalController extends Controller
      */
     public function myRequests()
     {
-        // Vérifier que l'utilisateur est un utilisateur normal
-        if (!Auth::user()->isRegularUser()) {
-            abort(403, 'Accès refusé. Cette fonctionnalité est réservée aux utilisateurs réguliers.');
+        // Autoriser utilisateur normal ou gestionnaire
+        if (!(Auth::user()->isRegularUser() || Auth::user()->isChamberManager())) {
+            abort(403, 'Accès refusé. Cette fonctionnalité est réservée aux utilisateurs réguliers et gestionnaires.');
         }
 
         $chambers = Auth::user()->chambers()
             ->wherePivot('role', 'applicant')
-            ->with(['members' => function($query) {
+            ->with(['members' => function ($query) {
                 $query->wherePivot('role', 'applicant');
             }])
             ->paginate(10);

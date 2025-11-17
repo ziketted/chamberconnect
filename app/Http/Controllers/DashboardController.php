@@ -14,12 +14,12 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-        
-        if ($user->isSuperAdmin() || $user->isChamberManager()) {
+
+        if ($user->isSuperAdmin()) {
             // Dashboard pour les admins
             $chambers = Chamber::withCount('members')->get();
             $popular_chambers = $chambers->take(3);
-            
+
             // Récupérer les événements populaires avec les likes
             $popularEvents = Event::with(['chamber', 'creator', 'participants', 'likes'])
                 ->where('date', '>=', now())
@@ -31,78 +31,78 @@ class DashboardController extends Controller
                     $isUserChamber = $userChamberIds->contains($event->chamber_id);
                     return $this->formatEventForDisplay($event, $isUserChamber);
                 });
-            
+
             return view('dashboard', compact('chambers', 'popular_chambers', 'popularEvents'));
         } else {
             // Dashboard pour les utilisateurs normaux
-            return $this->userDashboard($request);
+            return $this->userDashboard();
         }
     }
-    
+
     public function searchEvents(Request $request)
     {
         $user = Auth::user();
         $userChamberIds = $user->chambers()->pluck('chambers.id');
-        
+
         $query = Event::with(['chamber', 'creator'])
             ->where('date', '>=', now());
-        
+
         // Recherche par terme
         if ($request->filled('search')) {
             $searchTerm = $request->search;
-            $query->where(function($q) use ($searchTerm) {
+            $query->where(function ($q) use ($searchTerm) {
                 $q->where('title', 'LIKE', "%{$searchTerm}%")
-                  ->orWhere('description', 'LIKE', "%{$searchTerm}%")
-                  ->orWhere('location', 'LIKE', "%{$searchTerm}%")
-                  ->orWhereHas('chamber', function($chamberQuery) use ($searchTerm) {
-                      $chamberQuery->where('name', 'LIKE', "%{$searchTerm}%");
-                  });
+                    ->orWhere('description', 'LIKE', "%{$searchTerm}%")
+                    ->orWhere('location', 'LIKE', "%{$searchTerm}%")
+                    ->orWhereHas('chamber', function ($chamberQuery) use ($searchTerm) {
+                        $chamberQuery->where('name', 'LIKE', "%{$searchTerm}%");
+                    });
             });
         }
-        
+
         // Filtres
         if ($request->filled('filter')) {
             switch ($request->filter) {
                 case 'this-month':
                     $query->whereMonth('date', now()->month)
-                          ->whereYear('date', now()->year);
+                        ->whereYear('date', now()->year);
                     break;
-                    
+
                 case 'this-week':
                     $query->whereBetween('date', [
                         now()->startOfWeek(),
                         now()->endOfWeek()
                     ]);
                     break;
-                    
+
                 case 'certified':
-                    $query->whereHas('chamber', function($chamberQuery) {
+                    $query->whereHas('chamber', function ($chamberQuery) {
                         $chamberQuery->where('verified', true);
                     });
                     break;
-                    
+
                 case 'forum':
                     $query->where('title', 'LIKE', '%forum%');
                     break;
-                    
+
                 case 'networking':
-                    $query->where(function($q) {
+                    $query->where(function ($q) {
                         $q->where('title', 'LIKE', '%networking%')
-                          ->orWhere('title', 'LIKE', '%réseau%')
-                          ->orWhere('description', 'LIKE', '%networking%');
+                            ->orWhere('title', 'LIKE', '%réseau%')
+                            ->orWhere('description', 'LIKE', '%networking%');
                     });
                     break;
             }
         }
-        
+
         $events = $query->orderBy('date', 'asc')
-                       ->limit(20)
-                       ->get()
-                       ->map(function ($event) use ($userChamberIds) {
-                           $isUserChamber = $userChamberIds->contains($event->chamber_id);
-                           return $this->formatEventForDisplay($event, $isUserChamber);
-                       });
-        
+            ->limit(20)
+            ->get()
+            ->map(function ($event) use ($userChamberIds) {
+                $isUserChamber = $userChamberIds->contains($event->chamber_id);
+                return $this->formatEventForDisplay($event, $isUserChamber);
+            });
+
         return response()->json([
             'events' => $events,
             'count' => $events->count()
@@ -115,11 +115,11 @@ class DashboardController extends Controller
         $page = $request->get('page', 1);
         $perPage = 6;
         $offset = ($page - 1) * $perPage;
-        
-        // Si c'est un admin, récupérer tous les événements des chambres vérifiées
-        if ($user->isSuperAdmin() || $user->isChamberManager()) {
+
+        // Si c'est un super admin, récupérer tous les événements des chambres vérifiées
+        if ($user->isSuperAdmin()) {
             $query = Event::with(['chamber', 'creator', 'participants', 'likes'])
-                ->whereHas('chamber', function($q) {
+                ->whereHas('chamber', function ($q) {
                     $q->where('verified', true);
                 })
                 ->where('date', '>=', now())
@@ -127,7 +127,7 @@ class DashboardController extends Controller
         } else {
             // Pour les utilisateurs normaux, récupérer les événements des chambres de l'utilisateur
             $userChamberIds = $user->chambers()->pluck('id');
-            
+
             $query = Event::with(['chamber', 'creator', 'participants', 'likes'])
                 ->whereIn('chamber_id', $userChamberIds)
                 ->where('date', '>=', now())
@@ -136,20 +136,20 @@ class DashboardController extends Controller
                 })
                 ->orderBy('date', 'asc');
         }
-        
+
         $events = $query->skip($offset)
-                       ->take($perPage)
-                       ->get()
-                       ->map(function ($event) use ($user) {
-                           $userChamberIds = $user->chambers()->pluck('chambers.id');
-                           $isUserChamber = $userChamberIds->contains($event->chamber_id);
-                           return $this->formatEventForDisplay($event, $isUserChamber);
-                       });
-        
+            ->take($perPage)
+            ->get()
+            ->map(function ($event) use ($user) {
+                $userChamberIds = $user->chambers()->pluck('chambers.id');
+                $isUserChamber = $userChamberIds->contains($event->chamber_id);
+                return $this->formatEventForDisplay($event, $isUserChamber);
+            });
+
         // Calculer s'il y a plus d'événements
         $totalEvents = $query->count();
         $hasMore = $totalEvents > ($offset + $perPage);
-        
+
         return response()->json([
             'events' => $events,
             'hasMore' => $hasMore,
@@ -157,21 +157,21 @@ class DashboardController extends Controller
             'total' => $totalEvents
         ]);
     }
-    
+
     private function userDashboard()
     {
         $user = Auth::user();
-        
+
         // Statistiques de l'utilisateur
         $userChambers = $user->chambers()->withCount('members')->get();
         $userChambersCount = $userChambers->count();
-        
+
         // Nombre d'événements auxquels l'utilisateur a participé (simulé pour l'instant)
         $participatedEventsCount = 0; // À implémenter quand le système d'événements sera prêt
-        
+
         // Récupérer les événements réels de la base de données
         $userChamberIds = $userChambers->pluck('id');
-        
+
         // Événements des chambres de l'utilisateur seulement
         // Filtrer pour ne montrer que ceux non réservés par l'utilisateur et à venir
         $allEvents = Event::with(['chamber', 'creator', 'participants', 'likes'])
@@ -185,7 +185,7 @@ class DashboardController extends Controller
             ->map(function ($event) {
                 return $this->formatEventForDisplay($event, true);
             });
-        
+
         // Chambres dont l'utilisateur n'est pas membre (pour la sidebar droite)
         $suggestedChambers = Chamber::withCount('members')
             ->whereNotIn('id', $userChamberIds)
@@ -193,7 +193,7 @@ class DashboardController extends Controller
             ->orderBy('members_count', 'desc')
             ->limit(5)
             ->get();
-        
+
         // Informations sur l'investissement en RDC
         $investmentInfo = [
             'title' => 'Investir en RDC',
@@ -221,7 +221,7 @@ class DashboardController extends Controller
                 ]
             ]
         ];
-        
+
         return view('dashboard.user', compact(
             'user',
             'userChambers',
@@ -232,37 +232,37 @@ class DashboardController extends Controller
             'investmentInfo'
         ));
     }
-    
+
     private function generateEventsForUserChambers($userChambers)
     {
         $events = collect();
-        
+
         foreach ($userChambers as $chamber) {
             // Générer 2-3 événements par chambre de l'utilisateur
             $chamberEvents = $this->generateEventsForChamber($chamber, true);
             $events = $events->merge($chamberEvents);
         }
-        
+
         return $events->sortBy('date');
     }
-    
+
     private function generateOtherEvents($allChambers, $userChambers)
     {
         $events = collect();
         $userChamberIds = $userChambers->pluck('id');
-        
+
         // Événements des autres chambres
         $otherChambers = $allChambers->whereNotIn('id', $userChamberIds)->take(5);
-        
+
         foreach ($otherChambers as $chamber) {
             // Générer 1-2 événements par autre chambre
             $chamberEvents = $this->generateEventsForChamber($chamber, false);
             $events = $events->merge($chamberEvents);
         }
-        
+
         return $events->sortBy('date');
     }
-    
+
     private function generateEventsForChamber($chamber, $isUserChamber = false)
     {
         $eventTypes = ['forum', 'atelier', 'networking', 'conference', 'formation'];
@@ -273,18 +273,18 @@ class DashboardController extends Controller
             'conference' => ['Conférence Fintech', 'Conférence Innovation', 'Conférence Leadership', 'Conférence Économique'],
             'formation' => ['Formation Digital', 'Formation Management', 'Formation Comptabilité', 'Formation Export']
         ];
-        
+
         $events = collect();
         $eventCount = $isUserChamber ? rand(2, 3) : rand(1, 2);
-        
+
         for ($i = 0; $i < $eventCount; $i++) {
             $type = $eventTypes[array_rand($eventTypes)];
             $title = $eventTitles[$type][array_rand($eventTitles[$type])];
-            
+
             // Dates futures pour les prochains 30 jours
             $daysFromNow = rand(1, 30);
             $eventDate = now()->addDays($daysFromNow);
-            
+
             $events->push([
                 'id' => uniqid(),
                 'title' => $title,
@@ -304,10 +304,10 @@ class DashboardController extends Controller
                 'status' => rand(0, 10) > 8 ? 'complet' : 'ouvert'
             ]);
         }
-        
+
         return $events;
     }
-    
+
     private function generateEventDescription($type, $chamberName)
     {
         $descriptions = [
@@ -317,31 +317,31 @@ class DashboardController extends Controller
             'conference' => "Conférence exclusive de {$chamberName} avec des intervenants de renom et des insights précieux.",
             'formation' => "Formation certifiante proposée par {$chamberName} pour développer vos compétences professionnelles."
         ];
-        
+
         return $descriptions[$type] ?? "Événement organisé par {$chamberName}.";
     }
-    
+
     public function myChambers(Request $request)
     {
         $user = Auth::user();
-        
+
         // Récupérer toutes les chambres de l'utilisateur avec leurs informations
         $userChambers = $user->chambers()->withCount('members')->get();
-        
+
         // Statistiques
         $stats = [
             'total_chambers' => $userChambers->count(),
             'verified_chambers' => $userChambers->where('verified', true)->count(),
             'total_members' => $userChambers->sum('members_count')
         ];
-        
+
         return view('my-chambers', compact('userChambers', 'stats'));
     }
 
     private function formatEventForDisplay($event, $isUserChamber = false)
     {
         $user = Auth::user();
-        
+
         // Déterminer le type d'événement basé sur le titre
         $type = $event->type ?? 'conference'; // Utiliser le type de l'événement ou par défaut
         if (!$event->type) {
@@ -356,25 +356,25 @@ class DashboardController extends Controller
                 $type = 'formation';
             }
         }
-        
+
         // Vérifier si l'utilisateur a réservé cet événement
         $booking = null;
         $isBooked = false;
         $bookingStatus = null;
-        
+
         if ($user) {
             // Utiliser la relation Eloquent pour vérifier la réservation
             $isBooked = $event->isBookedBy($user);
             $bookingStatus = $event->getBookingStatus($user);
         }
-        
+
         // Calculer le nombre de participants réels en utilisant la relation
         $participantsCount = $event->participants()->count();
-        
+
         // Informations sur les likes
         $likesCount = $event->likes()->count();
         $isLiked = $user ? $event->isLikedBy($user) : false;
-        
+
         return [
             'id' => $event->id,
             'title' => $event->title,
