@@ -67,6 +67,11 @@ class ChamberController extends Controller
 
     public function show(Chamber $chamber)
     {
+        // Vérifier si la chambre est suspendue (sauf pour les super admins)
+        if ($chamber->is_suspended && (!auth()->check() || !auth()->user()->isSuperAdmin())) {
+            return view('chambers.suspended', compact('chamber'));
+        }
+
         // Route model binding by slug
         $chamber = $chamber->load([
             'partners' => function ($q) {

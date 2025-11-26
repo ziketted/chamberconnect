@@ -63,6 +63,7 @@
     </div>
 
     <!-- Événements à venir -->
+
     @if($upcomingEvents->count() > 0)
     <div class="mb-8">
         <h2 class="text-lg font-semibold text-neutral-900 dark:text-white mb-4">Événements à venir</h2>
@@ -72,7 +73,7 @@
                 <div class="flex items-start justify-between">
                     <div class="flex-1">
                         <div class="flex items-center gap-3 mb-3">
-                            @if($event->chamber->logo_path)
+                            @if(!empty( $event->chamber->logo_path) )
                                 <img src="{{ asset('storage/' . $event->chamber->logo_path) }}" 
                                      alt="{{ $event->chamber->name }}"
                                      class="h-10 w-10 rounded-lg object-cover">

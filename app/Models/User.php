@@ -104,6 +104,22 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Obtient le texte du rôle de l'utilisateur
+     */
+    public function getRoleText(): string
+    {
+        switch ($this->is_admin) {
+            case self::ROLE_SUPER_ADMIN:
+                return 'Super Administrateur';
+            case self::ROLE_CHAMBER_MANAGER:
+                return 'Gestionnaire de Chambre';
+            case self::ROLE_USER:
+            default:
+                return 'Utilisateur';
+        }
+    }
+
+    /**
      * Obtient les chambres que l'utilisateur peut gérer
      */
     public function managedChambers()

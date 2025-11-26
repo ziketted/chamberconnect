@@ -3,12 +3,19 @@
 @section('content')
 <div class="max-w-4xl mx-auto">
     <div class="mb-8">
-        <div class="flex items-center gap-4 mb-4">
+        <div class="flex items-center justify-between mb-4">
             <a href="{{ route('chamber.show', $chamber) }}" 
                class="inline-flex items-center gap-2 text-sm text-neutral-600 dark:text-gray-400 hover:text-neutral-900 dark:hover:text-white">
                 <i data-lucide="arrow-left" class="h-4 w-4"></i>
                 Retour à {{ $chamber->name }}
             </a>
+            @if($events->count() > 0)
+            <a href="{{ route('chambers.events.index', $chamber) }}"
+               class="inline-flex items-center gap-2 rounded-md border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm font-medium text-neutral-700 dark:text-gray-300 hover:bg-neutral-50 dark:hover:bg-gray-700">
+                <i data-lucide="list" class="h-4 w-4"></i>
+                Gérer les événements ({{ $events->count() }})
+            </a>
+            @endif
         </div>
         <h1 class="text-2xl font-semibold text-neutral-900 dark:text-white">Créer un événement</h1>
         <p class="text-sm text-neutral-600 dark:text-gray-400 mt-1">Organisez un événement pour votre chambre de commerce</p>
@@ -275,8 +282,16 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialiser Lucide
     lucide.createIcons();
 });
+
+// Fonction de confirmation de suppression
+function confirmDelete(eventId, eventTitle) {
+    if (confirm(`Êtes-vous sûr de vouloir supprimer l'événement "${eventTitle}" ?\n\nCette action est irréversible.`)) {
+        document.getElementById('delete-form-' + eventId).submit();
+    }
+}
 </script>
 @endpush
 @endsection
+
 
 

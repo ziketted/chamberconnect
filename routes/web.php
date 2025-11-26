@@ -43,6 +43,28 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Super Admin Routes (is_admin = 1)
     Route::middleware('admin')->group(function () {
+        // NEW SuperAdmin Routes - Dedicated Interface
+        Route::prefix('super-admin')->name('super-admin.')->group(function () {
+            Route::get('/dashboard', [\App\Http\Controllers\Admin\SuperAdminController::class, 'dashboard'])->name('dashboard');
+            Route::get('/chambers', [\App\Http\Controllers\Admin\SuperAdminChamberController::class, 'index'])->name('chambers.index');
+            Route::get('/chambers/{id}/request', [\App\Http\Controllers\Admin\SuperAdminChamberController::class, 'showRequest'])->name('chambers.show-request');
+            Route::post('/chambers/{id}/certify', [\App\Http\Controllers\Admin\SuperAdminChamberController::class, 'certify'])->name('chambers.certify');
+            Route::post('/chambers/{id}/approve', [\App\Http\Controllers\Admin\SuperAdminChamberController::class, 'approve'])->name('chambers.approve');
+            Route::post('/chambers/{id}/reject', [\App\Http\Controllers\Admin\SuperAdminChamberController::class, 'reject'])->name('chambers.reject');
+            Route::post('/chambers/{id}/suspend', [\App\Http\Controllers\Admin\SuperAdminChamberController::class, 'suspend'])->name('chambers.suspend');
+            Route::post('/chambers/{id}/reactivate', [\App\Http\Controllers\Admin\SuperAdminChamberController::class, 'reactivate'])->name('chambers.reactivate');
+            Route::delete('/chambers/{id}', [\App\Http\Controllers\Admin\SuperAdminChamberController::class, 'delete'])->name('chambers.delete');
+
+            Route::get('/managers', [\App\Http\Controllers\Admin\SuperAdminUserController::class, 'index'])->name('managers.index');
+            Route::get('/managers/{user}/details', [\App\Http\Controllers\Admin\SuperAdminUserController::class, 'details'])->name('managers.details');
+            Route::post('/managers/promote', [\App\Http\Controllers\Admin\SuperAdminUserController::class, 'promote'])->name('managers.promote');
+            Route::post('/managers/{user}/demote', [\App\Http\Controllers\Admin\SuperAdminUserController::class, 'demote'])->name('managers.demote');
+
+            Route::get('/notifications', [\App\Http\Controllers\Admin\SuperAdminNotificationController::class, 'index'])->name('notifications.index');
+            Route::post('/notifications/send', [\App\Http\Controllers\Admin\SuperAdminNotificationController::class, 'send'])->name('notifications.send');
+        });
+
+        // Old routes (compatibility)
         Route::get('/admin/dashboard', [\App\Http\Controllers\Admin\SuperAdminController::class, 'dashboard'])->name('admin.dashboard');
         Route::get('/admin/chambers', [\App\Http\Controllers\Admin\SuperAdminController::class, 'chambers'])->name('admin.chambers');
         Route::get('/admin/users', [\App\Http\Controllers\Admin\SuperAdminController::class, 'users'])->name('admin.users');
@@ -62,13 +84,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/api/users/search', [\App\Http\Controllers\ChamberMemberController::class, 'searchUsers'])->name('api.users.search');
 
         // Gestion détaillée d'une chambre (page dédiée)
-        Route::get('/admin/chambers/{chamber}/manage', [\App\Http\Controllers\Admin\SuperAdminController::class, 'manageChamber'])->name('admin.chambers.manage');
-        Route::post('/admin/chambers/{chamber}/remove-member', [\App\Http\Controllers\Admin\SuperAdminController::class, 'removeMember'])->name('admin.chambers.remove-member');
+        Route::get('/admin/chambers/{chamber:slug}/manage', [\App\Http\Controllers\Admin\SuperAdminController::class, 'manageChamber'])->name('admin.chambers.manage');
+        Route::post('/admin/chambers/{chamber:slug}/remove-member', [\App\Http\Controllers\Admin\SuperAdminController::class, 'removeMember'])->name('admin.chambers.remove-member');
 
         // Gestion des gestionnaires
-        Route::get('/admin/chambers/{chamber}/assign-manager', [\App\Http\Controllers\Admin\SuperAdminController::class, 'showAssignManager'])->name('admin.chambers.assign-manager.show');
-        Route::post('/admin/chambers/{chamber}/assign-manager', [\App\Http\Controllers\Admin\SuperAdminController::class, 'assignManager'])->name('admin.chambers.assign-manager');
-        Route::delete('/admin/chambers/{chamber}/remove-manager', [\App\Http\Controllers\Admin\SuperAdminController::class, 'removeManager'])->name('admin.chambers.remove-manager');
+        Route::get('/admin/chambers/{chamber:slug}/assign-manager', [\App\Http\Controllers\Admin\SuperAdminController::class, 'showAssignManager'])->name('admin.chambers.assign-manager.show');
+        Route::post('/admin/chambers/{chamber:slug}/assign-manager', [\App\Http\Controllers\Admin\SuperAdminController::class, 'assignManager'])->name('admin.chambers.assign-manager');
+        Route::delete('/admin/chambers/{chamber:slug}/remove-manager', [\App\Http\Controllers\Admin\SuperAdminController::class, 'removeManager'])->name('admin.chambers.remove-manager');
         Route::patch('/admin/users/{user}/promote', [\App\Http\Controllers\Admin\SuperAdminController::class, 'promoteToManager'])->name('admin.users.promote');
         Route::patch('/admin/users/{user}/demote', [\App\Http\Controllers\Admin\SuperAdminController::class, 'demoteToUser'])->name('admin.users.demote');
 
@@ -104,13 +126,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/chambers/{chamber}/members/{user}/details', [\App\Http\Controllers\ChamberManagerController::class, 'memberDetails'])->name('chambers.members.details');
 
         // Events
+        Route::get('/chambers/{chamber}/events', [\App\Http\Controllers\ChamberEventController::class, 'index'])->name('chambers.events.index');
         Route::get('/chambers/{chamber}/events/create', [\App\Http\Controllers\ChamberEventController::class, 'create'])->name('chambers.events.create');
         Route::post('/chambers/{chamber}/events', [\App\Http\Controllers\ChamberEventController::class, 'store'])->name('chambers.events.store');
+        Route::get('/chambers/{chamber}/events/{event}/edit', [\App\Http\Controllers\ChamberEventController::class, 'edit'])->name('chambers.events.edit');
+        Route::put('/chambers/{chamber}/events/{event}', [\App\Http\Controllers\ChamberEventController::class, 'update'])->name('chambers.events.update');
+        Route::delete('/chambers/{chamber}/events/{event}', [\App\Http\Controllers\ChamberEventController::class, 'destroy'])->name('chambers.events.destroy');
         Route::get('/chambers/{chamber}/events/{event}/participants', [\App\Http\Controllers\ChamberEventController::class, 'participants'])->name('chambers.events.participants');
         Route::patch('/chambers/{chamber}/events/{event}/participants/{user}', [\App\Http\Controllers\ChamberEventController::class, 'updateParticipantStatus'])->name('chambers.events.participants.update');
+        Route::patch('/chambers/{chamber}/members/{user}/position', [\App\Http\Controllers\ChamberManagerController::class, 'updatePosition'])->name('chambers.members.position');
         // Partners
         Route::get('/chambers/{chamber}/partners/create', [\App\Http\Controllers\ChamberPartnerController::class, 'create'])->name('chambers.partners.create');
         Route::post('/chambers/{chamber}/partners', [\App\Http\Controllers\ChamberPartnerController::class, 'store'])->name('chambers.partners.store');
+        Route::put('/chambers/{chamber}/partners/{partner}', [\App\Http\Controllers\ChamberPartnerController::class, 'update'])->name('chambers.partners.update');
+        Route::delete('/chambers/{chamber}/partners/{partner}', [\App\Http\Controllers\ChamberPartnerController::class, 'destroy'])->name('chambers.partners.destroy');
         // Posts
         Route::get('/chambers/{chamber}/posts/create', [\App\Http\Controllers\ChamberPostController::class, 'create'])->name('chambers.posts.create');
         Route::post('/chambers/{chamber}/posts', [\App\Http\Controllers\ChamberPostController::class, 'store'])->name('chambers.posts.store');
@@ -200,6 +229,39 @@ Route::get('/test-user-role-debug', function () {
         'isSuperAdmin' => $user->isSuperAdmin(),
         'isChamberManager' => $user->isChamberManager(),
     ];
+})->middleware('auth');
+
+// Route de test pour vérifier les chambres
+Route::get('/test-chambers', function () {
+    $chambers = \App\Models\Chamber::orderBy('id')->get(['id', 'name', 'verified']);
+    $pendingCount = \App\Models\Chamber::where('verified', false)->count();
+
+    return [
+        'total_chambers' => $chambers->count(),
+        'pending_count' => $pendingCount,
+        'chambers' => $chambers,
+    ];
+})->middleware('auth');
+
+// Route de test pour voir la demande directement
+Route::get('/test-request/{id}', function ($id) {
+    try {
+        $chamber = \App\Models\Chamber::findOrFail($id);
+        $requestData = json_decode($chamber->certification_notes, true) ?? [];
+
+        return [
+            'success' => true,
+            'chamber' => $chamber,
+            'request_data' => $requestData,
+            'documents_count' => count($requestData['documents'] ?? []),
+        ];
+    } catch (\Exception $e) {
+        return [
+            'success' => false,
+            'error' => $e->getMessage(),
+            'chamber_id' => $id,
+        ];
+    }
 })->middleware('auth');
 
 // Route de test pour les fonctionnalités super admin

@@ -299,6 +299,31 @@ class ChamberManagerController extends Controller
     }
 
     /**
+     * Mettre à jour le poste d'un membre
+     */
+    public function updatePosition(Request $request, Chamber $chamber, User $user)
+    {
+        if (!Auth::user()->managesChamber($chamber)) {
+            abort(403);
+        }
+
+        $request->validate([
+            'position' => 'nullable|string|max:255'
+        ]);
+
+        $chamber->members()->updateExistingPivot($user->id, ['position' => $request->position]);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Poste mis à jour avec succès.',
+                'position' => $request->position
+            ]);
+        }
+        return redirect()->back()->with('success', 'Poste mis à jour avec succès.');
+    }
+
+    /**
      * Détails d'un membre (AJAX)
      */
     public function memberDetails(Chamber $chamber, User $user)

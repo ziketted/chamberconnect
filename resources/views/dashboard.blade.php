@@ -54,23 +54,44 @@
                     <i data-lucide="shield" class="mr-2 h-4 w-4"></i>
                     Super Admin
                 </div>
+                <div class="text-xs text-gray-400 mb-4">
+                    Gestion complète du système
+                </div>
+                <a href="{{ route('admin.dashboard') }}"
+                    class="block w-full text-center bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-md text-sm font-medium transition-colors">
+                    <i data-lucide="settings" class="inline mr-2 h-4 w-4"></i>
+                    Administration
+                </a>
+
+                @elseif(Auth::user()->isChamberManager())
+                <div
+                    class="inline-flex items-center rounded-md bg-orange-500/20 px-3 py-2 text-sm font-medium text-orange-300 mb-3">
+                    <i data-lucide="briefcase" class="mr-2 h-4 w-4"></i>
+                    Gestionnaire
+                </div>
+                <div class="text-xs text-gray-400 mb-4">
+                    {{ Auth::user()->chambers()->wherePivot('role', 'manager')->count() }} chambre(s) gérée(s)
+                </div>
+                <a href="{{ route('manage-chambers.index') }}"
+                    class="block w-full text-center bg-orange-600 hover:bg-orange-700 text-white py-2 px-4 rounded-md text-sm font-medium transition-colors">
+                    <i data-lucide="folder-open" class="inline mr-2 h-4 w-4"></i>
+                    Gérer mes chambres
+                </a>
+
                 @else
                 <div
                     class="inline-flex items-center rounded-md bg-blue-500/20 px-3 py-2 text-sm font-medium text-blue-300 mb-3">
                     <i data-lucide="user" class="mr-2 h-4 w-4"></i>
                     Utilisateur
                 </div>
-                @endif
-
                 <div class="text-xs text-gray-400 mb-4">
                     Membre des chambres
                 </div>
-
-                @if(Auth::user()->isSuperAdmin())
-                <a href="{{ route('admin.dashboard') }}"
+                <button
                     class="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md text-sm font-medium transition-colors">
-                    Administration
-                </a>
+                    <i data-lucide="building" class="inline mr-2 h-4 w-4"></i>
+                    Explorer les chambres
+                </button>
                 @endif
             </div>
 

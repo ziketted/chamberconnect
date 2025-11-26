@@ -128,6 +128,7 @@
         <div class="space-y-8">
             <div class="space-y-6">
                 @foreach($upcoming_events as $event)
+                @if($event->chamber)
                 <div class="event-card group rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden hover:shadow-sm transition-all duration-200"
                     data-type="{{ $event->type }}" data-mode="{{ $event->mode }}"
                     data-location="{{ strtolower($event->city ?? 'online') }}"
@@ -340,6 +341,7 @@
                         </div>
                     </div>
                 </div>
+                @endif
                 @endforeach
 
                 <!-- Message si aucun événement -->

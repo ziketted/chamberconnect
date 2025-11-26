@@ -75,6 +75,7 @@
                 <thead class="text-left text-neutral-600 dark:text-gray-300">
                     <tr>
                         <th class="py-2 pr-4">Membre</th>
+                        <th class="py-2 pr-4">Poste</th>
                         <th class="py-2 pr-4">Rôle</th>
                         <th class="py-2 pr-4">Statut</th>
                         <th class="py-2 pr-4">Actions</th>
@@ -89,6 +90,15 @@
                             <div class="flex flex-col">
                                 <span class="font-medium">{{ $m->name }}</span>
                                 <span class="text-xs text-neutral-500">{{ $m->email }}</span>
+                            </div>
+                        </td>
+                        <td class="py-3 pr-4">
+                            <div class="group flex items-center gap-2">
+                                <span class="text-sm text-neutral-700 dark:text-gray-300 js-position-display-{{ $m->id }}">{{ $m->pivot->position ?? '-' }}</span>
+                                <button onclick="editPosition({{ $m->id }}, '{{ addslashes($m->pivot->position ?? '') }}')" 
+                                    class="opacity-0 group-hover:opacity-100 p-1 text-neutral-400 hover:text-blue-600 transition-opacity">
+                                    <i data-lucide="pencil" class="h-3 w-3"></i>
+                                </button>
                             </div>
                         </td>
                         <td class="py-3 pr-4">
@@ -325,3 +335,92 @@
         </div>
     </div>
 </div>
+
+<!-- Position Modal -->
+<div id="position-modal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+    <div class="w-full max-w-md rounded-xl bg-white dark:bg-gray-800 shadow-xl">
+        <div class="flex items-center justify-between border-b border-neutral-200 dark:border-gray-700 p-4">
+            <h3 class="text-sm font-semibold text-neutral-900 dark:text-white">Modifier le poste</h3>
+            <button onclick="closePositionModal()" class="text-neutral-500 hover:text-neutral-700 dark:text-gray-400">
+                <i data-lucide="x" class="h-5 w-5"></i>
+            </button>
+        </div>
+        <form id="position-form" method="POST" class="p-4">
+            @csrf
+            @method('PATCH')
+            <div class="mb-4">
+                <label for="position-input" class="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">Poste</label>
+                <input type="text" id="position-input" name="position" class="w-full rounded-md border border-neutral-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white px-3 py-2 text-sm focus:border-[#073066] focus:ring-1 focus:ring-[#073066]" placeholder="Ex: Président, Secrétaire...">
+            </div>
+            <div class="flex justify-end gap-2">
+                <button type="button" onclick="closePositionModal()" class="px-3 py-2 rounded-md border border-neutral-300 dark:border-gray-600 text-sm text-neutral-700 dark:text-gray-300 hover:bg-neutral-50 dark:hover:bg-gray-700">Annuler</button>
+                <button type="submit" class="px-3 py-2 rounded-md bg-[#073066] text-white text-sm hover:bg-[#052347]">Enregistrer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@push('scripts')
+<script>
+    function editPosition(userId, currentPosition) {
+        const modal = document.getElementById('position-modal');
+        const form = document.getElementById('position-form');
+        const input = document.getElementById('position-input');
+        
+        // Update form action URL
+        form.action = `{{ route('chambers.members.position', [$chamber, 'USER_ID']) }}`.replace('USER_ID', userId);
+        input.value = currentPosition;
+        
+        modal.classList.remove('hidden');
+        input.focus();
+
+        // Handle form submission via AJAX
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            
+            try {
+                const res = await fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': token,
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        _method: 'PATCH',
+                        position: input.value
+                    })
+                });
+                
+                const data = await res.json();
+                
+                if (res.ok && data.success) {
+                    // Update UI
+                    const displayEl = document.querySelector(`.js-position-display-${userId}`);
+                    if (displayEl) {
+                        displayEl.textContent = data.position || '-';
+                        // Update the onclick handler with new position
+                        const btn = displayEl.nextElementSibling;
+                        if (btn) {
+                            btn.setAttribute('onclick', `editPosition(${userId}, '${data.position || ''}')`);
+                        }
+                    }
+                    showToast('Poste mis à jour', 'success');
+                    closePositionModal();
+                } else {
+                    showToast(data.message || 'Erreur lors de la mise à jour', 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('Erreur réseau', 'error');
+            }
+        };
+    }
+
+    function closePositionModal() {
+        document.getElementById('position-modal').classList.add('hidden');
+    }
+</script>
+@endpush

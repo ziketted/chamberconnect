@@ -103,6 +103,7 @@ class EventBookingController extends Controller
             ->with('chamber')
             ->orderBy('date', 'desc')
             ->get();
+         
 
         return view('events.my-bookings', compact('upcomingEvents', 'pastEvents'));
     }

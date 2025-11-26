@@ -15,6 +15,7 @@ class EventController extends Controller
         
         // Base query pour tous les événements à venir
         $baseQuery = Event::with(['chamber', 'creator'])
+            ->whereHas('chamber') // Only events with valid chambers
             ->where(function($query) {
                 $query->where('status', 'upcoming')
                       ->orWhere('status', 'full');
@@ -75,7 +76,8 @@ class EventController extends Controller
         // Statistiques pour les onglets
         $stats = [];
         if ($user) {
-            $stats['for_you_count'] = Event::whereIn('chamber_id', $userChamberIds)
+            $stats['for_you_count'] = Event::whereHas('chamber')
+                ->whereIn('chamber_id', $userChamberIds)
                 ->where('date', '>=', now()->toDateString())
                 ->whereIn('status', ['upcoming', 'full'])
                 ->count();
@@ -85,12 +87,23 @@ class EventController extends Controller
                 ->where('date', '>=', now()->toDateString())
                 ->count();
                 
-            $stats['events_count'] = Event::whereNotIn('chamber_id', $userChamberIds)
-                ->where('date', '>=', now()->toDateString())
-                ->whereIn('status', ['upcoming', 'full'])
-                ->count();
+            // Events from chambers the user is NOT a member of
+            if (!empty($userChamberIds)) {
+                $stats['events_count'] = Event::whereHas('chamber')
+                    ->whereNotIn('chamber_id', $userChamberIds)
+                    ->where('date', '>=', now()->toDateString())
+                    ->whereIn('status', ['upcoming', 'full'])
+                    ->count();
+            } else {
+                // If user is not a member of any chamber, show all events
+                $stats['events_count'] = Event::whereHas('chamber')
+                    ->where('date', '>=', now()->toDateString())
+                    ->whereIn('status', ['upcoming', 'full'])
+                    ->count();
+            }
         } else {
-            $stats['events_count'] = Event::where('date', '>=', now()->toDateString())
+            $stats['events_count'] = Event::whereHas('chamber')
+                ->where('date', '>=', now()->toDateString())
                 ->whereIn('status', ['upcoming', 'full'])
                 ->count();
         }

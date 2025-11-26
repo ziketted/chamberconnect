@@ -13,6 +13,7 @@ class Partner extends Model
     protected $fillable = [
         'chamber_id',
         'name',
+        'description',
         'initials',
         'logo_path',
         'website',
@@ -23,6 +24,7 @@ class Partner extends Model
         return $this->belongsTo(Chamber::class);
     }
 }
+
 
 
 

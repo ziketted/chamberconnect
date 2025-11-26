@@ -8,10 +8,10 @@ class ChamberListController extends Controller
 {
     public function index()
     {
-        // Récupérer les 5 événements du mois en cours (seulement des chambres vérifiées)
+        // Récupérer les 5 événements du mois en cours (seulement des chambres vérifiées et actives)
         $monthlyEvents = \App\Models\Event::with('chamber')
             ->whereHas('chamber', function($query) {
-                $query->where('verified', true);
+                $query->where('verified', true)->where('is_suspended', false);
             })
             ->whereMonth('date', now()->month)
             ->whereYear('date', now()->year)
@@ -30,8 +30,9 @@ class ChamberListController extends Controller
                 ];
             });
 
-        // Récupérer seulement les chambres vérifiées de la base de données avec pagination
+        // Récupérer seulement les chambres vérifiées et actives (non suspendues) de la base de données avec pagination
         $chambersQuery = \App\Models\Chamber::where('verified', true)
+            ->where('is_suspended', false)
             ->withCount('members')
             ->with(['events' => function($query) {
                 $query->where('date', '>=', now());

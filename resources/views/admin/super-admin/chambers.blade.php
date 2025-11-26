@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@section('head')
+<meta name="csrf-token" content="{{ csrf_token() }}">
+@endsection
+
 @section('content')
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- Header -->
@@ -16,41 +20,58 @@
             </a>
         </div>
 
-        <!-- Barre de recherche et filtres -->
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 p-6">
-            <div
-                class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0 md:space-x-4">
-                <!-- Recherche -->
-                <div class="flex-1 max-w-lg">
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <i data-lucide="search" class="h-5 w-5 text-gray-400"></i>
+        <!-- Barre de recherche et filtres améliorée -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <form method="GET" action="{{ route('super-admin.chambers.index') }}" class="space-y-4">
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0 lg:space-x-6">
+                    <!-- Recherche -->
+                    <div class="flex-1 max-w-2xl">
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i data-lucide="search" class="h-5 w-5 text-gray-400"></i>
+                            </div>
+                            <input type="text" name="search" id="chamber-search" value="{{ request('search') }}"
+                                class="block w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg leading-5 bg-white dark:bg-gray-800 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors"
+                                placeholder="Rechercher par nom, localisation, numéro d'état...">
                         </div>
-                        <input type="text" id="chamber-search"
-                            class="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 dark:border-gray-400 rounded-md leading-5 bg-white dark:bg-gray-800 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                            placeholder="Rechercher une chambre par nom, localisation...">
+                    </div>
+
+                    <!-- Filtres -->
+                    <div class="flex flex-wrap items-center gap-3">
+                        <select name="filter_status" id="status-filter"
+                            class="px-4 py-3 text-sm border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                            <option value="">Tous les statuts</option>
+                            <option value="certified" {{ request('filter_status') == 'certified' ? 'selected' : '' }}>Certifiées</option>
+                            <option value="verified" {{ request('filter_status') == 'verified' ? 'selected' : '' }}>Vérifiées</option>
+                            <option value="pending" {{ request('filter_status') == 'pending' ? 'selected' : '' }}>En attente</option>
+                            <option value="suspended" {{ request('filter_status') == 'suspended' ? 'selected' : '' }}>Suspendues</option>
+                            <option value="active" {{ request('filter_status') == 'active' ? 'selected' : '' }}>Actives</option>
+                        </select>
+
+                        <select name="sort" id="sort-filter"
+                            class="px-4 py-3 text-sm border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                            <option value="created_at" {{ request('sort') == 'created_at' ? 'selected' : '' }}>Plus récentes</option>
+                            <option value="name" {{ request('sort') == 'name' ? 'selected' : '' }}>Nom A-Z</option>
+                            <option value="members_count" {{ request('sort') == 'members_count' ? 'selected' : '' }}>Plus de membres</option>
+                            <option value="location" {{ request('sort') == 'location' ? 'selected' : '' }}>Localisation</option>
+                        </select>
+
+                        <button type="submit" 
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors flex items-center gap-2 text-sm font-medium">
+                            <i data-lucide="search" class="h-4 w-4"></i>
+                            Rechercher
+                        </button>
+
+                        @if(request()->hasAny(['search', 'filter_status', 'sort']))
+                        <a href="{{ route('super-admin.chambers.index') }}" 
+                            class="bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-4 py-3 rounded-lg transition-colors flex items-center gap-2 text-sm">
+                            <i data-lucide="x" class="h-4 w-4"></i>
+                            Effacer
+                        </a>
+                        @endif
                     </div>
                 </div>
-
-                <!-- Filtres -->
-                <div class="flex items-center space-x-4">
-                    <select id="status-filter"
-                        class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-gray-600 dark:border-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
-                        <option value="">Tous les statuts</option>
-                        <option value="certified">Certifiées</option>
-                        <option value="pending">En attente</option>
-                        <option value="suspended">Suspendues</option>
-                    </select>
-
-                    <select id="sort-filter"
-                        class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-gray-600 dark:border-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
-                        <option value="name">Trier par nom</option>
-                        <option value="created_at">Plus récentes</option>
-                        <option value="members_count">Plus de membres</option>
-                        <option value="location">Par localisation</option>
-                    </select>
-                </div>
-            </div>
+            </form>
         </div>
     </div>
 
@@ -78,8 +99,7 @@
                 <div class="ml-5 w-0 flex-1">
                     <dl>
                         <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Certifiées</dt>
-                        <dd class="text-lg font-medium text-gray-900 dark:text-white">{{ $chambers->where('verified', true)->count() }}
-                        </dd>
+                        <dd class="text-lg font-medium text-gray-900 dark:text-white">{{ $stats['certified'] ?? 0 }}</dd>
                     </dl>
                 </div>
             </div>
@@ -93,8 +113,7 @@
                 <div class="ml-5 w-0 flex-1">
                     <dl>
                         <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">En attente</dt>
-                        <dd class="text-lg font-medium text-gray-900 dark:text-white">{{ $chambers->where('verified', false)->count() }}
-                        </dd>
+                        <dd class="text-lg font-medium text-gray-900 dark:text-white">{{ $stats['pending'] ?? 0 }}</dd>
                     </dl>
                 </div>
             </div>
@@ -103,155 +122,199 @@
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <div class="flex items-center">
                 <div class="flex-shrink-0">
-                    <i data-lucide="users" class="h-8 w-8 text-purple-600"></i>
+                    <i data-lucide="pause-circle" class="h-8 w-8 text-red-600"></i>
                 </div>
                 <div class="ml-5 w-0 flex-1">
                     <dl>
-                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Total Membres</dt>
-                        <dd class="text-lg font-medium text-gray-900 dark:text-white">{{ $chambers->sum(function($chamber) { return
-                            $chamber->members->count(); }) }}</dd>
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Suspendues</dt>
+                        <dd class="text-lg font-medium text-gray-900 dark:text-white">{{ $stats['suspended'] ?? 0 }}</dd>
                     </dl>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Chambres Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Liste des chambres - Vue tableau moderne -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
         @forelse($chambers as $chamber)
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 cursor-pointer chamber-card relative"
-            data-chamber-id="{{ $chamber->id }}"
-            onclick="window.location.href='{{ route('admin.chambers.manage', $chamber) }}'">
-
-            <!-- Header de la carte -->
-            <div class="relative">
-                @if($chamber->cover_image_path)
-                <!-- Image avec overlay dégradé pour améliorer la lisibilité -->
-                <div class="relative overflow-hidden rounded-t-lg">
-                    <img class="w-full h-32 object-cover" src="{{ asset('storage/' . $chamber->cover_image_path) }}"
-                        alt="{{ $chamber->name }}">
-                    <!-- Dégradé overlay pour améliorer la lisibilité du badge et créer une séparation -->
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-black/10"></div>
-                    <!-- Bordure inférieure pour séparer de la zone blanche -->
-                    <div
-                        class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent">
-                    </div>
-                </div>
-                @else
-                <!-- Fallback avec dégradé et icône maison -->
-                <div
-                    class="w-full h-32 bg-gradient-to-r from-gray-400 to-gray-600 rounded-t-lg flex items-center justify-start pl-6 overflow-hidden">
-                    <div class="flex items-center space-x-3">
-                        <div class="bg-white dark:bg-gray-800 bg-opacity-20 rounded-full p-2">
-                            <i data-lucide="home" class="h-6 w-6 text-white"></i>
-                        </div>
-                        <div class="text-white">
-                            <h4 class="text-sm font-semibold truncate max-w-32">{{ $chamber->name }}</h4>
-                            <p class="text-gray-200 text-xs truncate max-w-32">{{ $chamber->location ?? 'Non définie' }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                @endif
-
-                <!-- Statut badge avec meilleur contraste -->
-                <div class="absolute top-3 right-3 z-10">
-                    @if($chamber->verified && $chamber->state_number)
-                    <span
-                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-600 text-white shadow-lg border border-green-500">
-                        <i data-lucide="shield-check" class="h-3 w-3 mr-1"></i>
-                        Certifiée
-                    </span>
-                    @else
-                    <span
-                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-500 text-white shadow-lg border border-yellow-400">
-                        <i data-lucide="clock" class="h-3 w-3 mr-1"></i>
-                        En attente
-                    </span>
-                    @endif
+            @if($loop->first)
+            <!-- En-tête du tableau -->
+            <div class="bg-gray-50 dark:bg-gray-900 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <div class="grid grid-cols-12 gap-4 items-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <div class="col-span-4">Chambre</div>
+                    <div class="col-span-2 text-center">Statut</div>
+                    <div class="col-span-2 text-center">Gestionnaires</div>
+                    <div class="col-span-2 text-center">Membres</div>
+                    <div class="col-span-2 text-center">Actions</div>
                 </div>
             </div>
+            @endif
 
-            <!-- Logo positionné au niveau de la carte (pas du header) pour éviter l'overflow -->
-            <div class="absolute top-24 left-6 z-20">
-                @if($chamber->logo_path)
-                <img class="h-12 w-12 rounded-full border-4 border-white shadow-xl object-cover"
-                    src="{{ asset('storage/' . $chamber->logo_path) }}" alt="{{ $chamber->name }}">
-                @else
-                <div
-                    class="h-12 w-12 rounded-full border-4 border-white shadow-xl bg-white dark:bg-gray-800 flex items-center justify-center">
-                    <div class="text-center">
-                        <i data-lucide="building-2" class="h-4 w-4 text-gray-600 dark:text-gray-400 mx-auto mb-0.5"></i>
-                        <span class="text-xs text-gray-700 dark:text-gray-300 font-bold">{{ strtoupper(substr($chamber->name, 0, 2))
-                            }}</span>
+            <!-- Ligne de chambre -->
+            <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700 hover:bg-blue-50 dark:hover:bg-blue-900/10 transition-colors duration-200 cursor-pointer"
+                onclick="window.location.href='{{ route('super-admin.chambers.show-request', $chamber->id) }}'">
+                <div class="grid grid-cols-12 gap-4 items-center">
+                    
+                    <!-- Informations de la chambre -->
+                    <div class="col-span-4 flex items-center space-x-4">
+                        <!-- Logo -->
+                        <div class="flex-shrink-0">
+                            @if($chamber->logo_path)
+                                <img class="h-12 w-12 rounded-full object-cover border-2 border-gray-200 dark:border-gray-600" 
+                                     src="{{ asset('storage/' . $chamber->logo_path) }}" 
+                                     alt="{{ $chamber->name }}">
+                            @else
+                                <div class="h-12 w-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center border-2 border-gray-200 dark:border-gray-600">
+                                    <span class="text-white font-bold text-sm">{{ strtoupper(substr($chamber->name, 0, 2)) }}</span>
+                                </div>
+                            @endif
+                        </div>
+                        
+                        <!-- Détails -->
+                        <div class="min-w-0 flex-1">
+                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white truncate">{{ $chamber->name }}</h3>
+                            <div class="flex items-center text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                <i data-lucide="map-pin" class="h-3 w-3 mr-1 flex-shrink-0"></i>
+                                <span class="truncate">{{ $chamber->location ?? 'Non définie' }}</span>
+                            </div>
+                            @if($chamber->state_number)
+                                <div class="flex items-center text-xs text-gray-400 mt-1">
+                                    <i data-lucide="hash" class="h-3 w-3 mr-1 flex-shrink-0"></i>
+                                    <span>{{ $chamber->state_number }}</span>
+                                </div>
+                            @endif
+                        </div>
                     </div>
-                </div>
-                @endif
-            </div>
 
-            <!-- Contenu de la carte -->
-            <div class="pt-8 pb-6 px-6 relative">
-                <div class="mb-4">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">{{ $chamber->name }}</h3>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 flex items-center">
-                        <i data-lucide="map-pin" class="h-4 w-4 mr-1"></i>
-                        {{ $chamber->location ?? 'Localisation non définie' }}
-                    </p>
-                    @if($chamber->state_number)
-                    <p class="text-xs text-gray-400 mt-1">N° État: {{ $chamber->state_number }}</p>
-                    @endif
-                </div>
-
-                <!-- Statistiques -->
-                <div class="grid grid-cols-2 gap-4 mb-4">
-                    <div class="text-center">
-                        <div class="text-2xl font-bold text-blue-600">{{ $chamber->members->count() }}</div>
-                        <div class="text-xs text-gray-500 dark:text-gray-400">Membres</div>
+                    <!-- Statut -->
+                    <div class="col-span-2 text-center">
+                        @if($chamber->is_suspended)
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
+                                <i data-lucide="pause-circle" class="h-3 w-3 mr-1"></i>
+                                Suspendue
+                            </span>
+                        @elseif($chamber->verified && $chamber->state_number)
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                <i data-lucide="shield-check" class="h-3 w-3 mr-1"></i>
+                                Certifiée
+                            </span>
+                        @elseif($chamber->verified)
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                                <i data-lucide="check-circle" class="h-3 w-3 mr-1"></i>
+                                Vérifiée
+                            </span>
+                        @else
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+                                <i data-lucide="clock" class="h-3 w-3 mr-1"></i>
+                                En attente
+                            </span>
+                        @endif
                     </div>
-                    <div class="text-center">
-                        <div class="text-2xl font-bold text-purple-600">{{ $chamber->members->where('pivot.role',
-                            'manager')->count() }}</div>
+
+                    <!-- Gestionnaires -->
+                    <div class="col-span-2 text-center">
+                        <div class="flex items-center justify-center space-x-1">
+                            <i data-lucide="users" class="h-4 w-4 text-purple-500"></i>
+                            <span class="text-lg font-bold text-purple-600 dark:text-purple-400">
+                                {{ $chamber->members->where('pivot.role', 'manager')->count() }}
+                            </span>
+                        </div>
                         <div class="text-xs text-gray-500 dark:text-gray-400">Gestionnaires</div>
                     </div>
-                </div>
 
-                <!-- Actions rapides -->
-                <div class="flex justify-between items-center pt-4 border-t border-gray-200">
-                    <div class="flex space-x-2">
-                        @if(!$chamber->verified || !$chamber->state_number)
-                        <button onclick="event.stopPropagation(); openCertificationModal('{{ $chamber->slug }}')"
-                            class="text-green-600 hover:text-green-800 p-1 rounded">
-                            <i data-lucide="shield-check" class="h-4 w-4"></i>
-                        </button>
-                        @endif
-
-                        <a href="{{ route('chamber.show', $chamber) }}" onclick="event.stopPropagation()"
-                            class="text-blue-600 hover:text-blue-800 p-1 rounded">
-                            <i data-lucide="external-link" class="h-4 w-4"></i>
-                        </a>
+                    <!-- Membres -->
+                    <div class="col-span-2 text-center">
+                        <div class="flex items-center justify-center space-x-1">
+                            <i data-lucide="user-check" class="h-4 w-4 text-blue-500"></i>
+                            <span class="text-lg font-bold text-blue-600 dark:text-blue-400">
+                                {{ $chamber->members->count() }}
+                            </span>
+                        </div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400">Membres</div>
                     </div>
 
-                    <span class="text-xs text-gray-400">
-                        Cliquez pour gérer
-                    </span>
+                    <!-- Actions -->
+                    <div class="col-span-2">
+                        <div class="flex items-center justify-center space-x-2">
+                            <!-- Voir demande -->
+                            <button onclick="event.stopPropagation(); window.location.href='{{ route('super-admin.chambers.show-request', $chamber->id) }}'"
+                                class="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors"
+                                title="Voir la demande">
+                                <i data-lucide="eye" class="h-4 w-4"></i>
+                            </button>
+
+                            <!-- Certifier (si pas encore certifiée) -->
+                            @if(!$chamber->verified || !$chamber->state_number)
+                            <button onclick="event.stopPropagation(); openCertificationModal('{{ $chamber->id }}')"
+                                class="p-2 text-green-600 hover:text-green-800 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-colors"
+                                title="Certifier la chambre">
+                                <i data-lucide="shield-check" class="h-4 w-4"></i>
+                            </button>
+                            @endif
+
+                            <!-- Suspendre/Réactiver -->
+                            @if($chamber->is_suspended)
+                                <button onclick="event.stopPropagation(); confirmReactivate('{{ $chamber->id }}', '{{ $chamber->name }}')"
+                                    class="p-2 text-green-600 hover:text-green-800 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-colors"
+                                    title="Réactiver la chambre">
+                                    <i data-lucide="play-circle" class="h-4 w-4"></i>
+                                </button>
+                            @else
+                                <button onclick="event.stopPropagation(); openSuspendModal('{{ $chamber->id }}', '{{ $chamber->name }}')"
+                                    class="p-2 text-orange-600 hover:text-orange-800 hover:bg-orange-50 dark:hover:bg-orange-900/20 rounded-lg transition-colors"
+                                    title="Suspendre la chambre">
+                                    <i data-lucide="pause-circle" class="h-4 w-4"></i>
+                                </button>
+                            @endif
+
+                            <!-- Gérer -->
+                            @if(Route::has('admin.chambers.manage'))
+                            <button onclick="event.stopPropagation(); window.location.href='{{ route('admin.chambers.manage', $chamber) }}'"
+                                class="p-2 text-purple-600 hover:text-purple-800 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-lg transition-colors"
+                                title="Gérer la chambre">
+                                <i data-lucide="settings" class="h-4 w-4"></i>
+                            </button>
+                            @endif
+
+                            <!-- Supprimer -->
+                            <button onclick="event.stopPropagation(); confirmDelete('{{ $chamber->id }}', '{{ $chamber->name }}')"
+                                class="p-2 text-red-600 hover:text-red-800 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                                title="Supprimer la chambre">
+                                <i data-lucide="trash-2" class="h-4 w-4"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
         @empty
-        <div class="col-span-full">
-            <div class="text-center py-12">
-                <i data-lucide="building" class="mx-auto h-12 w-12 text-gray-400"></i>
-                <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">Aucune chambre</h3>
-                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Commencez par créer une nouvelle chambre de commerce.</p>
-                <div class="mt-6">
+            <!-- État vide -->
+            <div class="text-center py-16">
+                <div class="mx-auto h-24 w-24 text-gray-400 mb-4">
+                    <i data-lucide="building" class="h-full w-full"></i>
+                </div>
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Aucune chambre trouvée</h3>
+                <p class="text-gray-500 dark:text-gray-400 mb-6">
+                    @if(request()->hasAny(['search', 'filter_status']))
+                        Aucune chambre ne correspond à vos critères de recherche.
+                    @else
+                        Commencez par créer une nouvelle chambre de commerce.
+                    @endif
+                </p>
+                <div class="flex justify-center space-x-4">
+                    @if(request()->hasAny(['search', 'filter_status']))
+                        <a href="{{ route('super-admin.chambers.index') }}" 
+                            class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700">
+                            <i data-lucide="refresh-cw" class="h-4 w-4 mr-2"></i>
+                            Voir toutes les chambres
+                        </a>
+                    @endif
                     <a href="{{ route('chambers.create') }}"
-                        class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#073066] hover:bg-[#052347]">
+                        class="inline-flex items-center px-4 py-2 border border-transparent rounded-lg text-sm font-medium text-white bg-[#073066] hover:bg-[#052347]">
                         <i data-lucide="plus" class="h-4 w-4 mr-2"></i>
                         Créer une chambre
                     </a>
                 </div>
             </div>
-        </div>
         @endforelse
     </div>
 
@@ -263,26 +326,21 @@
     @endif
 </div>
 
-
-
 <!-- Modal de certification -->
 <div id="certificationModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
     <div class="flex min-h-screen items-center justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-        <div class="fixed inset-0 transition-opacity bg-gray-50 dark:bg-gray-8000 bg-opacity-75" onclick="closeCertificationModal()">
-        </div>
+        <div class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" onclick="closeCertificationModal()"></div>
 
-        <div
-            class="inline-block transform overflow-hidden rounded-lg bg-white dark:bg-gray-800 text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:align-middle">
+        <div class="inline-block transform overflow-hidden rounded-lg bg-white dark:bg-gray-800 text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:align-middle">
             <form id="certificationForm" method="POST">
                 @csrf
                 <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                     <div class="sm:flex sm:items-start">
-                        <div
-                            class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
+                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
                             <i data-lucide="shield-check" class="h-6 w-6 text-green-600"></i>
                         </div>
                         <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white" id="modal-title">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">
                                 Certifier la chambre
                             </h3>
                             <div class="mt-4 space-y-4">
@@ -291,7 +349,7 @@
                                         Numéro d'État *
                                     </label>
                                     <input type="text" name="state_number" id="state_number" required
-                                        class="mt-1 block w-full border-gray-300 dark:border-gray-600 dark:border-gray-400 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"
+                                        class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md shadow-sm placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 sm:text-sm"
                                         placeholder="Ex: CC-2024-001">
                                 </div>
 
@@ -300,7 +358,7 @@
                                         Date de certification *
                                     </label>
                                     <input type="date" name="certification_date" id="certification_date" required
-                                        class="mt-1 block w-full border-gray-300 dark:border-gray-600 dark:border-gray-400 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"
+                                        class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 sm:text-sm"
                                         value="{{ date('Y-m-d') }}">
                                 </div>
 
@@ -309,20 +367,20 @@
                                         Notes (optionnel)
                                     </label>
                                     <textarea name="notes" id="notes" rows="3"
-                                        class="mt-1 block w-full border-gray-300 dark:border-gray-600 dark:border-gray-400 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"
+                                        class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md shadow-sm placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 sm:text-sm resize-none"
                                         placeholder="Notes sur la certification..."></textarea>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="bg-gray-50 dark:bg-gray-800 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                     <button type="submit"
                         class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
                         Certifier
                     </button>
                     <button type="button" onclick="closeCertificationModal()"
-                        class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 dark:border-gray-400 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                         Annuler
                     </button>
                 </div>
@@ -331,96 +389,58 @@
     </div>
 </div>
 
-<!-- Modal d'assignation de gestionnaire -->
-<div id="assignManagerModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+<!-- Modal de confirmation de suppression -->
+<div id="deleteModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
     <div class="flex min-h-screen items-center justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-        <div class="fixed inset-0 transition-opacity bg-gray-50 dark:bg-gray-8000 bg-opacity-75" onclick="closeAssignManagerModal()">
-        </div>
-
-        <div
-            class="inline-block transform overflow-hidden rounded-lg bg-white dark:bg-gray-800 text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:align-middle">
-            <form id="assignManagerForm" method="POST">
-                @csrf
-                <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                    <div class="sm:flex sm:items-start">
-                        <div
-                            class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-purple-100 sm:mx-0 sm:h-10 sm:w-10">
-                            <i data-lucide="user-plus" class="h-6 w-6 text-purple-600"></i>
-                        </div>
-                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">
-                                Assigner un gestionnaire
-                            </h3>
-                            <div class="mt-4">
-                                <label for="user_search" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    Rechercher un utilisateur
-                                </label>
-                                <div class="mt-1 relative">
-                                    <input type="text" id="user_search"
-                                        class="block w-full border-gray-300 dark:border-gray-600 dark:border-gray-400 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
-                                        placeholder="Tapez le nom ou email de l'utilisateur...">
-                                    <input type="hidden" name="user_id" id="selected_user_id">
-
-                                    <!-- Résultats de recherche -->
-                                    <div id="search_results"
-                                        class="absolute z-10 mt-1 w-full bg-white dark:bg-gray-800 shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm hidden">
-                                        <!-- Les résultats seront ajoutés ici dynamiquement -->
-                                    </div>
-                                </div>
-
-                                <!-- Utilisateur sélectionné -->
-                                <div id="selected_user" class="mt-3 hidden">
-                                    <div class="flex items-center p-3 bg-purple-50 rounded-lg">
-                                        <div class="flex-shrink-0">
-                                            <div
-                                                class="h-8 w-8 rounded-full bg-purple-200 flex items-center justify-center">
-                                                <span class="text-sm font-medium text-purple-800"
-                                                    id="selected_user_initial"></span>
-                                            </div>
-                                        </div>
-                                        <div class="ml-3">
-                                            <p class="text-sm font-medium text-gray-900 dark:text-white" id="selected_user_name"></p>
-                                            <p class="text-xs text-gray-500 dark:text-gray-400" id="selected_user_email"></p>
-                                        </div>
-                                        <button type="button" onclick="clearSelectedUser()"
-                                            class="ml-auto text-purple-600 hover:text-purple-800">
-                                            <i data-lucide="x" class="h-4 w-4"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+        <div class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" onclick="closeDeleteModal()"></div>
+        
+        <div class="inline-block transform overflow-hidden rounded-lg bg-white dark:bg-gray-800 text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:align-middle">
+            <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div class="sm:flex sm:items-start">
+                    <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                        <i data-lucide="alert-triangle" class="h-6 w-6 text-red-600"></i>
+                    </div>
+                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">
+                            Confirmer la suppression
+                        </h3>
+                        <div class="mt-2">
+                            <p class="text-sm text-gray-500 dark:text-gray-400">
+                                Êtes-vous sûr de vouloir supprimer la chambre "<span id="deleteChamberName" class="font-semibold"></span>" ?
+                                Cette action est irréversible et supprimera toutes les données associées.
+                            </p>
                         </div>
                     </div>
                 </div>
-                <div class="bg-gray-50 dark:bg-gray-800 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <button type="submit" id="assign_submit_btn" disabled
-                        class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-purple-600 text-base font-medium text-white hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 sm:ml-3 sm:w-auto sm:text-sm disabled:bg-gray-300 dark:bg-gray-600 disabled:cursor-not-allowed">
-                        Assigner
-                    </button>
-                    <button type="button" onclick="closeAssignManagerModal()"
-                        class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 dark:border-gray-400 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-                        Annuler
-                    </button>
-                </div>
-            </form>
+            </div>
+            <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button type="button" id="confirmDeleteBtn"
+                    class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                    Supprimer
+                </button>
+                <button type="button" onclick="closeDeleteModal()"
+                    class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                    Annuler
+                </button>
+            </div>
         </div>
     </div>
 </div>
 
 @push('scripts')
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
     // Initialiser les icônes Lucide
     lucide.createIcons();
 });
 
 // Fonction pour ouvrir le modal de certification
-function openCertificationModal(chamberSlug) {
+function openCertificationModal(chamberId) {
     const modal = document.getElementById('certificationModal');
     const form = document.getElementById('certificationForm');
     
-    // Définir l'action du formulaire
-    form.action = `/admin/chambers/${chamberSlug}/certify`;
+    // Définir l'action du formulaire avec l'ID de la chambre
+    form.action = `/super-admin/chambers/${chamberId}/certify`;
     
     // Afficher le modal
     modal.classList.remove('hidden');
@@ -442,273 +462,234 @@ function closeCertificationModal() {
     document.getElementById('certificationForm').reset();
 }
 
-// Fonction pour ouvrir le modal d'assignation de gestionnaire
-function openAssignManagerModal(chamberId) {
-    const modal = document.getElementById('assignManagerModal');
-    const form = document.getElementById('assignManagerForm');
+// Fonction pour confirmer la suppression
+function confirmDelete(chamberId, chamberName) {
+    const modal = document.getElementById('deleteModal');
+    const nameSpan = document.getElementById('deleteChamberName');
+    const confirmBtn = document.getElementById('confirmDeleteBtn');
     
-    // Définir l'action du formulaire
-    form.action = `/admin/chambers/${chamberId}/assign-manager`;
+    // Mettre à jour le nom de la chambre
+    nameSpan.textContent = chamberName;
+    
+    // Configurer le bouton de confirmation
+    confirmBtn.onclick = function() {
+        // Créer un formulaire pour la suppression
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/super-admin/chambers/${chamberId}`;
+        
+        // Ajouter le token CSRF
+        const csrfToken = document.createElement('input');
+        csrfToken.type = 'hidden';
+        csrfToken.name = '_token';
+        csrfToken.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        form.appendChild(csrfToken);
+        
+        // Ajouter la méthode DELETE
+        const methodField = document.createElement('input');
+        methodField.type = 'hidden';
+        methodField.name = '_method';
+        methodField.value = 'DELETE';
+        form.appendChild(methodField);
+        
+        // Soumettre le formulaire
+        document.body.appendChild(form);
+        form.submit();
+    };
     
     // Afficher le modal
     modal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
-    
-    // Focus sur le champ de recherche
-    setTimeout(() => {
-        document.getElementById('user_search').focus();
-    }, 100);
 }
 
-// Fonction pour fermer le modal d'assignation de gestionnaire
-function closeAssignManagerModal() {
-    const modal = document.getElementById('assignManagerModal');
+// Fonction pour fermer le modal de suppression
+function closeDeleteModal() {
+    const modal = document.getElementById('deleteModal');
     modal.classList.add('hidden');
     document.body.style.overflow = 'auto';
-    
-    // Réinitialiser le formulaire
-    document.getElementById('assignManagerForm').reset();
-    clearSelectedUser();
-}
-
-// Variables pour la recherche d'utilisateurs
-let searchTimeout;
-let currentSearchRequest;
-
-// Recherche d'utilisateurs
-document.addEventListener('DOMContentLoaded', function() {
-    const userSearchInput = document.getElementById('user_search');
-    if (userSearchInput) {
-        userSearchInput.addEventListener('input', function(e) {
-            const query = e.target.value.trim();
-            const resultsContainer = document.getElementById('search_results');
-            
-            // Annuler la recherche précédente
-            if (currentSearchRequest) {
-                currentSearchRequest.abort();
-            }
-            
-            // Effacer le timeout précédent
-            clearTimeout(searchTimeout);
-            
-            if (query.length < 2) {
-                resultsContainer.classList.add('hidden');
-                return;
-            }
-            
-            // Délai pour éviter trop de requêtes
-            searchTimeout = setTimeout(() => {
-                // Créer une nouvelle requête
-                currentSearchRequest = new AbortController();
-                
-                fetch(`/api/users/search?q=${encodeURIComponent(query)}`, {
-                    signal: currentSearchRequest.signal
-                })
-                .then(response => response.json())
-                .then(data => {
-                    displaySearchResults(data);
-                })
-                .catch(error => {
-                    if (error.name !== 'AbortError') {
-                        console.error('Erreur de recherche:', error);
-                    }
-                });
-            }, 300);
-        });
-    }
-});
-
-// Afficher les résultats de recherche
-function displaySearchResults(users) {
-    const resultsContainer = document.getElementById('search_results');
-    
-    if (users.length === 0) {
-        resultsContainer.innerHTML = '<div class="px-4 py-2 text-sm text-gray-500 dark:text-gray-400">Aucun utilisateur trouvé</div>';
-    } else {
-        resultsContainer.innerHTML = users.map(user => `
-            <div class="cursor-pointer select-none relative py-2 pl-3 pr-9 hover:bg-purple-50" onclick="selectUser(${user.id}, '${user.name}', '${user.email}')">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <div class="h-6 w-6 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
-                            <span class="text-xs font-medium text-gray-700 dark:text-gray-300">${user.name.charAt(0).toUpperCase()}</span>
-                        </div>
-                    </div>
-                    <div class="ml-3">
-                        <div class="text-sm font-medium text-gray-900 dark:text-white">${user.name}</div>
-                        <div class="text-xs text-gray-500 dark:text-gray-400">${user.email}</div>
-                    </div>
-                </div>
-            </div>
-        `).join('');
-    }
-    
-    resultsContainer.classList.remove('hidden');
-}
-
-// Sélectionner un utilisateur
-function selectUser(userId, userName, userEmail) {
-    document.getElementById('selected_user_id').value = userId;
-    document.getElementById('user_search').value = userName;
-    document.getElementById('selected_user_name').textContent = userName;
-    document.getElementById('selected_user_email').textContent = userEmail;
-    document.getElementById('selected_user_initial').textContent = userName.charAt(0).toUpperCase();
-    
-    document.getElementById('selected_user').classList.remove('hidden');
-    document.getElementById('search_results').classList.add('hidden');
-    document.getElementById('assign_submit_btn').disabled = false;
-}
-
-// Effacer la sélection d'utilisateur
-function clearSelectedUser() {
-    document.getElementById('selected_user_id').value = '';
-    document.getElementById('user_search').value = '';
-    document.getElementById('selected_user').classList.add('hidden');
-    document.getElementById('assign_submit_btn').disabled = true;
 }
 
 // Fermer les modals avec Escape
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         closeCertificationModal();
-        closeAssignManagerModal();
+        closeDeleteModal();
     }
-});
-
-// Fermer les résultats de recherche en cliquant ailleurs
-document.addEventListener('click', function(e) {
-    const searchInput = document.getElementById('user_search');
-    const resultsContainer = document.getElementById('search_results');
-    
-    if (searchInput && resultsContainer && !searchInput.contains(e.target) && !resultsContainer.contains(e.target)) {
-        resultsContainer.classList.add('hidden');
-    }
-});
-
-// Fonctionnalité de recherche et filtrage des chambres
-document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('chamber-search');
-    const statusFilter = document.getElementById('status-filter');
-    const sortFilter = document.getElementById('sort-filter');
-    const chamberCards = document.querySelectorAll('.chamber-card');
-
-    // Fonction de recherche et filtrage
-    function filterChambers() {
-        const searchTerm = searchInput.value.toLowerCase();
-        const statusValue = statusFilter.value;
-        const sortValue = sortFilter.value;
-
-        let visibleCards = [];
-
-        chamberCards.forEach(card => {
-            const chamberName = card.querySelector('h3').textContent.toLowerCase();
-            const chamberLocation = card.querySelector('.text-gray-500 dark:text-gray-400').textContent.toLowerCase();
-            const statusBadge = card.querySelector('.inline-flex');
-            const isCertified = statusBadge && statusBadge.textContent.includes('Certifiée');
-            const isPending = statusBadge && statusBadge.textContent.includes('En attente');
-
-            // Filtrage par recherche
-            const matchesSearch = chamberName.includes(searchTerm) || chamberLocation.includes(searchTerm);
-
-            // Filtrage par statut
-            let matchesStatus = true;
-            if (statusValue === 'certified') {
-                matchesStatus = isCertified;
-            } else if (statusValue === 'pending') {
-                matchesStatus = isPending;
-            }
-
-            // Afficher/masquer la carte
-            if (matchesSearch && matchesStatus) {
-                card.style.display = 'block';
-                visibleCards.push(card);
-            } else {
-                card.style.display = 'none';
-            }
-        });
-
-        // Tri des cartes visibles
-        if (sortValue && visibleCards.length > 0) {
-            const container = visibleCards[0].parentNode;
-            
-            visibleCards.sort((a, b) => {
-                if (sortValue === 'name') {
-                    const nameA = a.querySelector('h3').textContent;
-                    const nameB = b.querySelector('h3').textContent;
-                    return nameA.localeCompare(nameB);
-                } else if (sortValue === 'members_count') {
-                    const membersA = parseInt(a.querySelector('.text-blue-600').textContent);
-                    const membersB = parseInt(b.querySelector('.text-blue-600').textContent);
-                    return membersB - membersA; // Ordre décroissant
-                } else if (sortValue === 'location') {
-                    const locationA = a.querySelector('.text-gray-500 dark:text-gray-400').textContent;
-                    const locationB = b.querySelector('.text-gray-500 dark:text-gray-400').textContent;
-                    return locationA.localeCompare(locationB);
-                }
-                return 0;
-            });
-
-            // Réorganiser les cartes dans le DOM
-            visibleCards.forEach(card => {
-                container.appendChild(card);
-            });
-        }
-
-        // Afficher un message si aucune chambre trouvée
-        updateEmptyState(visibleCards.length === 0);
-    }
-
-    // Fonction pour afficher/masquer le message d'état vide
-    function updateEmptyState(isEmpty) {
-        let emptyState = document.getElementById('empty-search-state');
-        
-        if (isEmpty && !emptyState) {
-            // Créer le message d'état vide
-            emptyState = document.createElement('div');
-            emptyState.id = 'empty-search-state';
-            emptyState.className = 'col-span-full text-center py-12';
-            emptyState.innerHTML = `
-                <i data-lucide="search-x" class="mx-auto h-12 w-12 text-gray-400 mb-4"></i>
-                <h3 class="text-sm font-medium text-gray-900 dark:text-white">Aucune chambre trouvée</h3>
-                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Essayez de modifier vos critères de recherche.</p>
-                <button onclick="clearFilters()" class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-blue-600 bg-blue-100 hover:bg-blue-200">
-                    <i data-lucide="x" class="h-4 w-4 mr-2"></i>
-                    Effacer les filtres
-                </button>
-            `;
-            
-            const container = document.querySelector('.grid.grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-3');
-            container.appendChild(emptyState);
-            
-            // Réinitialiser les icônes
-            setTimeout(() => lucide.createIcons(), 10);
-        } else if (!isEmpty && emptyState) {
-            emptyState.remove();
-        }
-    }
-
-    // Fonction pour effacer tous les filtres
-    window.clearFilters = function() {
-        searchInput.value = '';
-        statusFilter.value = '';
-        sortFilter.value = 'name';
-        filterChambers();
-    };
-
-    // Écouteurs d'événements
-    searchInput.addEventListener('input', filterChambers);
-    statusFilter.addEventListener('change', filterChambers);
-    sortFilter.addEventListener('change', filterChambers);
-
-    // Animation de focus sur la barre de recherche
-    searchInput.addEventListener('focus', function() {
-        this.parentElement.classList.add('ring-2', 'ring-blue-500');
-    });
-
-    searchInput.addEventListener('blur', function() {
-        this.parentElement.classList.remove('ring-2', 'ring-blue-500');
-    });
 });
 </script>
 @endpush
 
 @endsection
+<!-- Modal 
+de suspension -->
+<div id="suspendModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+    <div class="flex min-h-screen items-center justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" onclick="closeSuspendModal()"></div>
+        
+        <div class="inline-block transform overflow-hidden rounded-lg bg-white dark:bg-gray-800 text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:align-middle">
+            <form id="suspendForm" method="POST">
+                @csrf
+                <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-orange-100 sm:mx-0 sm:h-10 sm:w-10">
+                            <i data-lucide="pause-circle" class="h-6 w-6 text-orange-600"></i>
+                        </div>
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">
+                                Suspendre la chambre
+                            </h3>
+                            <div class="mt-2">
+                                <p class="text-sm text-gray-500 dark:text-gray-400">
+                                    Vous êtes sur le point de suspendre la chambre "<span id="suspendChamberName" class="font-semibold"></span>".
+                                    Cette action rendra la chambre invisible pour les utilisateurs.
+                                </p>
+                            </div>
+                            <div class="mt-4">
+                                <label for="suspension_reason" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Raison de la suspension *
+                                </label>
+                                <textarea name="suspension_reason" id="suspension_reason" rows="4" required
+                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md shadow-sm placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 sm:text-sm resize-none"
+                                    placeholder="Expliquez la raison de la suspension (minimum 10 caractères)..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="submit"
+                        class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-orange-600 text-base font-medium text-white hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        Suspendre
+                    </button>
+                    <button type="button" onclick="closeSuspendModal()"
+                        class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        Annuler
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de réactivation -->
+<div id="reactivateModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+    <div class="flex min-h-screen items-center justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" onclick="closeReactivateModal()"></div>
+        
+        <div class="inline-block transform overflow-hidden rounded-lg bg-white dark:bg-gray-800 text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:align-middle">
+            <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div class="sm:flex sm:items-start">
+                    <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
+                        <i data-lucide="play-circle" class="h-6 w-6 text-green-600"></i>
+                    </div>
+                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">
+                            Réactiver la chambre
+                        </h3>
+                        <div class="mt-2">
+                            <p class="text-sm text-gray-500 dark:text-gray-400">
+                                Êtes-vous sûr de vouloir réactiver la chambre "<span id="reactivateChamberName" class="font-semibold"></span>" ?
+                                Cette action rendra la chambre à nouveau visible et accessible aux utilisateurs.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button type="button" id="confirmReactivateBtn"
+                    class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
+                    Réactiver
+                </button>
+                <button type="button" onclick="closeReactivateModal()"
+                    class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                    Annuler
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@push('scripts')
+<script>
+// Fonction pour ouvrir le modal de suspension
+function openSuspendModal(chamberId, chamberName) {
+    const modal = document.getElementById('suspendModal');
+    const form = document.getElementById('suspendForm');
+    const nameSpan = document.getElementById('suspendChamberName');
+    
+    // Mettre à jour le nom de la chambre
+    nameSpan.textContent = chamberName;
+    
+    // Définir l'action du formulaire
+    form.action = `/super-admin/chambers/${chamberId}/suspend`;
+    
+    // Afficher le modal
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    
+    // Focus sur le champ de raison
+    setTimeout(() => {
+        document.getElementById('suspension_reason').focus();
+    }, 100);
+}
+
+// Fonction pour fermer le modal de suspension
+function closeSuspendModal() {
+    const modal = document.getElementById('suspendModal');
+    modal.classList.add('hidden');
+    document.body.style.overflow = 'auto';
+    
+    // Réinitialiser le formulaire
+    document.getElementById('suspendForm').reset();
+}
+
+// Fonction pour confirmer la réactivation
+function confirmReactivate(chamberId, chamberName) {
+    const modal = document.getElementById('reactivateModal');
+    const nameSpan = document.getElementById('reactivateChamberName');
+    const confirmBtn = document.getElementById('confirmReactivateBtn');
+    
+    // Mettre à jour le nom de la chambre
+    nameSpan.textContent = chamberName;
+    
+    // Configurer le bouton de confirmation
+    confirmBtn.onclick = function() {
+        // Créer un formulaire pour la réactivation
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/super-admin/chambers/${chamberId}/reactivate`;
+        
+        // Ajouter le token CSRF
+        const csrfToken = document.createElement('input');
+        csrfToken.type = 'hidden';
+        csrfToken.name = '_token';
+        csrfToken.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        form.appendChild(csrfToken);
+        
+        // Soumettre le formulaire
+        document.body.appendChild(form);
+        form.submit();
+    };
+    
+    // Afficher le modal
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+// Fonction pour fermer le modal de réactivation
+function closeReactivateModal() {
+    const modal = document.getElementById('reactivateModal');
+    modal.classList.add('hidden');
+    document.body.style.overflow = 'auto';
+}
+
+// Mettre à jour la fonction de fermeture avec Escape pour inclure les nouveaux modals
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeCertificationModal();
+        closeDeleteModal();
+        closeSuspendModal();
+        closeReactivateModal();
+    }
+});
+</script>
+@endpush

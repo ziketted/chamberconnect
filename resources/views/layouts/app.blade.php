@@ -39,10 +39,18 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="min-h-screen bg-white dark:bg-gray-900 text-neutral-900 dark:text-gray-100 antialiased selection:bg-[#073066]/10 selection:text-[#073066] dark:selection:bg-blue-500/20 dark:selection:text-blue-300"
+<body class="min-h-screen bg-[#f5f2ee] dark:bg-gray-900 text-neutral-900 dark:text-gray-100 antialiased selection:bg-[#073066]/10 selection:text-[#073066] dark:selection:bg-blue-500/20 dark:selection:text-blue-300"
     style="font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji';">
 
-    @include('layouts.partials.header')
+    @auth
+        @if(Auth::user()->isSuperAdmin())
+            @include('layouts.super-admin-navigation')
+        @else
+            @include('layouts.partials.header')
+        @endif
+    @else
+        @include('layouts.partials.header')
+    @endauth
 
     <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
         @yield('content')

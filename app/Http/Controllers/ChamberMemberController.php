@@ -11,7 +11,14 @@ class ChamberMemberController extends Controller
 {
     public function create(Chamber $chamber)
     {
-        return view('chambers.members.create', compact('chamber'));
+        // Get all users who are NOT already members of this chamber
+        $availableUsers = User::whereDoesntHave('chambers', function($query) use ($chamber) {
+            $query->where('chambers.id', $chamber->id);
+        })
+        ->orderBy('name')
+        ->get(['id', 'name', 'email']);
+        
+        return view('chambers.members.create', compact('chamber', 'availableUsers'));
     }
 
     public function store(Request $request, Chamber $chamber)
@@ -45,7 +52,7 @@ class ChamberMemberController extends Controller
             $user->update(['is_admin' => User::ROLE_CHAMBER_MANAGER]);
         }
 
-        return redirect()->route('chamber.show', $chamber)->with('success', 'Membre ajouté avec succès');
+        return redirect()->route('chambers.manage-members', $chamber)->with('success', 'Membre ajouté avec succès');
     }
 
     public function join(Request $request, Chamber $chamber)
@@ -99,15 +106,25 @@ class ChamberMemberController extends Controller
     public function searchUsers(Request $request)
     {
         $query = $request->get('q', '');
+        $chamberId = $request->get('chamber_id');
 
         if (strlen($query) < 2) {
             return response()->json([]);
         }
 
-        $users = User::where('email', 'LIKE', "%{$query}%")
-            ->orWhere('name', 'LIKE', "%{$query}%")
-            ->limit(10)
-            ->get(['id', 'name', 'email'])
+        $usersQuery = User::where(function($q) use ($query) {
+            $q->where('email', 'LIKE', "%{$query}%")
+              ->orWhere('name', 'LIKE', "%{$query}%");
+        })->limit(10);
+
+        // Filter out users who are already members of this chamber
+        if ($chamberId) {
+            $usersQuery->whereDoesntHave('chambers', function($q) use ($chamberId) {
+                $q->where('chambers.id', $chamberId);
+            });
+        }
+
+        $users = $usersQuery->get(['id', 'name', 'email'])
             ->map(function ($user) {
                 return [
                     'id' => $user->id,

@@ -5,61 +5,86 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Chamber;
 use App\Models\User;
-use App\Mail\ChamberApprovedMail;
-use App\Mail\ChamberRejectedMail;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
 
 class SuperAdminController extends Controller
 {
     /**
-     * Affiche le tableau de bord du super admin
+     * Affiche le tableau de bord SuperAdmin
      */
     public function dashboard()
     {
+        // Statistiques générales
         $stats = [
             'total_chambers' => Chamber::count(),
-            'verified_chambers' => Chamber::where('verified', true)->count(),
             'pending_chambers' => Chamber::where('verified', false)->count(),
-            'total_users' => User::count(),
-            'chamber_managers' => User::where('is_admin', User::ROLE_CHAMBER_MANAGER)->count(),
-            'regular_users' => User::where('is_admin', User::ROLE_USER)->count(),
+            'verified_chambers' => Chamber::where('verified', true)->count(),
+            'certified_chambers' => Chamber::whereNotNull('state_number')->count(),
+            'total_managers' => User::where('is_admin', User::ROLE_CHAMBER_MANAGER)->count(),
+            'total_users' => User::where('is_admin', User::ROLE_USER)->count(),
         ];
 
-        return view('admin.super-admin.dashboard', compact('stats'));
+        // Données pour le graphique de croissance (12 derniers mois)
+        $monthlyGrowth = Chamber::selectRaw('COUNT(*) as count, DATE_FORMAT(created_at, "%Y-%m") as month')
+            ->where('created_at', '>=', \Carbon\Carbon::now()->subMonths(12))
+            ->groupBy('month')
+            ->orderBy('month')
+            ->get()
+            ->mapWithKeys(function ($item) {
+                return [$item->month => $item->count];
+            });
+
+        // Remplir les mois manquants avec 0
+        $growthData = [];
+        $labels = [];
+        for ($i = 11; $i >= 0; $i--) {
+            $date = \Carbon\Carbon::now()->subMonths($i);
+            $monthKey = $date->format('Y-m');
+            $labels[] = $date->translatedFormat('M Y');
+            $growthData[] = $monthlyGrowth[$monthKey] ?? 0;
+        }
+
+        // Top 5 des chambres par nombre de membres
+        $topChambers = Chamber::withCount('members')
+            ->orderByDesc('members_count')
+            ->take(5)
+            ->get(['name', 'members_count']);
+
+        return view('admin.super-admin.dashboard', compact('stats', 'growthData', 'labels', 'topChambers'));
     }
 
     /**
-     * Liste toutes les chambres pour gestion
+     * Affiche la liste des chambres (ancienne route)
      */
     public function chambers()
     {
-        $chambers = Chamber::with(['members' => function($query) {
-            $query->withPivot('role', 'status', 'created_at');
-        }])->withCount('members')->paginate(15);
-
-        return view('admin.super-admin.chambers', compact('chambers'));
+        return redirect()->route('super-admin.chambers.index');
     }
 
     /**
-     * Certifie une chambre
+     * Affiche la liste des utilisateurs (ancienne route)
+     */
+    public function users()
+    {
+        return redirect()->route('super-admin.managers.index');
+    }
+
+    /**
+     * Vérifie une chambre
      */
     public function verifyChamber(Chamber $chamber)
     {
         $chamber->update(['verified' => true]);
-
-        return redirect()->back()->with('success', 'Chambre certifiée avec succès.');
+        return redirect()->back()->with('success', "Chambre '{$chamber->name}' vérifiée!");
     }
 
     /**
-     * Retire la certification d'une chambre
+     * Annule la vérification d'une chambre
      */
     public function unverifyChamber(Chamber $chamber)
     {
         $chamber->update(['verified' => false]);
-
-        return redirect()->back()->with('success', 'Certification retirée avec succès.');
+        return redirect()->back()->with('success', "Chambre '{$chamber->name}' non vérifiée!");
     }
 
     /**
@@ -67,257 +92,52 @@ class SuperAdminController extends Controller
      */
     public function suspendChamber(Chamber $chamber)
     {
-        // Ajouter un champ 'status' à la table chambers si nécessaire
-        // Pour l'instant, on peut utiliser verified = false comme suspension
-        $chamber->update(['verified' => false]);
-
-        return redirect()->back()->with('success', 'Chambre suspendue avec succès.');
+        $chamber->update(['status' => 'suspended']);
+        return redirect()->back()->with('success', "Chambre '{$chamber->name}' suspendue!");
     }
 
     /**
-     * Affiche la page d'assignation de gestionnaire
-     */
-    public function showAssignManager(Chamber $chamber)
-    {
-        return view('admin.super-admin.assign-manager', compact('chamber'));
-    }
-
-    /**
-     * Assigne un gestionnaire à une chambre
-     */
-    public function assignManager(Request $request, Chamber $chamber)
-    {
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-        ]);
-
-        $user = User::findOrFail($request->user_id);
-
-        // Mettre à jour le rôle de l'utilisateur
-        $user->update(['is_admin' => User::ROLE_CHAMBER_MANAGER]);
-
-        // Attacher l'utilisateur à la chambre comme manager
-        $chamber->members()->syncWithoutDetaching([
-            $user->id => ['role' => 'manager', 'status' => 'approved']
-        ]);
-
-        return redirect()->back()->with('success', 'Gestionnaire assigné avec succès.');
-    }
-
-    /**
-     * Retire un gestionnaire d'une chambre
-     */
-    public function removeManager(Request $request, Chamber $chamber)
-    {
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-        ]);
-
-        $user = User::findOrFail($request->user_id);
-
-        // Retirer l'utilisateur de la chambre
-        $chamber->members()->detach($user->id);
-
-        // Vérifier si l'utilisateur gère d'autres chambres
-        $otherChambers = $user->chambers()->wherePivot('role', 'manager')->count();
-        
-        if ($otherChambers === 0) {
-            // Si plus de chambres à gérer, redevenir utilisateur normal
-            $user->update(['is_admin' => User::ROLE_USER]);
-        }
-
-        return redirect()->back()->with('success', 'Gestionnaire retiré avec succès.');
-    }
-
-    /**
-     * Liste des utilisateurs pour gestion
-     */
-    public function users()
-    {
-        $users = User::with('chambers')->paginate(20);
-
-        return view('admin.super-admin.users', compact('users'));
-    }
-
-    /**
-     * Promouvoir un utilisateur en gestionnaire de chambre
-     */
-    public function promoteToManager(User $user)
-    {
-        $user->update(['is_admin' => User::ROLE_CHAMBER_MANAGER]);
-
-        return redirect()->back()->with('success', 'Utilisateur promu gestionnaire de chambre.');
-    }
-
-    /**
-     * Rétrograder un gestionnaire en utilisateur normal
-     */
-    public function demoteToUser(User $user)
-    {
-        // Retirer de toutes les chambres gérées
-        DB::table('chamber_user')
-            ->where('user_id', $user->id)
-            ->where('role', 'manager')
-            ->delete();
-
-        $user->update(['is_admin' => User::ROLE_USER]);
-
-        return redirect()->back()->with('success', 'Gestionnaire rétrogradé en utilisateur normal.');
-    }
-
-    /**
-     * Certifie une chambre avec attribution d'un numéro d'état
+     * Certifie une chambre
      */
     public function certifyChamber(Request $request, Chamber $chamber)
     {
-        $request->validate([
-            'state_number' => 'required|string|max:50|unique:chambers,state_number,' . $chamber->id,
+        $validated = $request->validate([
+            'state_number' => 'required|string|unique:chambers,state_number,' . $chamber->id,
             'certification_date' => 'required|date',
-            'notes' => 'nullable|string|max:1000',
+            'notes' => 'nullable|string',
         ]);
 
         $chamber->update([
+            'state_number' => $validated['state_number'],
+            'certification_date' => $validated['certification_date'],
+            'certification_notes' => $validated['notes'],
             'verified' => true,
-            'state_number' => $request->state_number,
-            'certification_date' => $request->certification_date,
-            'certification_notes' => $request->notes,
         ]);
 
-        return redirect()->back()->with('success', 'Chambre certifiée avec succès. Numéro d\'état: ' . $request->state_number);
+        return redirect()->back()->with('success', "Chambre '{$chamber->name}' certifiée!");
     }
 
     /**
-     * Approuve une demande de création de chambre
-     */
-    public function approveChamberRequest(Request $request, Chamber $chamber)
-    {
-        $request->validate([
-            'state_number' => 'nullable|string|max:50|unique:chambers,state_number,' . $chamber->id,
-            'notes' => 'nullable|string|max:1000',
-        ]);
-
-        // Générer un numéro d'état automatique si non fourni
-        $stateNumber = $request->state_number;
-        if (!$stateNumber) {
-            $year = date('Y');
-            $lastNumber = Chamber::whereNotNull('state_number')
-                ->where('state_number', 'like', "CHMBR-{$year}-%")
-                ->count();
-            $stateNumber = sprintf('CHMBR-%s-%04d', $year, $lastNumber + 1);
-        }
-
-        // Mettre à jour la chambre
-        $chamber->update([
-            'verified' => true,
-            'state_number' => $stateNumber,
-            'certification_date' => now(),
-            'certification_notes' => $request->notes,
-        ]);
-
-        // Promouvoir le demandeur en gestionnaire de chambre
-        $applicant = $chamber->members()->wherePivot('role', 'applicant')->first();
-        if ($applicant) {
-            // Mettre à jour le rôle de l'utilisateur
-            $applicant->update(['is_admin' => User::ROLE_CHAMBER_MANAGER]);
-            
-            // Mettre à jour la relation dans la table pivot
-            $chamber->members()->updateExistingPivot($applicant->id, [
-                'role' => 'manager',
-                'status' => 'approved'
-            ]);
-
-            // Envoyer un email de validation
-            try {
-                Mail::to($applicant->email)->send(new ChamberApprovedMail($chamber, $stateNumber));
-            } catch (\Exception $e) {
-                \Log::error('Erreur lors de l\'envoi de l\'email d\'approbation: ' . $e->getMessage());
-            }
-        }
-
-        return redirect()->back()->with('success', 'Demande approuvée avec succès. Numéro d\'état: ' . $stateNumber);
-    }
-
-    /**
-     * Rejette une demande de création de chambre
-     */
-    public function rejectChamberRequest(Request $request, Chamber $chamber)
-    {
-        $request->validate([
-            'rejection_reason' => 'required|string|max:1000',
-        ]);
-
-        // Récupérer les données de la demande
-        $applicationData = json_decode($chamber->certification_notes, true) ?? [];
-        $applicationData['rejected_at'] = now();
-        $applicationData['rejection_reason'] = $request->rejection_reason;
-
-        $chamber->update([
-            'verified' => false,
-            'certification_notes' => json_encode($applicationData),
-        ]);
-
-        // Envoyer un email de refus
-        $applicant = $chamber->members()->wherePivot('role', 'applicant')->first();
-        if ($applicant) {
-            try {
-                Mail::to($applicant->email)->send(new ChamberRejectedMail($chamber, $request->rejection_reason));
-            } catch (\Exception $e) {
-                \Log::error('Erreur lors de l\'envoi de l\'email de refus: ' . $e->getMessage());
-            }
-        }
-
-        return redirect()->back()->with('success', 'Demande rejetée avec succès.');
-    }
-
-    /**
-     * Affiche les demandes de création en attente
-     */
-    public function pendingRequests()
-    {
-        $pendingChambers = Chamber::where('verified', false)
-            ->whereHas('members', function($query) {
-                $query->wherePivot('role', 'applicant');
-            })
-            ->with(['members' => function($query) {
-                $query->wherePivot('role', 'applicant');
-            }])
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
-
-        return view('admin.super-admin.pending-requests', compact('pendingChambers'));
-    }
-
-    /**
-     * Retire la certification d'une chambre
+     * Annule la certification d'une chambre
      */
     public function uncertifyChamber(Chamber $chamber)
     {
         $chamber->update([
-            'verified' => false,
             'state_number' => null,
             'certification_date' => null,
             'certification_notes' => null,
         ]);
 
-        return redirect()->back()->with('success', 'Certification retirée avec succès.');
+        return redirect()->back()->with('success', "Certification de '{$chamber->name}' annulée!");
     }
 
     /**
-     * Affiche la gestion détaillée d'une chambre (page dédiée)
+     * Gère les détails d'une chambre
      */
     public function manageChamber(Chamber $chamber)
     {
-        try {
-            $chamber->load(['members' => function($query) {
-                $query->withPivot('role', 'status', 'created_at');
-            }]);
-
-            return view('admin.super-admin.chamber-manage-page', compact('chamber'));
-        } catch (\Exception $e) {
-            \Log::error('Erreur lors du chargement de la gestion de chambre: ' . $e->getMessage());
-            
-            return redirect()->back()->with('error', 'Erreur lors du chargement des données de la chambre');
-        }
+        // TODO: Implémenter la page de gestion détaillée
+        return view('admin.super-admin.chambers.manage', compact('chamber'));
     }
 
     /**
@@ -325,26 +145,110 @@ class SuperAdminController extends Controller
      */
     public function removeMember(Request $request, Chamber $chamber)
     {
-        $request->validate([
+        $userId = $request->input('user_id');
+        $chamber->members()->detach($userId);
+
+        return redirect()->back()->with('success', 'Membre retiré de la chambre');
+    }
+
+    /**
+     * Affiche le formulaire d'assignation d'un gestionnaire
+     */
+    public function showAssignManager(Chamber $chamber)
+    {
+        $availableUsers = User::where('is_admin', '!=', User::ROLE_SUPER_ADMIN)->get();
+        return view('admin.super-admin.chambers.assign-manager', compact('chamber', 'availableUsers'));
+    }
+
+    /**
+     * Assigne un gestionnaire à une chambre
+     */
+    public function assignManager(Request $request, Chamber $chamber)
+    {
+        $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
         ]);
 
-        $user = User::findOrFail($request->user_id);
+        $user = User::findOrFail($validated['user_id']);
         
-        // Retirer l'utilisateur de la chambre
-        $chamber->members()->detach($user->id);
-
-        // Vérifier si l'utilisateur gère d'autres chambres
-        $otherChambers = $user->chambers()->wherePivot('role', 'manager')->count();
-        
-        if ($otherChambers === 0 && $user->is_admin === User::ROLE_CHAMBER_MANAGER) {
-            // Si plus de chambres à gérer, redevenir utilisateur normal
-            $user->update(['is_admin' => User::ROLE_USER]);
+        // Ajouter l'utilisateur à la chambre en tant que gestionnaire
+        if (!$chamber->members->contains($user->id)) {
+            $chamber->members()->attach($user->id, ['role' => 'manager']);
+        } else {
+            $chamber->members()->updateExistingPivot($user->id, ['role' => 'manager']);
         }
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Membre retiré avec succès'
+        // Mettre à jour le rôle de l'utilisateur si nécessaire
+        if ($user->is_admin !== User::ROLE_CHAMBER_MANAGER) {
+            $user->update(['is_admin' => User::ROLE_CHAMBER_MANAGER]);
+        }
+
+        return redirect()->back()->with('success', "'{$user->name}' est maintenant gestionnaire de '{$chamber->name}'");
+    }
+
+    /**
+     * Retire un gestionnaire d'une chambre
+     */
+    public function removeManager(Request $request, Chamber $chamber)
+    {
+        $userId = $request->input('user_id');
+        $chamber->members()->updateExistingPivot($userId, ['role' => 'member']);
+
+        return redirect()->back()->with('success', 'Gestionnaire retiré');
+    }
+
+    /**
+     * Promeut un utilisateur en gestionnaire
+     */
+    public function promoteToManager(User $user)
+    {
+        $user->update(['is_admin' => User::ROLE_CHAMBER_MANAGER]);
+        return redirect()->back()->with('success', "'{$user->name}' a été promu gestionnaire");
+    }
+
+    /**
+     * Rétrograde un gestionnaire en utilisateur normal
+     */
+    public function demoteToUser(User $user)
+    {
+        $user->update(['is_admin' => User::ROLE_USER]);
+        $user->chambers()->detach();
+
+        return redirect()->back()->with('success', "'{$user->name}' a été rétrogradé");
+    }
+
+    /**
+     * Affiche les demandes de création de chambres en attente
+     */
+    public function pendingRequests()
+    {
+        $pendingChambers = Chamber::where('verified', false)->paginate(15);
+        return view('admin.super-admin.pending-requests', compact('pendingChambers'));
+    }
+
+    /**
+     * Approuve une demande de création de chambre
+     */
+    public function approveChamberRequest(Chamber $chamber)
+    {
+        $chamber->update(['verified' => true]);
+        return redirect()->back()->with('success', "Demande approuvée pour '{$chamber->name}'");
+    }
+
+    /**
+     * Rejette une demande de création de chambre
+     */
+    public function rejectChamberRequest(Request $request, Chamber $chamber)
+    {
+        $validated = $request->validate([
+            'rejection_reason' => 'required|string|min:10',
         ]);
+
+        $chamber->update([
+            'status' => 'rejected',
+            'rejection_reason' => $validated['rejection_reason'],
+        ]);
+
+        return redirect()->back()->with('success', "Demande rejetée pour '{$chamber->name}'");
     }
 }

@@ -164,9 +164,15 @@
                         @foreach($chamber->events->take(2) as $event)
                         <a href="#"
                             class="group relative overflow-hidden rounded-lg border border-neutral-200 dark:border-gray-700 hover:border-neutral-300">
-                            <img src="{{ $event->image_path ? asset('storage/' . $event->image_path) : 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=1600&auto=format&fit=crop' }}"
-                                alt="{{ $event->title }}" class="h-32 w-full object-cover">
-                            <div class="absolute inset-0 bg-neutral-900/40"></div>
+                            @if($event->cover_image_path)
+                                <img src="{{ asset('storage/' . $event->cover_image_path) }}"
+                                    alt="{{ $event->title }}" class="h-32 w-full object-cover">
+                            @else
+                                <div class="h-32 w-full bg-gradient-to-br from-[#073066] to-[#052347] flex items-center justify-center">
+                                    <i data-lucide="calendar" class="h-12 w-12 text-white/30"></i>
+                                </div>
+                            @endif
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                             <div class="absolute inset-x-0 bottom-0 p-3">
                                 <div class="text-white text-sm font-semibold">{{ $event->title }}</div>
                                 <div class="text-xs text-neutral-200">
@@ -520,8 +526,8 @@
                         <tr>
                             <th class="px-4 py-2 text-left font-medium">Membre</th>
                             <th class="px-4 py-2 text-left font-medium">Email</th>
-                            <th class="px-4 py-2 text-left font-medium">Rôle</th>
-                            <th class="px-4 py-2 text-left font-medium">Depuis</th>
+                            <th class="px-4 py-2 text-left font-medium">Poste</th><!-- 
+                            <th class="px-4 py-2 text-left font-medium">Depuis</th> -->
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-neutral-200 dark:divide-gray-700" id="members-table-body">
@@ -546,23 +552,23 @@
                                     class="text-[#073066] dark:text-blue-400 hover:underline">{{ $member->email }}</a>
                             </td>
                             <td class="px-4 py-2">
-                                @if($member->pivot->role === 'manager')
+                               <!-- @if($member->pivot->role === 'manager')
                                 <span
                                     class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300">
                                     <i data-lucide="crown" class="h-3 w-3 mr-1"></i>
-                                    Gestionnaire
+                                     {{ $member->pivot->position }}
                                 </span>
-                                @else
+                                @else  @endif  -->
                                 <span
                                     class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
                                     <i data-lucide="user" class="h-3 w-3 mr-1"></i>
-                                    Membre
+                                    {{ $member->pivot->position }}
                                 </span>
-                                @endif
+                               
                             </td>
-                            <td class="px-4 py-2 text-gray-500 dark:text-gray-400">
+                           <!--  <td class="px-4 py-2 text-gray-500 dark:text-gray-400">
                                 {{ $member->pivot->created_at ? $member->pivot->created_at->format('M Y') : 'N/A' }}
-                            </td>
+                            </td> -->
                         </tr>
                         @endforeach
                     </tbody>

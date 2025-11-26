@@ -50,5 +50,6 @@ class Kernel extends HttpKernel
         'chamber.manager' => \App\Http\Middleware\EnsureChamberManager::class,
         'admin' => \App\Http\Middleware\EnsureAdmin::class,
         'admin.privileges' => \App\Http\Middleware\EnsureAdminPrivileges::class,
+        'super-admin' => \App\Http\Middleware\SuperAdminMiddleware::class,
     ];
 }

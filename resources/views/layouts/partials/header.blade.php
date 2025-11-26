@@ -15,10 +15,10 @@
             </div>
 
             <!-- Centered Navigation -->
-            <nav class="hidden md:flex items-center gap-1 absolute left-1/2 transform -translate-x-1/2">
+            <nav class="hidden md:flex items-center gap-2 absolute left-1/2 transform -translate-x-1/2">
                 @auth
                 <a href="{{ route('dashboard') }}"
-                    class="inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-neutral-700 dark:text-gray-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#073066] dark:focus-visible:ring-blue-500 {{ request()->routeIs('dashboard*') ? 'bg-neutral-100 dark:bg-gray-800 text-neutral-900 dark:text-white' : '' }}">
+                    class="inline-flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium text-neutral-700 dark:text-gray-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#073066] dark:focus-visible:ring-blue-500 {{ request()->routeIs('dashboard*') ? 'bg-neutral-100 dark:bg-gray-800 text-neutral-900 dark:text-white' : '' }}">
                     <i data-lucide="layout-dashboard" class="h-4 w-4"></i>
                     {{ __('messages.dashboard') }}
                 </a>
@@ -26,35 +26,35 @@
 
                 @guest
                 <a href="{{ route('home') }}"
-                    class="inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-neutral-700 dark:text-gray-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#073066] dark:focus-visible:ring-blue-500 {{ request()->routeIs('home') ? 'bg-neutral-100 dark:bg-gray-800 text-neutral-900 dark:text-white' : '' }}">
+                    class="inline-flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium text-neutral-700 dark:text-gray-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#073066] dark:focus-visible:ring-blue-500 {{ request()->routeIs('home') ? 'bg-neutral-100 dark:bg-gray-800 text-neutral-900 dark:text-white' : '' }}">
                     <i data-lucide="home" class="h-4 w-4"></i>
                     {{ __('messages.home') }}
                 </a>
                 @endguest
 
                 <a href="{{ route('chambers') }}"
-                    class="inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-neutral-700 dark:text-gray-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#073066] dark:focus-visible:ring-blue-500 {{ request()->routeIs('chambers*') ? 'bg-neutral-100 dark:bg-gray-800 text-neutral-900 dark:text-white' : '' }}">
+                    class="inline-flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium text-neutral-700 dark:text-gray-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#073066] dark:focus-visible:ring-blue-500 {{ request()->routeIs('chambers*') ? 'bg-neutral-100 dark:bg-gray-800 text-neutral-900 dark:text-white' : '' }}">
                     <i data-lucide="building" class="h-4 w-4"></i>
                     {{ __('messages.chambers') }}
                 </a>
 
                 @guest
                 <a href="{{ route('opportunities') }}"
-                    class="inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-neutral-700 dark:text-gray-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#073066] dark:focus-visible:ring-blue-500 {{ request()->routeIs('opportunities*') ? 'bg-neutral-100 dark:bg-gray-800 text-neutral-900 dark:text-white' : '' }}">
+                    class="inline-flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium text-neutral-700 dark:text-gray-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#073066] dark:focus-visible:ring-blue-500 {{ request()->routeIs('opportunities*') ? 'bg-neutral-100 dark:bg-gray-800 text-neutral-900 dark:text-white' : '' }}">
                     <i data-lucide="briefcase" class="h-4 w-4"></i>
                     {{ __('messages.opportunities') }}
                 </a>
                 @endguest
 
                 <a href="{{ route('events') }}"
-                    class="inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-neutral-700 dark:text-gray-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#073066] dark:focus-visible:ring-blue-500 {{ request()->routeIs('events') ? 'bg-neutral-100 dark:bg-gray-800 text-neutral-900 dark:text-white' : '' }}">
+                    class="inline-flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium text-neutral-700 dark:text-gray-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#073066] dark:focus-visible:ring-blue-500 {{ request()->routeIs('events') ? 'bg-neutral-100 dark:bg-gray-800 text-neutral-900 dark:text-white' : '' }}">
                     <i data-lucide="calendar" class="h-4 w-4"></i>
                     {{ __('messages.events') }}
                 </a>
 
                 @auth
                 <a href="{{ route('events.my-bookings') }}"
-                    class="inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-neutral-700 dark:text-gray-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#073066] dark:focus-visible:ring-blue-500 {{ request()->routeIs('events.my-bookings') ? 'bg-neutral-100 dark:bg-gray-800 text-neutral-900 dark:text-white' : '' }}">
+                    class="inline-flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium text-neutral-700 dark:text-gray-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#073066] dark:focus-visible:ring-blue-500 {{ request()->routeIs('events.my-bookings') ? 'bg-neutral-100 dark:bg-gray-800 text-neutral-900 dark:text-white' : '' }}">
                     <i data-lucide="bookmark" class="h-4 w-4"></i>
                     Mes réservations
                 </a>
@@ -63,10 +63,10 @@
                 <!-- Portail Dropdown for Regular Users -->
                 <div class="relative" x-data="{ open: false }">
                     <button @click="open = !open" @click.away="open = false"
-                        class="inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-neutral-700 dark:text-gray-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#073066] dark:focus-visible:ring-blue-500 {{ request()->routeIs('portal.chamber.*') ? 'bg-neutral-100 dark:bg-gray-800 text-neutral-900 dark:text-white' : '' }}">
+                        class="inline-flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium text-neutral-700 dark:text-gray-300 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#073066] dark:focus-visible:ring-blue-500 {{ request()->routeIs('portal.chamber.*') ? 'bg-neutral-100 dark:bg-gray-800 text-neutral-900 dark:text-white' : '' }}">
                         <i data-lucide="building-2" class="h-4 w-4"></i>
                         Portail
-                        <i data-lucide="chevron-down" class="h-4 w-4"></i>
+                        <i data-lucide="chevron-down" class="h-3.5 w-3.5"></i>
                     </button>
 
                     <!-- Dropdown Menu -->
