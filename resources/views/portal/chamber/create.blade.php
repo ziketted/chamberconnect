@@ -135,6 +135,34 @@
                                 @enderror
                             </div>
 
+                            <!-- Téléphone ambassade (si bilatérale) -->
+                            <div data-bilateral-portal class="{{ old('type') === 'bilateral' ? '' : 'hidden' }}">
+                                <label for="embassy_phone"
+                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Téléphone de l'ambassade (si bilatérale)
+                                </label>
+                                <input type="text" name="embassy_phone" id="embassy_phone"
+                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:text-white"
+                                    placeholder="+XX XXX XXX XXX" value="{{ old('embassy_phone') }}">
+                                @error('embassy_phone')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Site web ambassade (si bilatérale) -->
+                            <div data-bilateral-portal class="{{ old('type') === 'bilateral' ? '' : 'hidden' }}">
+                                <label for="embassy_website"
+                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Site web de l'ambassade (si bilatérale)
+                                </label>
+                                <input type="url" name="embassy_website" id="embassy_website"
+                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:text-white"
+                                    placeholder="https://ambassade.example.com" value="{{ old('embassy_website') }}">
+                                @error('embassy_website')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                @enderror
+                            </div>
+
                             <!-- Province/Ville -->
                             <div>
                                 <label for="location"

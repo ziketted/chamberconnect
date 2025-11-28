@@ -31,6 +31,8 @@ class Chamber extends Model
         'type',
         'embassy_country',
         'embassy_address',
+        'embassy_phone',
+        'embassy_website',
         'state_number',
         'certification_date',
         'certification_notes',

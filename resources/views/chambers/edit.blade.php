@@ -58,6 +58,19 @@
                     class="mt-1 w-full rounded-md border border-neutral-300 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-[#073066] dark:focus:border-blue-500 focus:ring-2 focus:ring-[#073066]/20 dark:focus:ring-blue-500/20" />
             </div>
             <div>
+                <label class="text-xs font-medium text-neutral-700 dark:text-gray-300">Téléphone de l'ambassade (si
+                    bilatérale)</label>
+                <input name="embassy_phone" value="{{ old('embassy_phone', $chamber->embassy_phone) }}" data-bilateral
+                    class="mt-1 w-full rounded-md border border-neutral-300 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-[#073066] dark:focus:border-blue-500 focus:ring-2 focus:ring-[#073066]/20 dark:focus:ring-blue-500/20" />
+            </div>
+            <div>
+                <label class="text-xs font-medium text-neutral-700 dark:text-gray-300">Site web de l'ambassade (si
+                    bilatérale)</label>
+                <input name="embassy_website" value="{{ old('embassy_website', $chamber->embassy_website) }}"
+                    data-bilateral
+                    class="mt-1 w-full rounded-md border border-neutral-300 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-[#073066] dark:focus:border-blue-500 focus:ring-2 focus:ring-[#073066]/20 dark:focus:ring-blue-500/20" />
+            </div>
+            <div>
                 <label class="text-xs font-medium text-neutral-700 dark:text-gray-300">Website</label>
                 <input name="website" value="{{ old('website', $chamber->website) }}"
                     class="mt-1 w-full rounded-md border border-neutral-300 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-[#073066] dark:focus:border-blue-500 focus:ring-2 focus:ring-[#073066]/20 dark:focus:ring-blue-500/20" />
@@ -157,7 +170,7 @@
                 <h2 class="text-lg font-semibold tracking-tight">Partenaires</h2>
                 <p class="text-sm text-neutral-600 dark:text-gray-400">Gérez les partenaires de la chambre.</p>
             </div>
-            <button onclick="openPartnerModal()" 
+            <button onclick="openPartnerModal()"
                 class="inline-flex items-center rounded-md bg-[#073066] px-4 py-2 text-sm font-semibold text-white hover:bg-[#052347]">
                 <i data-lucide="plus" class="mr-2 h-4 w-4"></i>
                 Ajouter un partenaire
@@ -166,41 +179,47 @@
 
         <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             @foreach($chamber->partners as $partner)
-            <div class="relative rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 shadow-sm group">
+            <div
+                class="relative rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 shadow-sm group">
                 <div class="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button onclick="editPartner({{ json_encode($partner) }})" 
+                    <button onclick="editPartner({{ json_encode($partner) }})"
                         class="rounded-md bg-neutral-100 p-1.5 text-neutral-600 hover:bg-neutral-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600">
                         <i data-lucide="pencil" class="h-4 w-4"></i>
                     </button>
-                    <form action="{{ route('chambers.partners.destroy', [$chamber, $partner]) }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce partenaire ?');">
+                    <form action="{{ route('chambers.partners.destroy', [$chamber, $partner]) }}" method="POST"
+                        onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce partenaire ?');">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="rounded-md bg-red-50 p-1.5 text-red-600 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/30">
+                        <button type="submit"
+                            class="rounded-md bg-red-50 p-1.5 text-red-600 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/30">
                             <i data-lucide="trash-2" class="h-4 w-4"></i>
                         </button>
                     </form>
                 </div>
 
                 <div class="flex items-start gap-4">
-                    <div class="h-12 w-12 flex-shrink-0 rounded-lg bg-neutral-100 dark:bg-gray-700 overflow-hidden flex items-center justify-center">
+                    <div
+                        class="h-12 w-12 flex-shrink-0 rounded-lg bg-neutral-100 dark:bg-gray-700 overflow-hidden flex items-center justify-center">
                         @if($partner->logo_path)
-                            <img src="{{ asset('storage/' . $partner->logo_path) }}" alt="{{ $partner->name }}" class="h-full w-full object-cover">
+                        <img src="{{ asset('storage/' . $partner->logo_path) }}" alt="{{ $partner->name }}"
+                            class="h-full w-full object-cover">
                         @else
-                            <span class="text-lg font-bold text-neutral-400">{{ substr($partner->name, 0, 1) }}</span>
+                        <span class="text-lg font-bold text-neutral-400">{{ substr($partner->name, 0, 1) }}</span>
                         @endif
                     </div>
                     <div>
                         <h3 class="font-medium text-neutral-900 dark:text-white">{{ $partner->name }}</h3>
                         @if($partner->website)
-                            <a href="{{ $partner->website }}" target="_blank" class="text-xs text-blue-600 hover:underline flex items-center gap-1 mt-1">
-                                <i data-lucide="link" class="h-3 w-3"></i>
-                                {{ parse_url($partner->website, PHP_URL_HOST) }}
-                            </a>
+                        <a href="{{ $partner->website }}" target="_blank"
+                            class="text-xs text-blue-600 hover:underline flex items-center gap-1 mt-1">
+                            <i data-lucide="link" class="h-3 w-3"></i>
+                            {{ parse_url($partner->website, PHP_URL_HOST) }}
+                        </a>
                         @endif
                     </div>
                 </div>
                 @if($partner->description)
-                    <p class="mt-3 text-sm text-neutral-600 dark:text-gray-400 line-clamp-2">{{ $partner->description }}</p>
+                <p class="mt-3 text-sm text-neutral-600 dark:text-gray-400 line-clamp-2">{{ $partner->description }}</p>
                 @endif
             </div>
             @endforeach
@@ -209,17 +228,21 @@
 </div>
 
 <!-- Partner Modal -->
-<div id="partnerModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+<div id="partnerModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog"
+    aria-modal="true">
     <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" onclick="closePartnerModal()"></div>
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"
+            onclick="closePartnerModal()"></div>
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-        <div class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+        <div
+            class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
             <form id="partnerForm" method="POST" enctype="multipart/form-data" class="p-6">
                 @csrf
                 <input type="hidden" name="_method" id="methodInput" value="POST">
-                
+
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-white" id="modalTitle">Ajouter un partenaire</h3>
+                    <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-white" id="modalTitle">Ajouter un
+                        partenaire</h3>
                     <button type="button" onclick="closePartnerModal()" class="text-gray-400 hover:text-gray-500">
                         <i data-lucide="x" class="h-6 w-6"></i>
                     </button>
@@ -233,7 +256,8 @@
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Site web (Domaine)</label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Site web
+                            (Domaine)</label>
                         <input type="url" name="website" id="partnerWebsite" placeholder="https://example.com"
                             class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm dark:bg-gray-700 dark:text-white">
                     </div>
@@ -246,8 +270,7 @@
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Logo</label>
-                        <input type="file" name="logo" accept="image/*"
-                            class="mt-1 block w-full text-sm text-gray-500 dark:text-gray-400
+                        <input type="file" name="logo" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 dark:text-gray-400
                             file:mr-4 file:py-2 file:px-4
                             file:rounded-md file:border-0
                             file:text-sm file:font-semibold
@@ -285,7 +308,7 @@
         document.getElementById('modalTitle').textContent = 'Modifier le partenaire';
         document.getElementById('partnerForm').action = `/chambers/{{ $chamber->slug }}/partners/${partner.id}`;
         document.getElementById('methodInput').value = 'PUT';
-        
+
         document.getElementById('partnerName').value = partner.name;
         document.getElementById('partnerWebsite').value = partner.website || '';
         document.getElementById('partnerDescription').value = partner.description || '';

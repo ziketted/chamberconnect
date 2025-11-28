@@ -151,4 +151,22 @@ class EventController extends Controller
             ], 500);
         }
     }
+    /**
+     * Afficher les détails d'un événement
+     */
+    public function show(Event $event)
+    {
+        $user = Auth::user();
+        
+        // Charger les relations nécessaires
+        $event->load(['chamber', 'participants', 'likes']);
+        
+        // Ajouter les informations de réservation si l'utilisateur est connecté
+        if ($user) {
+            $event->is_booked = $event->isBookedBy($user);
+            $event->booking_status = $event->getBookingStatus($user);
+        }
+        
+        return view('events.detail', compact('event'));
+    }
 }

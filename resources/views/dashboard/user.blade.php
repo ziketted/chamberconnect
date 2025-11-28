@@ -31,13 +31,13 @@
                 </div>
                 <!-- Skeleton loading pour les chambres -->
                 <div id="chambers-skeleton" class="p-4 space-y-3" style="display: none;">
-                    @for($i = 0; $i < 3; $i++)
-                    <x-skeleton.chamber-list />
+                    @for($i = 0; $i
+                    < 1; $i++) <x-skeleton.chamber-list />
                     @endfor
                 </div>
 
                 <div class="p-4 space-y-3">
-                    @forelse($userChambers->take(3) as $chamber)
+                    @forelse($userChambers->take(1) as $chamber)
                     <div
                         class="flex items-center gap-3 p-3 rounded-lg border border-neutral-100 dark:border-gray-600 hover:border-blue-200 dark:hover:border-blue-500 transition-colors">
                         <div class="flex-shrink-0">
@@ -88,6 +88,64 @@
                 </div>
             </div>
 
+            <!-- Taux de Change -->
+            <div class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4">
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-sm font-semibold text-gray-900 dark:text-white">Taux de Change</h2>
+                    <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <p class="text-xs text-neutral-600 dark:text-gray-400 mb-4">Devises vers CDF</p>
+
+                <div id="exchange-rates-loading" class="space-y-3">
+                    <div class="animate-pulse">
+                        <div class="h-10 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+                    </div>
+                    <div class="animate-pulse">
+                        <div class="h-10 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+                    </div>
+                </div>
+
+                <div id="exchange-rates-content" class="space-y-3 hidden">
+                    <!-- USD -->
+                    <div
+                        class="flex items-center justify-between p-3 rounded-lg bg-neutral-50 dark:bg-gray-700/50 border border-neutral-100 dark:border-gray-600">
+                        <div class="flex items-center gap-2">
+                            <div
+                                class="w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                                <span class="text-xs font-bold text-green-600 dark:text-green-400">$</span>
+                            </div>
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">1 USD</span>
+                        </div>
+                        <span id="rate-usd" class="text-sm font-semibold text-gray-900 dark:text-white">-</span>
+                    </div>
+
+                    <!-- EUR -->
+                    <div
+                        class="flex items-center justify-between p-3 rounded-lg bg-neutral-50 dark:bg-gray-700/50 border border-neutral-100 dark:border-gray-600">
+                        <div class="flex items-center gap-2">
+                            <div
+                                class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                                <span class="text-xs font-bold text-blue-600 dark:text-blue-400">€</span>
+                            </div>
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">1 EUR</span>
+                        </div>
+                        <span id="rate-eur" class="text-sm font-semibold text-gray-900 dark:text-white">-</span>
+                    </div>
+                </div>
+
+                <div id="exchange-rates-error" class="hidden text-center py-3">
+                    <p class="text-xs text-red-500 dark:text-red-400">Erreur de chargement</p>
+                </div>
+
+                <div class="mt-3 pt-3 border-t border-neutral-200 dark:border-gray-700">
+                    <p class="text-xs text-neutral-500 dark:text-gray-500 text-center" id="last-update">
+                        Mise à jour en cours...
+                    </p>
+                </div>
+            </div>
 
         </div>
     </aside>
@@ -154,13 +212,18 @@
 
         <!-- Skeleton loading pour les événements -->
         <div id="events-skeleton" class="space-y-4" style="display: none;">
-            @for($i = 0; $i < 3; $i++)
-            <x-skeleton.event-card />
+            @for($i = 0; $i
+            < 3; $i++) <x-skeleton.event-card />
             @endfor
         </div>
 
         <div id="events-container" class="space-y-4">
             @foreach($allEvents->take(6) as $event)
+            <x-event-card :event="$event" />
+            @endforeach
+
+            @if(false) {{-- Code ancien conservé pour référence --}}
+            @foreach($allEvents->take(6) as $eventOld)
             <div class="event-card group rounded-2xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden hover:shadow-lg hover:border-blue-400 dark:hover:border-blue-500 transition-all duration-300"
                 data-type="{{ $event['type'] }}" data-verified="{{ $event['is_user_chamber'] ? 'true' : 'false' }}"
                 data-available="{{ $event['status'] !== 'complet' ? 'true' : 'false' }}"
@@ -242,9 +305,9 @@
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-3">
                             <!-- Bouton like -->
-                           
-                                <span class="text-xs font-medium like-count">Event: Sponsorisé</span>
-                       
+
+                            <span class="text-xs font-medium like-count">Event: Sponsorisé</span>
+
                         </div>
 
                         <div class="flex items-center gap-3">
@@ -312,6 +375,7 @@
                 </div>
             </div>
             @endforeach
+            @endif {{-- Fin du code ancien --}}
 
             <!-- Message si aucun événement -->
             @if($allEvents->isEmpty())
@@ -335,7 +399,7 @@
         <!-- Bouton Charger plus -->
         @if($allEvents->count() > 6)
         <div class="text-center mt-8">
-            <button id="load-more-events" 
+            <button id="load-more-events"
                 class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors shadow-lg"
                 data-page="2">
                 <i data-lucide="plus-circle" class="h-5 w-5"></i>
@@ -346,7 +410,8 @@
 
         <!-- Loading spinner pour le lazy loading -->
         <div id="loading-spinner" class="text-center mt-8" style="display: none;">
-            <div class="inline-flex items-center gap-2 px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-medium rounded-lg">
+            <div
+                class="inline-flex items-center gap-2 px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-medium rounded-lg">
                 <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
                 <span>Chargement...</span>
             </div>
@@ -400,20 +465,23 @@
                             </div>
                             @if($chamber->verified)
                             <div class="flex-shrink-0">
-                                <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-xs font-medium">
+                                <span
+                                    class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-xs font-medium">
                                     <i data-lucide="shield-check" class="h-3 w-3"></i>
                                 </span>
                             </div>
                             @endif
                         </div>
-                        
+
                         <div class="flex items-center justify-between">
-                            <span class="inline-flex items-center gap-1 text-xs text-neutral-600 dark:text-gray-400 bg-white dark:bg-gray-700 px-2 py-1 rounded-full">
+                            <span
+                                class="inline-flex items-center gap-1 text-xs text-neutral-600 dark:text-gray-400 bg-white dark:bg-gray-700 px-2 py-1 rounded-full">
                                 <i data-lucide="users" class="h-3 w-3"></i>
                                 {{ $chamber->members_count }}
                             </span>
                             <div class="flex items-center gap-2">
-                                <form action="{{ route('chambers.members.join', $chamber) }}" method="POST" class="inline">
+                                <form action="{{ route('chambers.members.join', $chamber) }}" method="POST"
+                                    class="inline">
                                     @csrf
                                     <button type="submit"
                                         class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-green-600 hover:bg-green-700 text-white text-xs font-medium transition-colors shadow-sm">
@@ -429,7 +497,7 @@
                         </div>
                     </div>
                     @endforeach
-                    
+
                     @if($suggestedChambers->count() > 3)
                     <div class="text-center py-2">
                         <p class="text-xs text-neutral-500 dark:text-gray-400">
@@ -496,34 +564,41 @@
 </div>
 
 <!-- Modal pour les détails de l'événement -->
-<div id="event-details-modal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+<div id="event-details-modal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title"
+    role="dialog" aria-modal="true">
     <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
         <!-- Overlay -->
-        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 dark:bg-gray-900 dark:bg-opacity-80 transition-opacity" aria-hidden="true" onclick="closeEventModal()"></div>
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 dark:bg-gray-900 dark:bg-opacity-80 transition-opacity"
+            aria-hidden="true" onclick="closeEventModal()"></div>
 
         <!-- Centrage du modal -->
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
         <!-- Contenu du modal -->
-        <div class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+        <div
+            class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
             <!-- Header avec image de couverture -->
             <div class="relative h-64 sm:h-80 overflow-hidden">
                 <img id="modal-cover-image" src="" alt="" class="w-full h-full object-cover">
-                <div id="modal-default-cover" class="hidden w-full h-full relative bg-gradient-to-r from-slate-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
+                <div id="modal-default-cover"
+                    class="hidden w-full h-full relative bg-gradient-to-r from-slate-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
                     <!-- Contenu centré -->
                     <div class="flex items-center justify-center h-full">
                         <div class="text-center">
-                            <div id="modal-chamber-logo" class="w-20 h-20 mx-auto mb-4 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg">
+                            <div id="modal-chamber-logo"
+                                class="w-20 h-20 mx-auto mb-4 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg">
                                 <span id="modal-chamber-initials" class="text-2xl font-bold text-white"></span>
                             </div>
-                            <h3 id="modal-chamber-name" class="text-xl font-semibold text-gray-900 dark:text-white"></h3>
+                            <h3 id="modal-chamber-name" class="text-xl font-semibold text-gray-900 dark:text-white">
+                            </h3>
                             <p class="text-gray-600 dark:text-gray-400 mt-1">Événement professionnel</p>
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Bouton fermer -->
-                <button onclick="closeEventModal()" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center transition-colors">
+                <button onclick="closeEventModal()"
+                    class="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center transition-colors">
                     <i data-lucide="x" class="h-5 w-5"></i>
                 </button>
 
@@ -535,7 +610,8 @@
             <div class="px-6 py-6">
                 <!-- En-tête avec chambre -->
                 <div class="flex items-center gap-4 mb-6">
-                    <div id="modal-chamber-avatar" class="w-12 h-12 rounded-lg bg-blue-600 flex items-center justify-center">
+                    <div id="modal-chamber-avatar"
+                        class="w-12 h-12 rounded-lg bg-blue-600 flex items-center justify-center">
                         <span id="modal-chamber-avatar-text" class="text-white font-semibold text-sm"></span>
                     </div>
                     <div>
@@ -554,7 +630,8 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <div class="space-y-4">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                            <div
+                                class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                                 <i data-lucide="calendar" class="h-5 w-5 text-blue-600 dark:text-blue-400"></i>
                             </div>
                             <div>
@@ -564,7 +641,8 @@
                         </div>
 
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                            <div
+                                class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                                 <i data-lucide="map-pin" class="h-5 w-5 text-blue-600 dark:text-blue-400"></i>
                             </div>
                             <div>
@@ -574,7 +652,8 @@
                         </div>
 
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                            <div
+                                class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                                 <i data-lucide="tag" class="h-5 w-5 text-blue-600 dark:text-blue-400"></i>
                             </div>
                             <div>
@@ -586,17 +665,20 @@
 
                     <div class="space-y-4">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                            <div
+                                class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                                 <i data-lucide="users" class="h-5 w-5 text-blue-600 dark:text-blue-400"></i>
                             </div>
                             <div>
                                 <p class="text-sm text-gray-500 dark:text-gray-400">Participants</p>
-                                <p id="modal-event-participants" class="font-semibold text-gray-900 dark:text-white"></p>
+                                <p id="modal-event-participants" class="font-semibold text-gray-900 dark:text-white">
+                                </p>
                             </div>
                         </div>
 
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                            <div
+                                class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                                 <i data-lucide="dollar-sign" class="h-5 w-5 text-blue-600 dark:text-blue-400"></i>
                             </div>
                             <div>
@@ -606,8 +688,10 @@
                         </div>
 
                         <div id="modal-event-mode-container" class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                                <i id="modal-event-mode-icon" data-lucide="monitor" class="h-5 w-5 text-blue-600 dark:text-blue-400"></i>
+                            <div
+                                class="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                                <i id="modal-event-mode-icon" data-lucide="monitor"
+                                    class="h-5 w-5 text-blue-600 dark:text-blue-400"></i>
                             </div>
                             <div>
                                 <p class="text-sm text-gray-500 dark:text-gray-400">Mode</p>
@@ -620,19 +704,23 @@
                 <!-- Description -->
                 <div class="mb-6">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Description</h3>
-                    <div id="modal-event-description" class="prose dark:prose-invert max-w-none text-gray-600 dark:text-gray-300"></div>
+                    <div id="modal-event-description"
+                        class="prose dark:prose-invert max-w-none text-gray-600 dark:text-gray-300"></div>
                 </div>
 
                 <!-- Actions -->
                 <div class="flex items-center justify-between pt-6 border-t border-gray-200 dark:border-gray-700">
                     <div class="flex items-center gap-3">
-                        <button id="modal-like-btn" onclick="toggleModalLike()" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-200">
+                        <button id="modal-like-btn" onclick="toggleModalLike()"
+                            class="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-200">
                             <i data-lucide="heart" class="h-4 w-4"></i>
                             <span class="text-sm font-medium">J'aime</span>
-                            <span id="modal-likes-count" class="text-xs bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 px-2 py-1 rounded-full ml-1 font-medium">0</span>
+                            <span id="modal-likes-count"
+                                class="text-xs bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 px-2 py-1 rounded-full ml-1 font-medium">0</span>
                         </button>
-                        
-                        <button onclick="shareEvent()" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-200">
+
+                        <button onclick="shareEvent()"
+                            class="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-200">
                             <i data-lucide="share-2" class="h-4 w-4"></i>
                             <span class="text-sm font-medium">Partager</span>
                         </button>
@@ -649,76 +737,76 @@
 
 @push('styles')
 <style>
-/* Style pour les boutons like */
-.like-btn {
-    position: relative;
-    overflow: hidden;
-    transition: all 0.2s ease;
-}
+    /* Style pour les boutons like */
+    .like-btn {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.2s ease;
+    }
 
-/* Style par défaut - gris */
-.like-btn {
-    color: #6b7280 !important;
-    border-color: #d1d5db !important;
-    background-color: transparent !important;
-}
+    /* Style par défaut - gris */
+    .like-btn {
+        color: #6b7280 !important;
+        border-color: #d1d5db !important;
+        background-color: transparent !important;
+    }
 
-/* Style au hover - rouge */
-.like-btn:hover {
-    color: #ef4444 !important;
-    border-color: #f87171 !important;
-    background-color: rgba(254, 226, 226, 0.5) !important;
-}
+    /* Style au hover - rouge */
+    .like-btn:hover {
+        color: #ef4444 !important;
+        border-color: #f87171 !important;
+        background-color: rgba(254, 226, 226, 0.5) !important;
+    }
 
-/* Style quand liké - rouge permanent mais plus subtil */
-.like-btn.liked {
-    color: #dc2626 !important;
-    border-color: #dc2626 !important;
-    background-color: rgba(254, 226, 226, 0.3) !important;
-}
+    /* Style quand liké - rouge permanent mais plus subtil */
+    .like-btn.liked {
+        color: #dc2626 !important;
+        border-color: #dc2626 !important;
+        background-color: rgba(254, 226, 226, 0.3) !important;
+    }
 
-.like-btn.liked:hover {
-    color: #ef4444 !important;
-    border-color: #f87171 !important;
-    background-color: rgba(254, 226, 226, 0.6) !important;
-}
+    .like-btn.liked:hover {
+        color: #ef4444 !important;
+        border-color: #f87171 !important;
+        background-color: rgba(254, 226, 226, 0.6) !important;
+    }
 
-/* Animation pour le bouton like */
-.like-btn:active {
-    transform: scale(0.95);
-}
+    /* Animation pour le bouton like */
+    .like-btn:active {
+        transform: scale(0.95);
+    }
 
-/* Style pour le modal */
-#modal-like-btn {
-    transition: all 0.2s ease;
-}
+    /* Style pour le modal */
+    #modal-like-btn {
+        transition: all 0.2s ease;
+    }
 
-#modal-like-btn:hover {
-    background-color: rgba(254, 226, 226, 0.5) !important;
-    color: #ef4444 !important;
-}
+    #modal-like-btn:hover {
+        background-color: rgba(254, 226, 226, 0.5) !important;
+        color: #ef4444 !important;
+    }
 
-/* Dark mode adjustments */
-.dark .like-btn {
-    color: #9ca3af !important;
-    border-color: #4b5563 !important;
-}
+    /* Dark mode adjustments */
+    .dark .like-btn {
+        color: #9ca3af !important;
+        border-color: #4b5563 !important;
+    }
 
-.dark .like-btn:hover {
-    color: #ef4444 !important;
-    border-color: #f87171 !important;
-    background-color: rgba(127, 29, 29, 0.3) !important;
-}
+    .dark .like-btn:hover {
+        color: #ef4444 !important;
+        border-color: #f87171 !important;
+        background-color: rgba(127, 29, 29, 0.3) !important;
+    }
 
-.dark .like-btn.liked {
-    color: #f87171 !important;
-    border-color: #f87171 !important;
-    background-color: rgba(127, 29, 29, 0.2) !important;
-}
+    .dark .like-btn.liked {
+        color: #f87171 !important;
+        border-color: #f87171 !important;
+        background-color: rgba(127, 29, 29, 0.2) !important;
+    }
 
-.dark .like-btn.liked:hover {
-    background-color: rgba(127, 29, 29, 0.4) !important;
-}
+    .dark .like-btn.liked:hover {
+        background-color: rgba(127, 29, 29, 0.4) !important;
+    }
 </style>
 @endpush
 
@@ -802,11 +890,11 @@
                 const title = card.dataset.title || '';
                 const description = card.dataset.description || '';
                 const chamber = card.dataset.chamber || '';
-                
-                const matchesSearch = title.includes(searchTerm) || 
-                                    description.includes(searchTerm) || 
+
+                const matchesSearch = title.includes(searchTerm) ||
+                                    description.includes(searchTerm) ||
                                     chamber.includes(searchTerm);
-                
+
                 if (!matchesSearch) {
                     isVisible = false;
                 }
@@ -839,7 +927,7 @@
     // Afficher/masquer le message "aucun résultat"
     function showNoResultsMessage(show) {
         let noResultsDiv = document.getElementById('no-results-message');
-        
+
         if (show && !noResultsDiv) {
             noResultsDiv = document.createElement('div');
             noResultsDiv.id = 'no-results-message';
@@ -851,7 +939,7 @@
                 <h3 class="text-lg font-medium text-neutral-900 dark:text-white mb-2">Aucun événement trouvé</h3>
                 <p class="text-sm text-neutral-600 dark:text-gray-400">Essayez de modifier vos critères de recherche ou filtres.</p>
             `;
-            
+
             const eventsContainer = document.getElementById('events-container');
             if (eventsContainer) {
                 eventsContainer.appendChild(noResultsDiv);
@@ -870,10 +958,10 @@ function toggleLike(button, eventId) {
     const icon = button.querySelector('i[data-lucide="heart"]');
     const likeCountElement = button.querySelector('.like-count');
     const isLiked = button.classList.contains('liked');
-    
+
     // Désactiver le bouton temporairement
     button.disabled = true;
-    
+
     // Faire l'appel AJAX
     fetch(`/events/${eventId}/like`, {
         method: 'POST',
@@ -894,18 +982,18 @@ function toggleLike(button, eventId) {
             icon.classList.remove('fill-current');
             icon.style.fill = '';
         }
-        
+
         // Mettre à jour le compteur
         if (likeCountElement) {
             likeCountElement.textContent = data.likes_count;
         }
-        
+
         // Animation du bouton
         button.style.transform = 'scale(0.95)';
         setTimeout(() => {
             button.style.transform = 'scale(1)';
         }, 150);
-        
+
         // Réinitialiser les icônes Lucide
         if (typeof lucide !== 'undefined') {
             lucide.createIcons();
@@ -925,14 +1013,14 @@ function toggleLike(button, eventId) {
 function viewEventDetails(eventId) {
     // Trouver l'événement dans la liste
     const eventCard = document.querySelector(`[onclick="viewEventDetails('${eventId}')"]`).closest('.event-card');
-    
+
     if (!eventCard) return;
-    
+
     // Extraire les données de l'événement
     const likeButton = eventCard.querySelector('.like-btn');
     const likesCount = likeButton ? likeButton.querySelector('.like-count').textContent.trim() : '0';
     const isLiked = likeButton ? likeButton.classList.contains('liked') : false;
-    
+
     const eventData = {
         id: eventId,
         title: eventCard.querySelector('h3').textContent.trim(),
@@ -949,14 +1037,14 @@ function viewEventDetails(eventId) {
         likes_count: likesCount,
         is_liked: isLiked
     };
-    
+
     openEventModal(eventData);
 }
 
 // Fonction pour ouvrir le modal avec les détails de l'événement
 function openEventModal(eventData) {
     const modal = document.getElementById('event-details-modal');
-    
+
     // Remplir les données du modal
     document.getElementById('modal-event-title').textContent = eventData.title;
     document.getElementById('modal-chamber-title').textContent = eventData.chamber_name;
@@ -970,15 +1058,15 @@ function openEventModal(eventData) {
     document.getElementById('modal-event-description').textContent = eventData.description;
     document.getElementById('modal-event-price').textContent = 'Gratuit'; // Par défaut
     document.getElementById('modal-event-mode').textContent = 'Présentiel'; // Par défaut
-    
+
     // Utiliser les vraies données de likes
     document.getElementById('modal-likes-count').textContent = eventData.likes_count;
-    
+
     // Configurer l'état du bouton J'aime avec les vraies données
     const likeButton = document.getElementById('modal-like-btn');
     likeButton.dataset.liked = eventData.is_liked ? 'true' : 'false';
     likeButton.dataset.eventId = eventData.id;
-    
+
     if (eventData.is_liked) {
         likeButton.className = 'flex items-center gap-2 px-4 py-2 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50 transition-all duration-200';
         const heartIcon = likeButton.querySelector('i[data-lucide="heart"]');
@@ -992,11 +1080,11 @@ function openEventModal(eventData) {
             heartIcon.style.fill = '';
         }
     }
-    
+
     // Gérer l'image de couverture
     const coverImage = document.getElementById('modal-cover-image');
     const defaultCover = document.getElementById('modal-default-cover');
-    
+
     if (eventData.cover_image) {
         coverImage.src = eventData.cover_image;
         coverImage.classList.remove('hidden');
@@ -1005,7 +1093,7 @@ function openEventModal(eventData) {
         coverImage.classList.add('hidden');
         defaultCover.classList.remove('hidden');
     }
-    
+
     // Badge de statut
     const statusBadge = document.getElementById('modal-status-badge');
     if (eventData.status === 'complet') {
@@ -1023,7 +1111,7 @@ function openEventModal(eventData) {
             </span>
         `;
     }
-    
+
     // Vérification de chambre
     const verifiedBadge = document.getElementById('modal-chamber-verified');
     if (eventData.is_user_chamber) {
@@ -1031,7 +1119,7 @@ function openEventModal(eventData) {
     } else {
         verifiedBadge.classList.add('hidden');
     }
-    
+
     // Actions du modal
     const actionsContainer = document.getElementById('modal-event-actions');
     if (eventData.status === 'complet') {
@@ -1052,11 +1140,11 @@ function openEventModal(eventData) {
             </form>
         `;
     }
-    
+
     // Afficher le modal
     modal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
-    
+
     // Réinitialiser les icônes Lucide
     if (typeof lucide !== 'undefined') {
         lucide.createIcons();
@@ -1075,14 +1163,14 @@ function toggleModalLike() {
     const button = document.getElementById('modal-like-btn');
     const likesCountElement = document.getElementById('modal-likes-count');
     const eventId = button.dataset.eventId;
-    
+
     if (!button || !likesCountElement || !eventId) return;
-    
+
     const isLiked = button.dataset.liked === 'true';
-    
+
     // Désactiver le bouton temporairement
     button.disabled = true;
-    
+
     // Faire l'appel AJAX
     fetch(`/events/${eventId}/like`, {
         method: 'POST',
@@ -1111,10 +1199,10 @@ function toggleModalLike() {
                 heartIcon.style.fill = '';
             }
         }
-        
+
         // Mettre à jour le compteur
         likesCountElement.textContent = data.likes_count;
-        
+
         // Mettre à jour aussi le bouton like dans la liste des événements
         const eventCard = document.querySelector(`[data-event-id="${eventId}"].like-btn`);
         if (eventCard) {
@@ -1122,7 +1210,7 @@ function toggleModalLike() {
             if (eventLikeCount) {
                 eventLikeCount.textContent = data.likes_count;
             }
-            
+
             if (data.liked) {
                 eventCard.classList.add('liked');
                 eventCard.style.color = '#ef4444';
@@ -1143,13 +1231,13 @@ function toggleModalLike() {
                 }
             }
         }
-        
+
         // Animation du bouton
         button.style.transform = 'scale(0.95)';
         setTimeout(() => {
             button.style.transform = 'scale(1)';
         }, 150);
-        
+
         // Réinitialiser les icônes Lucide
         if (typeof lucide !== 'undefined') {
             lucide.createIcons();
@@ -1170,9 +1258,9 @@ function shareEvent() {
     const eventTitle = document.getElementById('modal-event-title').textContent;
     const eventDate = document.getElementById('modal-event-datetime').textContent;
     const chamberName = document.getElementById('modal-chamber-title').textContent;
-    
+
     const shareText = `🎉 Événement: ${eventTitle}\n📅 ${eventDate}\n🏢 Organisé par ${chamberName}\n\nRejoignez-nous !`;
-    
+
     if (navigator.share) {
         navigator.share({
             title: eventTitle,
@@ -1196,12 +1284,63 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
+// Fonction pour récupérer les taux de change
+function fetchExchangeRates() {
+    const loadingDiv = document.getElementById('exchange-rates-loading');
+    const contentDiv = document.getElementById('exchange-rates-content');
+    const errorDiv = document.getElementById('exchange-rates-error');
+    const lastUpdateElement = document.getElementById('last-update');
+
+    // API gratuite pour les taux de change (USD et EUR vers CDF)
+    fetch('https://api.exchangerate-api.com/v4/latest/USD')
+        .then(response => response.json())
+        .then(data => {
+            if (data && data.rates && data.rates.CDF) {
+                // Calculer 1 USD = X CDF et 1 EUR = X CDF
+                const usdToCdf = data.rates.CDF;
+
+                // Pour EUR vers CDF, on fait: (CDF/USD) * (USD/EUR) = CDF/EUR
+                const eurToUsd = data.rates.EUR;
+                const eurToCdf = usdToCdf / eurToUsd;
+
+                // Afficher les taux
+                document.getElementById('rate-usd').textContent = usdToCdf.toFixed(2) + ' CDF';
+                document.getElementById('rate-eur').textContent = eurToCdf.toFixed(2) + ' CDF';
+
+                // Mettre à jour la date
+                const now = new Date();
+                lastUpdateElement.textContent = `Mis à jour: ${now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`;
+
+                // Afficher le contenu
+                loadingDiv.classList.add('hidden');
+                contentDiv.classList.remove('hidden');
+                errorDiv.classList.add('hidden');
+            } else {
+                throw new Error('Format de données invalide');
+            }
+        })
+        .catch(error => {
+            console.error('Erreur lors de la récupération des taux:', error);
+            loadingDiv.classList.add('hidden');
+            errorDiv.classList.remove('hidden');
+            lastUpdateElement.textContent = 'Échec de la mise à jour';
+        });
+}
+
+// Charger les taux au chargement de la page
+document.addEventListener('DOMContentLoaded', function() {
+    fetchExchangeRates();
+
+    // Actualiser toutes les 5 minutes
+    setInterval(fetchExchangeRates, 5 * 60 * 1000);
+});
+
 // Fonction pour afficher des notifications
 function showNotification(message, type = 'info') {
     // Créer l'élément de notification
     const notification = document.createElement('div');
     notification.className = `fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg transition-all duration-300 transform translate-x-full`;
-    
+
     // Styles selon le type
     switch (type) {
         case 'success':
@@ -1215,27 +1354,27 @@ function showNotification(message, type = 'info') {
             notification.classList.add('bg-blue-600', 'text-white');
             break;
     }
-    
+
     notification.innerHTML = `
         <div class="flex items-center gap-2">
             <i data-lucide="${type === 'success' ? 'check-circle' : type === 'error' ? 'x-circle' : 'info'}" class="h-4 w-4"></i>
             <span class="text-sm font-medium">${message}</span>
         </div>
     `;
-    
+
     // Ajouter au DOM
     document.body.appendChild(notification);
-    
+
     // Réinitialiser les icônes Lucide
     if (typeof lucide !== 'undefined') {
         lucide.createIcons();
     }
-    
+
     // Animation d'entrée
     setTimeout(() => {
         notification.classList.remove('translate-x-full');
     }, 100);
-    
+
     // Suppression automatique après 4 secondes
     setTimeout(() => {
         notification.classList.add('translate-x-full');

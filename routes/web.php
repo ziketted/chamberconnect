@@ -27,6 +27,9 @@ Route::get('/chamber/{chamber}', [ChamberController::class, 'show'])->name('cham
 
 // Events Routes
 Route::get('/events', [EventController::class, 'index'])->name('events');
+Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
+Route::get('/events/{event}/details', [EventController::class, 'show'])->name('events.detail');
+Route::get('/events/{event}/booking', [EventController::class, 'showBooking'])->name('events.booking');
 
 // Opportunities Routes
 Route::get('/opportunities', [OpportunityController::class, 'index'])->name('opportunities');
