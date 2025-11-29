@@ -52,9 +52,15 @@
         @include('layouts.partials.header')
     @endauth
 
-    <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
-        @yield('content')
-    </main>
+    @if(request()->routeIs('home'))
+        <main>
+            @yield('content')
+        </main>
+    @else
+        <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
+            @yield('content')
+        </main>
+    @endif
 
     @include('layouts.partials.footer')
     @include('layouts.partials.chat-widget')

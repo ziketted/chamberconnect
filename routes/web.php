@@ -9,6 +9,7 @@ use App\Http\Controllers\ChamberListController;
 use App\Http\Controllers\ChamberController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\OpportunityController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
 // Language Switcher
@@ -17,9 +18,7 @@ Route::get('language/{locale}', [LanguageController::class, 'switch'])
     ->where('locale', 'en|fr');
 
 // Public Routes
-Route::get('/', function () {
-    return view('home');
-})->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Chambers Routes
 Route::get('/chambers', [ChamberListController::class, 'index'])->name('chambers');

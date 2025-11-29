@@ -162,16 +162,15 @@
                     @if($chamber->events->count() > 0)
                     <div class="grid sm:grid-cols-2 gap-4">
                         @foreach($chamber->events->take(2) as $event)
-                        <a href="{{ route('events.show', $event->id) }}"
-                            class="group relative overflow-hidden rounded-lg border border-neutral-200 dark:border-gray-700 hover:border-neutral-300 transition-all">
+                        <a href="#"
+                            class="group relative overflow-hidden rounded-lg border border-neutral-200 dark:border-gray-700 hover:border-neutral-300">
                             @if($event->cover_image_path)
-                            <img src="{{ asset('storage/' . $event->cover_image_path) }}" alt="{{ $event->title }}"
-                                class="h-32 w-full object-cover">
+                                <img src="{{ asset('storage/' . $event->cover_image_path) }}"
+                                    alt="{{ $event->title }}" class="h-32 w-full object-cover">
                             @else
-                            <div
-                                class="h-32 w-full bg-gradient-to-br from-[#073066] to-[#052347] flex items-center justify-center">
-                                <i data-lucide="calendar" class="h-12 w-12 text-white/30"></i>
-                            </div>
+                                <div class="h-32 w-full bg-gradient-to-br from-[#073066] to-[#052347] flex items-center justify-center">
+                                    <i data-lucide="calendar" class="h-12 w-12 text-white/30"></i>
+                                </div>
                             @endif
                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                             <div class="absolute inset-x-0 bottom-0 p-3">
@@ -287,11 +286,10 @@
                             <span class="ml-1">{{ $chamber->embassy_country }}</span>
                         </div>
                         @endif
-
                         @if($chamber->type === 'bilateral' && $chamber->embassy_address)
                         <div class="flex items-start gap-2">
                             <i data-lucide="map-pin" class="h-4 w-4 text-neutral-500 dark:text-gray-400 mt-0.5"></i>
-                            <div class="flex-1">
+                            <div>
                                 <div class="font-medium">Adresse de l'ambassade</div>
                                 <div class="text-sm">{{ $chamber->embassy_address }}</div>
                                 <div class="mt-2">
@@ -302,64 +300,6 @@
                                     </button>
                                 </div>
                             </div>
-                        </div>
-                        @endif
-
-                        @if($chamber->type === 'bilateral' && $chamber->embassy_phone)
-                        <div class="flex items-center gap-2">
-                            <i data-lucide="phone" class="h-4 w-4 text-neutral-500 dark:text-gray-400"></i>
-                            <a href="tel:{{ $chamber->embassy_phone }}"
-                                class="text-[#073066] dark:text-blue-400 hover:underline">{{ $chamber->embassy_phone
-                                }}</a>
-                        </div>
-                        @endif
-
-                        @if($chamber->type === 'bilateral' && $chamber->embassy_website)
-                        <div class="flex items-center gap-2">
-                            <i data-lucide="globe" class="h-4 w-4 text-neutral-500 dark:text-gray-400"></i>
-                            <a href="{{ $chamber->embassy_website }}" target="_blank"
-                                class="text-[#073066] dark:text-blue-400 hover:underline">{{ str_replace(['http://',
-                                'https://'], '', $chamber->embassy_website) }}</a>
-                        </div>
-                        @endif
-
-                        @if($chamber->type === 'bilateral' && $chamber->embassy_country)
-                        <!-- Taux de change pour le pays -->
-                        <div
-                            class="mt-2 p-3 rounded-lg bg-neutral-50 dark:bg-gray-700/50 border border-neutral-200 dark:border-gray-600">
-                            <div class="flex items-center justify-between mb-2">
-                                <div class="flex items-center gap-2">
-                                    <svg class="w-4 h-4 text-green-600 dark:text-green-400" fill="none"
-                                        stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    <span class="text-xs font-semibold text-gray-900 dark:text-white">Taux de
-                                        Change</span>
-                                </div>
-                            </div>
-
-                            <div id="country-exchange-rate-loading" class="animate-pulse">
-                                <div class="h-8 bg-gray-200 dark:bg-gray-600 rounded"></div>
-                            </div>
-
-                            <div id="country-exchange-rate-content" class="hidden">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                        1 <span id="country-currency-code">-</span>
-                                    </span>
-                                    <span id="country-rate"
-                                        class="text-sm font-semibold text-gray-900 dark:text-white">-</span>
-                                </div>
-                            </div>
-
-                            <div id="country-exchange-rate-error" class="hidden">
-                                <p class="text-xs text-red-500 dark:text-red-400">Taux non disponible</p>
-                            </div>
-
-                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-2" id="country-rate-update">
-                                Chargement...
-                            </p>
                         </div>
                         @endif
                     </div>
@@ -445,8 +385,7 @@
         <div class="grid gap-5 sm:grid-cols-2">
             @foreach($chamber->events as $event)
             <article
-                class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm overflow-hidden hover:shadow-md transition-shadow cursor-pointer group"
-                onclick="window.location.href='{{ route('events.show', $event->id) }}'">
+                class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
                 {{-- <img
                     src="{{ $event->image_path ? asset('storage/' . $event->image_path) : 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=1600&auto=format&fit=crop' }}"
                     class="h-40 w-full object-cover" alt="{{ $event->title }}"> --}}
@@ -481,7 +420,7 @@
                         </span>
                         @endif
                     </div>
-                    <div class="mt-4 flex gap-2" onclick="event.stopPropagation()">
+                    <div class="mt-4 flex gap-2">
                         @if(auth()->check())
                         @php($isBooked = $event->isBookedBy(auth()->user()))
                         @php($bookingStatus = $event->getBookingStatus(auth()->user()))
@@ -587,8 +526,7 @@
                         <tr>
                             <th class="px-4 py-2 text-left font-medium">Membre</th>
                             <th class="px-4 py-2 text-left font-medium">Email</th>
-                            <th class="px-4 py-2 text-left font-medium">Poste</th>
-                            <!--
+                            <th class="px-4 py-2 text-left font-medium">Poste</th><!-- 
                             <th class="px-4 py-2 text-left font-medium">Depuis</th> -->
                         </tr>
                     </thead>
@@ -614,7 +552,7 @@
                                     class="text-[#073066] dark:text-blue-400 hover:underline">{{ $member->email }}</a>
                             </td>
                             <td class="px-4 py-2">
-                                <!-- @if($member->pivot->role === 'manager')
+                               <!-- @if($member->pivot->role === 'manager')
                                 <span
                                     class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300">
                                     <i data-lucide="crown" class="h-3 w-3 mr-1"></i>
@@ -626,9 +564,9 @@
                                     <i data-lucide="user" class="h-3 w-3 mr-1"></i>
                                     {{ $member->pivot->position }}
                                 </span>
-
+                               
                             </td>
-                            <!--  <td class="px-4 py-2 text-gray-500 dark:text-gray-400">
+                           <!--  <td class="px-4 py-2 text-gray-500 dark:text-gray-400">
                                 {{ $member->pivot->created_at ? $member->pivot->created_at->format('M Y') : 'N/A' }}
                             </td> -->
                         </tr>
@@ -796,182 +734,6 @@
         window.open(googleMapsUrl, '_blank');
     }
 
-    // Mapping des pays vers leurs codes de devise
-    function getCountryCurrency(countryName) {
-        const currencyMap = {
-            // Afrique
-            'Algérie': 'DZD',
-            'Angola': 'AOA',
-            'Bénin': 'XOF',
-            'Botswana': 'BWP',
-            'Burkina Faso': 'XOF',
-            'Burundi': 'BIF',
-            'Cameroun': 'XAF',
-            'Cap-Vert': 'CVE',
-            'Centrafrique': 'XAF',
-            'Comores': 'KMF',
-            'Congo': 'XAF',
-            'Côte d\'Ivoire': 'XOF',
-            'Djibouti': 'DJF',
-            'Égypte': 'EGP',
-            'Érythrée': 'ERN',
-            'Éthiopie': 'ETB',
-            'Gabon': 'XAF',
-            'Gambie': 'GMD',
-            'Ghana': 'GHS',
-            'Guinée': 'GNF',
-            'Guinée-Bissau': 'XOF',
-            'Guinée équatoriale': 'XAF',
-            'Kenya': 'KES',
-            'Lesotho': 'LSL',
-            'Liberia': 'LRD',
-            'Libye': 'LYD',
-            'Madagascar': 'MGA',
-            'Malawi': 'MWK',
-            'Mali': 'XOF',
-            'Maroc': 'MAD',
-            'Maurice': 'MUR',
-            'Mauritanie': 'MRU',
-            'Mozambique': 'MZN',
-            'Namibie': 'NAD',
-            'Niger': 'XOF',
-            'Nigeria': 'NGN',
-            'Ouganda': 'UGX',
-            'Rwanda': 'RWF',
-            'Sao Tomé-et-Principe': 'STN',
-            'Sénégal': 'XOF',
-            'Seychelles': 'SCR',
-            'Sierra Leone': 'SLL',
-            'Somalie': 'SOS',
-            'Soudan': 'SDG',
-            'Soudan du Sud': 'SSP',
-            'Tanzanie': 'TZS',
-            'Tchad': 'XAF',
-            'Togo': 'XOF',
-            'Tunisie': 'TND',
-            'Zambie': 'ZMW',
-            'Zimbabwe': 'ZWL',
-
-            // Europe
-            'Allemagne': 'EUR',
-            'Autriche': 'EUR',
-            'Belgique': 'EUR',
-            'Bulgarie': 'BGN',
-            'Chypre': 'EUR',
-            'Croatie': 'EUR',
-            'Danemark': 'DKK',
-            'Espagne': 'EUR',
-            'Estonie': 'EUR',
-            'Finlande': 'EUR',
-            'France': 'EUR',
-            'Grèce': 'EUR',
-            'Hongrie': 'HUF',
-            'Irlande': 'EUR',
-            'Italie': 'EUR',
-            'Lettonie': 'EUR',
-            'Lituanie': 'EUR',
-            'Luxembourg': 'EUR',
-            'Malte': 'EUR',
-            'Pays-Bas': 'EUR',
-            'Pologne': 'PLN',
-            'Portugal': 'EUR',
-            'République tchèque': 'CZK',
-            'Roumanie': 'RON',
-            'Royaume-Uni': 'GBP',
-            'Slovaquie': 'EUR',
-            'Slovénie': 'EUR',
-            'Suède': 'SEK',
-            'Suisse': 'CHF',
-            'Norvège': 'NOK',
-            'Islande': 'ISK',
-
-            // Amérique
-            'États-Unis': 'USD',
-            'Canada': 'CAD',
-            'Mexique': 'MXN',
-            'Brésil': 'BRL',
-            'Argentine': 'ARS',
-            'Chili': 'CLP',
-            'Colombie': 'COP',
-            'Pérou': 'PEN',
-            'Venezuela': 'VES',
-
-            // Asie
-            'Chine': 'CNY',
-            'Japon': 'JPY',
-            'Inde': 'INR',
-            'Corée du Sud': 'KRW',
-            'Thaïlande': 'THB',
-            'Vietnam': 'VND',
-            'Indonésie': 'IDR',
-            'Philippines': 'PHP',
-            'Singapour': 'SGD',
-            'Malaisie': 'MYR',
-            'Pakistan': 'PKR',
-            'Bangladesh': 'BDT',
-            'Turquie': 'TRY',
-            'Israël': 'ILS',
-            'Arabie saoudite': 'SAR',
-            'Émirats arabes unis': 'AED',
-
-            // Océanie
-            'Australie': 'AUD',
-            'Nouvelle-Zélande': 'NZD',
-        };
-
-        return currencyMap[countryName] || null;
-    }
-
-    // Fonction pour récupérer le taux de change du pays
-    function fetchCountryExchangeRate() {
-        @if($chamber->type === 'bilateral' && $chamber->embassy_country)
-        const countryName = "{{ $chamber->embassy_country }}";
-        const currencyCode = getCountryCurrency(countryName);
-
-        const loadingDiv = document.getElementById('country-exchange-rate-loading');
-        const contentDiv = document.getElementById('country-exchange-rate-content');
-        const errorDiv = document.getElementById('country-exchange-rate-error');
-        const updateElement = document.getElementById('country-rate-update');
-
-        if (!currencyCode) {
-            loadingDiv.classList.add('hidden');
-            errorDiv.classList.remove('hidden');
-            updateElement.textContent = 'Devise non reconnue';
-            return;
-        }
-
-        // Récupérer le taux depuis l'API
-        fetch(`https://api.exchangerate-api.com/v4/latest/${currencyCode}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data && data.rates && data.rates.CDF) {
-                    const rate = data.rates.CDF;
-
-                    // Afficher le taux
-                    document.getElementById('country-currency-code').textContent = currencyCode;
-                    document.getElementById('country-rate').textContent = rate.toFixed(2) + ' CDF';
-
-                    // Mettre à jour la date
-                    const now = new Date();
-                    updateElement.textContent = `Mis à jour: ${now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`;
-
-                    // Afficher le contenu
-                    loadingDiv.classList.add('hidden');
-                    contentDiv.classList.remove('hidden');
-                    errorDiv.classList.add('hidden');
-                } else {
-                    throw new Error('Taux non disponible');
-                }
-            })
-            .catch(error => {
-                console.error('Erreur lors de la récupération du taux:', error);
-                loadingDiv.classList.add('hidden');
-                errorDiv.classList.remove('hidden');
-                updateElement.textContent = 'Échec de la mise à jour';
-            });
-        @endif
-    }
-
     // Recherche de membres
     document.addEventListener('DOMContentLoaded', function() {
         const membersSearch = document.getElementById('members-search');
@@ -996,9 +758,6 @@
         if (typeof lucide !== 'undefined') {
             lucide.createIcons();
         }
-
-        // Charger le taux de change du pays (si chambre bilatérale)
-        fetchCountryExchangeRate();
     });
 
     // Fonction pour afficher des notifications
