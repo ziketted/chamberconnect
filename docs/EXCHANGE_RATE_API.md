@@ -339,3 +339,5 @@ Pour toute question ou problème:
 - Documentation HTTP Client: https://laravel.com/docs/http-client
 - ExchangeRate-API Docs: https://www.exchangerate-api.com/docs
 
+
+

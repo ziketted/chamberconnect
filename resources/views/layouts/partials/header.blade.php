@@ -107,76 +107,146 @@
                     <!-- User Profile Dropdown -->
                     <div class="relative" x-data="{ open: false }">
                         <button @click="open = !open" @click.away="open = false"
-                            class="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-neutral-700 dark:text-gray-300 hover:bg-neutral-100 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#073066] dark:focus-visible:ring-blue-500">
-                            @if(Auth::user()->avatar)
-                            <img src="{{ Auth::user()->avatar }}" alt="{{ Auth::user()->name }}"
-                                class="h-6 w-6 rounded-full">
+                            class="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-neutral-700 dark:text-gray-300 hover:bg-neutral-100 dark:hover:bg-gray-800 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563eb] dark:focus-visible:ring-blue-500">
+                            @if(Auth::user()->avatar || Auth::user()->profile_photo_path)
+                            <div class="relative">
+                                <img src="{{ asset('storage/' . (Auth::user()->avatar ?? Auth::user()->profile_photo_path)) }}" 
+                                     alt="{{ Auth::user()->name }}"
+                                     class="h-8 w-8 rounded-full object-cover border-2 border-white dark:border-gray-700 shadow-sm ring-2 ring-blue-100 dark:ring-blue-900/30">
+                                <div class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 border-2 border-white dark:border-gray-800 rounded-full"></div>
+                            </div>
                             @else
-                            <div
-                                class="h-6 w-6 rounded-full bg-[#073066] flex items-center justify-center text-white text-xs font-semibold">
-                                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                            <div class="relative">
+                                <div class="h-8 w-8 rounded-full bg-gradient-to-br from-[#2563eb] to-[#1e40af] flex items-center justify-center text-white text-xs font-bold shadow-sm ring-2 ring-blue-100 dark:ring-blue-900/30">
+                                    {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}{{ strtoupper(substr(explode(' ', Auth::user()->name)[1] ?? '', 0, 1)) }}
+                                </div>
+                                <div class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 border-2 border-white dark:border-gray-800 rounded-full"></div>
                             </div>
                             @endif
-                            <span class="hidden sm:inline">{{ Auth::user()->name }}</span>
-                            <i data-lucide="chevron-down" class="h-4 w-4"></i>
+                            <div class="hidden sm:block text-left">
+                                <div class="text-sm font-semibold text-gray-900 dark:text-white">{{ Str::limit(Auth::user()->name, 20) }}</div>
+                                @if(Auth::user()->company)
+                                <div class="text-xs text-neutral-500 dark:text-gray-400">{{ Str::limit(Auth::user()->company, 20) }}</div>
+                                @endif
+                            </div>
+                            <i data-lucide="chevron-down" class="h-4 w-4 transition-transform duration-200" :class="open ? 'rotate-180' : ''"></i>
                         </button>
 
-                        <!-- Dropdown Menu -->
-                        <div x-show="open" x-transition
-                            class="absolute right-0 mt-2 w-48 rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 dark:ring-gray-600 focus:outline-none z-50">
-                            <div class="py-1">
+                        <!-- Dropdown Menu Premium -->
+                        <div x-show="open" 
+                             x-transition:enter="transition ease-out duration-200"
+                             x-transition:enter-start="opacity-0 scale-95"
+                             x-transition:enter-end="opacity-100 scale-100"
+                             x-transition:leave="transition ease-in duration-150"
+                             x-transition:leave-start="opacity-100 scale-100"
+                             x-transition:leave-end="opacity-0 scale-95"
+                             class="absolute right-0 mt-3 w-72 origin-top-right rounded-xl bg-white dark:bg-gray-800 shadow-xl ring-1 ring-neutral-200 dark:ring-gray-700 focus:outline-none z-50 overflow-hidden">
+                            
+                            <!-- Header du menu -->
+                            <div class="px-4 py-3 bg-gradient-to-r from-[#2563eb] to-[#1e40af]">
+                                <div class="flex items-center gap-3">
+                                    @if(Auth::user()->avatar || Auth::user()->profile_photo_path)
+                                        <img src="{{ asset('storage/' . (Auth::user()->avatar ?? Auth::user()->profile_photo_path)) }}" 
+                                             alt="{{ Auth::user()->name }}"
+                                             class="h-12 w-12 rounded-full object-cover border-2 border-white shadow-md">
+                                    @else
+                                        <div class="h-12 w-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white text-base font-bold border-2 border-white shadow-md">
+                                            {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}{{ strtoupper(substr(explode(' ', Auth::user()->name)[1] ?? '', 0, 1)) }}
+                                        </div>
+                                    @endif
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-semibold text-white truncate">{{ Auth::user()->name }}</p>
+                                        <p class="text-xs text-blue-100 truncate">{{ Auth::user()->email }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Menu items -->
+                            <div class="py-2">
                                 <a href="{{ route('dashboard') }}"
-                                    class="block px-4 py-2 text-sm text-neutral-700 dark:text-gray-300 hover:bg-neutral-100 dark:hover:bg-gray-700">
-                                    <i data-lucide="home" class="inline h-4 w-4 mr-2"></i>
-                                    {{ __('messages.dashboard') }}
+                                    class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-neutral-700 dark:text-gray-300 hover:bg-neutral-50 dark:hover:bg-gray-700/50 transition-colors group">
+                                    <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-100 dark:bg-gray-700 text-neutral-600 dark:text-gray-400 group-hover:scale-110 transition-transform">
+                                        <i data-lucide="home" class="h-4 w-4"></i>
+                                    </div>
+                                    <span>{{ __('messages.dashboard') }}</span>
                                 </a>
+                                
                                 <a href="{{ route('profile.edit') }}"
-                                    class="block px-4 py-2 text-sm text-neutral-700 dark:text-gray-300 hover:bg-neutral-100 dark:hover:bg-gray-700">
-                                    <i data-lucide="user" class="inline h-4 w-4 mr-2"></i>
-                                    {{ __('messages.profile') }}
+                                    class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-neutral-700 dark:text-gray-300 hover:bg-neutral-50 dark:hover:bg-gray-700/50 transition-colors group">
+                                    <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-100 dark:bg-gray-700 text-neutral-600 dark:text-gray-400 group-hover:scale-110 transition-transform">
+                                        <i data-lucide="user" class="h-4 w-4"></i>
+                                    </div>
+                                    <span>{{ __('messages.profile') }}</span>
                                 </a>
+                                
+                                <a href="{{ route('events.my-bookings') }}"
+                                    class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-neutral-700 dark:text-gray-300 hover:bg-neutral-50 dark:hover:bg-gray-700/50 transition-colors group">
+                                    <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-100 dark:bg-gray-700 text-neutral-600 dark:text-gray-400 group-hover:scale-110 transition-transform">
+                                        <i data-lucide="calendar-check" class="h-4 w-4"></i>
+                                    </div>
+                                    <span>Mes réservations</span>
+                                </a>
+                                
                                 <a href="{{ route('settings') }}"
-                                    class="block px-4 py-2 text-sm text-neutral-700 dark:text-gray-300 hover:bg-neutral-100 dark:hover:bg-gray-700">
-                                    <i data-lucide="settings" class="inline h-4 w-4 mr-2"></i>
-                                    {{ __('Paramètres') }}
+                                    class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-neutral-700 dark:text-gray-300 hover:bg-neutral-50 dark:hover:bg-gray-700/50 transition-colors group">
+                                    <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-100 dark:bg-gray-700 text-neutral-600 dark:text-gray-400 group-hover:scale-110 transition-transform">
+                                        <i data-lucide="settings" class="h-4 w-4"></i>
+                                    </div>
+                                    <span>{{ __('Paramètres') }}</span>
                                 </a>
+                                
                                 @if(Auth::user()->isSuperAdmin())
-                                <hr class="my-1 border-gray-200 dark:border-gray-600 dark:border-gray-400">
+                                <div class="my-2 border-t border-neutral-200 dark:border-gray-700"></div>
                                 <a href="{{ route('admin.dashboard') }}"
-                                    class="block px-4 py-2 text-sm text-neutral-700 dark:text-gray-300 hover:bg-neutral-100 dark:hover:bg-gray-700">
-                                    <i data-lucide="shield-check" class="inline h-4 w-4 mr-2"></i>
-                                    Administration
+                                    class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-neutral-700 dark:text-gray-300 hover:bg-neutral-50 dark:hover:bg-gray-700/50 transition-colors group">
+                                    <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-100 dark:bg-gray-700 text-neutral-600 dark:text-gray-400 group-hover:scale-110 transition-transform">
+                                        <i data-lucide="shield-check" class="h-4 w-4"></i>
+                                    </div>
+                                    <span>Administration</span>
                                 </a>
                                 <a href="{{ route('chambers.create') }}"
-                                    class="block px-4 py-2 text-sm text-neutral-700 dark:text-gray-300 hover:bg-neutral-100 dark:hover:bg-gray-700">
-                                    <i data-lucide="plus" class="inline h-4 w-4 mr-2"></i>
-                                    {{ __('messages.create_chamber') }}
+                                    class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-neutral-700 dark:text-gray-300 hover:bg-neutral-50 dark:hover:bg-gray-700/50 transition-colors group">
+                                    <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-100 dark:bg-gray-700 text-neutral-600 dark:text-gray-400 group-hover:scale-110 transition-transform">
+                                        <i data-lucide="plus" class="h-4 w-4"></i>
+                                    </div>
+                                    <span>{{ __('messages.create_chamber') }}</span>
                                 </a>
                                 <a href="{{ route('admin.chambers') }}"
-                                    class="block px-4 py-2 text-sm text-neutral-700 dark:text-gray-300 hover:bg-neutral-100 dark:hover:bg-gray-700">
-                                    <i data-lucide="building" class="inline h-4 w-4 mr-2"></i>
-                                    Gérer les chambres
+                                    class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-neutral-700 dark:text-gray-300 hover:bg-neutral-50 dark:hover:bg-gray-700/50 transition-colors group">
+                                    <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-100 dark:bg-gray-700 text-neutral-600 dark:text-gray-400 group-hover:scale-110 transition-transform">
+                                        <i data-lucide="building" class="h-4 w-4"></i>
+                                    </div>
+                                    <span>Gérer les chambres</span>
                                 </a>
                                 <a href="{{ route('admin.users') }}"
-                                    class="block px-4 py-2 text-sm text-neutral-700 dark:text-gray-300 hover:bg-neutral-100 dark:hover:bg-gray-700">
-                                    <i data-lucide="users" class="inline h-4 w-4 mr-2"></i>
-                                    Gérer les utilisateurs
+                                    class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-neutral-700 dark:text-gray-300 hover:bg-neutral-50 dark:hover:bg-gray-700/50 transition-colors group">
+                                    <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-100 dark:bg-gray-700 text-neutral-600 dark:text-gray-400 group-hover:scale-110 transition-transform">
+                                        <i data-lucide="users" class="h-4 w-4"></i>
+                                    </div>
+                                    <span>Gérer les utilisateurs</span>
                                 </a>
                                 @elseif(Auth::user()->isChamberManager())
-                                <hr class="my-1 border-gray-200 dark:border-gray-600 dark:border-gray-400">
+                                <div class="my-2 border-t border-neutral-200 dark:border-gray-700"></div>
                                 <a href="{{ route('manage-chambers.index') }}"
-                                    class="block px-4 py-2 text-sm text-neutral-700 dark:text-gray-300 hover:bg-neutral-100 dark:hover:bg-gray-700">
-                                    <i data-lucide="briefcase" class="inline h-4 w-4 mr-2"></i>
-                                    Gestion des chambres
+                                    class="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-neutral-700 dark:text-gray-300 hover:bg-neutral-50 dark:hover:bg-gray-700/50 transition-colors group">
+                                    <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-100 dark:bg-gray-700 text-neutral-600 dark:text-gray-400 group-hover:scale-110 transition-transform">
+                                        <i data-lucide="briefcase" class="h-4 w-4"></i>
+                                    </div>
+                                    <span>Gestion des chambres</span>
                                 </a>
                                 @endif
-                                <hr class="my-1 border-gray-200 dark:border-gray-600 dark:border-gray-400">
+                            </div>
+                            
+                            <!-- Footer avec déconnexion -->
+                            <div class="border-t border-neutral-200 dark:border-gray-700 bg-neutral-50 dark:bg-gray-700/30 p-2">
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
                                     <button type="submit"
-                                        class="block w-full text-left px-4 py-2 text-sm text-neutral-700 dark:text-gray-300 hover:bg-neutral-100 dark:hover:bg-gray-700">
-                                        <i data-lucide="log-out" class="inline h-4 w-4 mr-2"></i>
-                                        {{ __('messages.logout') }}
+                                        class="flex items-center gap-3 w-full px-4 py-2.5 text-sm font-medium text-neutral-700 dark:text-gray-300 hover:bg-neutral-50 dark:hover:bg-gray-700/50 rounded-lg transition-colors group">
+                                        <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-100 dark:bg-gray-700 text-neutral-600 dark:text-gray-400 group-hover:scale-110 transition-transform">
+                                            <i data-lucide="log-out" class="h-4 w-4"></i>
+                                        </div>
+                                        <span>{{ __('messages.logout') }}</span>
                                     </button>
                                 </form>
                             </div>

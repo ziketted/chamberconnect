@@ -460,3 +460,5 @@ $1 = {{ number_format($exchangeRate, 0, ',', ' ') }} FC
 **Version** : 1.0.0
 **Statut** : ✅ Production Ready
 
+
+

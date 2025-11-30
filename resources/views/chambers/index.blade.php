@@ -6,74 +6,130 @@
     <aside class="lg:col-span-3">
         <div class="sticky top-[88px] space-y-4">
             @auth
-            <!-- Section Mon rôle - Seulement pour les utilisateurs connectés -->
-            <div class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4">
-                <h2 class="text-sm font-semibold text-gray-900 dark:text-white">Mon rôle</h2>
-                <p class="mt-1 text-xs text-neutral-600 dark:text-gray-400">Contrôlez la portée et les actions.</p>
-                <div class="mt-3">
-                    @if(Auth::user()->isSuperAdmin())
-                    <span
-                        class="inline-flex items-center rounded-md bg-[#b81010]/10 px-2 py-1 text-xs font-medium text-[#b81010]">Super
-                        admin</span>
-                    @elseif(Auth::user()->isChamberManager())
-                    <span
-                        class="inline-flex items-center rounded-md bg-[#fcb357]/10 px-2 py-1 text-xs font-medium text-[#fcb357]">Gestionnaire</span>
-                    @else
-                    <span
-                        class="inline-flex items-center rounded-md bg-[#073066]/10 px-2 py-1 text-xs font-medium text-[#073066] dark:text-blue-400">Utilisateur</span>
-                    @endif
-                </div>
-                <div class="mt-2">
-                    <span class="text-xs text-neutral-600 dark:text-gray-400">
-                        @if(Auth::user()->isSuperAdmin())
-                        Accès global aux chambres
-                        @elseif(Auth::user()->isChamberManager())
-                        Gestion des chambres assignées
+            <!-- Card Profil Complet -->
+            <div class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-gradient-to-br from-white to-blue-50/30 dark:from-gray-800 dark:to-blue-900/10 overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
+                <!-- Header avec dégradé -->
+                <div class="h-20 bg-gradient-to-r from-[#2563eb] to-[#1e40af] relative">
+                    <div class="absolute -bottom-10 left-4">
+                        @if(Auth::user()->avatar || Auth::user()->profile_photo_path)
+                            <div class="relative w-20 h-20 rounded-xl border-4 border-white dark:border-gray-800 shadow-lg overflow-hidden">
+                                <img src="{{ asset('storage/' . (Auth::user()->avatar ?? Auth::user()->profile_photo_path)) }}" 
+                                     alt="{{ Auth::user()->name }}"
+                                     class="w-full h-full object-cover">
+                                <!-- Badge online -->
+                                <div class="absolute bottom-1 right-1 w-3.5 h-3.5 bg-green-500 border-2 border-white dark:border-gray-800 rounded-full"></div>
+                            </div>
                         @else
-                        Membre des chambres
+                            <div class="relative w-20 h-20 rounded-xl border-4 border-white dark:border-gray-800 shadow-lg bg-gradient-to-br from-[#2563eb] to-[#1e40af] flex items-center justify-center">
+                                <span class="text-white text-2xl font-bold">
+                                    {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}{{ strtoupper(substr(explode(' ', Auth::user()->name)[1] ?? '', 0, 1)) }}
+                                </span>
+                                <!-- Badge online -->
+                                <div class="absolute bottom-1 right-1 w-3.5 h-3.5 bg-green-500 border-2 border-white dark:border-gray-800 rounded-full"></div>
+                            </div>
                         @endif
-                    </span>
+                    </div>
+                </div>
+
+                <!-- Contenu du profil -->
+                <div class="pt-14 px-4 pb-4">
+                    <!-- Nom et info utilisateur -->
+                    <div class="mb-4">
+                        <h2 class="text-base font-bold text-gray-900 dark:text-white truncate mb-1" title="{{ Auth::user()->name }}">
+                            {{ Auth::user()->name }}
+                        </h2>
+                        <div class="space-y-1.5">
+                            <div class="flex items-center gap-2 text-xs text-neutral-600 dark:text-gray-400">
+                                <i data-lucide="mail" class="h-3.5 w-3.5 flex-shrink-0"></i>
+                                <span class="truncate">{{ Auth::user()->email }}</span>
+                            </div>
+                            @if(Auth::user()->company)
+                            <div class="flex items-center gap-2 text-xs text-neutral-600 dark:text-gray-400">
+                                <i data-lucide="building-2" class="h-3.5 w-3.5 flex-shrink-0"></i>
+                                <span class="truncate">{{ Auth::user()->company }}</span>
+                            </div>
+                            @endif
+                        </div>
+                    </div>
+
+                    <!-- Séparateur -->
+                    <div class="h-px bg-neutral-200 dark:bg-gray-700 mb-4"></div>
+
+                    <!-- Statistiques cliquables -->
+                    <div class="space-y-2.5">
+                        <a href="{{ route('my-chambers') }}" class="flex items-center justify-between p-3 rounded-lg bg-white/50 dark:bg-gray-700/30 border border-neutral-100 dark:border-gray-600/50 hover:bg-white dark:hover:bg-gray-700/50 hover:border-blue-200 dark:hover:border-blue-500 cursor-pointer group transition-all">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-blue-100 to-blue-50 dark:from-blue-900/30 dark:to-blue-800/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <i data-lucide="building" class="h-4 w-4 text-blue-600 dark:text-blue-400"></i>
+                                </div>
+                                <span class="text-xs font-medium text-neutral-700 dark:text-gray-300">Chambres rejointes</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">{{ $userChambersCount ?? 0 }}</span>
+                                <i data-lucide="chevron-right" class="h-4 w-4 text-neutral-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 group-hover:translate-x-1 transition-all"></i>
+                            </div>
+                        </a>
+                        
+                        <a href="{{ route('events.my-bookings') }}" class="flex items-center justify-between p-3 rounded-lg bg-white/50 dark:bg-gray-700/30 border border-neutral-100 dark:border-gray-600/50 hover:bg-white dark:hover:bg-gray-700/50 hover:border-green-200 dark:hover:border-green-500 cursor-pointer group transition-all">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-green-100 to-green-50 dark:from-green-900/30 dark:to-green-800/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <i data-lucide="calendar-check" class="h-4 w-4 text-green-600 dark:text-green-400"></i>
+                                </div>
+                                <span class="text-xs font-medium text-neutral-700 dark:text-gray-300">Événements participés</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xl font-bold bg-gradient-to-r from-green-600 to-green-500 bg-clip-text text-transparent">{{ $participatedEventsCount ?? 0 }}</span>
+                                <i data-lucide="chevron-right" class="h-4 w-4 text-neutral-400 dark:text-gray-500 group-hover:text-green-600 dark:group-hover:text-green-400 group-hover:translate-x-1 transition-all"></i>
+                            </div>
+                        </a>
+                    </div>
                 </div>
             </div>
             @else
             <!-- Section Investir en RDC - Pour les utilisateurs non connectés -->
             <div class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4">
                 <h2 class="text-sm font-semibold text-[#073066] dark:text-blue-400">Investir en RDC</h2>
-                <p class="mt-1 text-xs text-neutral-600 dark:text-gray-400">Découvrez les opportunités d'investissement.</p>
+                <p class="mt-1 text-xs text-neutral-600 dark:text-gray-400">Découvrez les opportunités d'investissement.
+                </p>
                 <div class="mt-4 space-y-3">
                     <div class="flex items-start gap-2">
                         <div
                             class="flex-shrink-0 w-5 h-5 rounded-full bg-[#073066] text-white flex items-center justify-center text-xs font-semibold">
                             1</div>
-                        <p class="text-xs text-neutral-700 dark:text-gray-300">Explorez les chambres de commerce sectorielles pour
+                        <p class="text-xs text-neutral-700 dark:text-gray-300">Explorez les chambres de commerce
+                            sectorielles pour
                             identifier les opportunités d'investissement</p>
                     </div>
                     <div class="flex items-start gap-2">
                         <div
                             class="flex-shrink-0 w-5 h-5 rounded-full bg-[#fcb357] text-white flex items-center justify-center text-xs font-semibold">
                             2</div>
-                        <p class="text-xs text-neutral-700 dark:text-gray-300">Connectez-vous avec des entrepreneurs locaux et des
+                        <p class="text-xs text-neutral-700 dark:text-gray-300">Connectez-vous avec des entrepreneurs
+                            locaux et des
                             partenaires stratégiques</p>
                     </div>
                     <div class="flex items-start gap-2">
                         <div
                             class="flex-shrink-0 w-5 h-5 rounded-full bg-[#073066] text-white flex items-center justify-center text-xs font-semibold">
                             3</div>
-                        <p class="text-xs text-neutral-700 dark:text-gray-300">Participez aux événements et forums d'affaires pour étendre
+                        <p class="text-xs text-neutral-700 dark:text-gray-300">Participez aux événements et forums
+                            d'affaires pour étendre
                             votre réseau</p>
                     </div>
                     <div class="flex items-start gap-2">
                         <div
                             class="flex-shrink-0 w-5 h-5 rounded-full bg-[#fcb357] text-white flex items-center justify-center text-xs font-semibold">
                             4</div>
-                        <p class="text-xs text-neutral-700 dark:text-gray-300">Accédez aux informations réglementaires et aux conseils
+                        <p class="text-xs text-neutral-700 dark:text-gray-300">Accédez aux informations réglementaires
+                            et aux conseils
                             d'experts locaux</p>
                     </div>
                     <div class="flex items-start gap-2">
                         <div
                             class="flex-shrink-0 w-5 h-5 rounded-full bg-[#073066] text-white flex items-center justify-center text-xs font-semibold">
                             5</div>
-                        <p class="text-xs text-neutral-700 dark:text-gray-300">Bénéficiez de l'accompagnement personnalisé pour concrétiser
+                        <p class="text-xs text-neutral-700 dark:text-gray-300">Bénéficiez de l'accompagnement
+                            personnalisé pour concrétiser
                             vos projets d'investissement</p>
                     </div>
                 </div>
@@ -90,96 +146,66 @@
             <!-- Carrousel des Partenaires -->
             <div class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden">
                 <div class="border-b border-neutral-200 dark:border-gray-700 p-4">
-                    <h2 class="text-sm font-semibold text-[#073066] dark:text-blue-400">Nos Partenaires</h2>
-                    <p class="mt-1 text-xs text-neutral-600 dark:text-gray-400">Grandes marques qui nous font confiance</p>
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="text-sm font-semibold text-[#073066] dark:text-blue-400">Nos Partenaires</h2>
+                            <p class="mt-1 text-xs text-neutral-600 dark:text-gray-400">Institutions qui nous font confiance</p>
+                        </div>
+                        <div class="w-8 h-8 rounded-lg bg-[#073066]/10 dark:bg-[#073066]/20 flex items-center justify-center">
+                            <i data-lucide="handshake" class="h-4 w-4 text-[#073066] dark:text-blue-400"></i>
+                        </div>
+                    </div>
                 </div>
                 <div class="p-4">
-                    <div class="relative overflow-hidden">
-                        <div class="carousel-container flex transition-transform duration-500 ease-in-out"
-                            id="partners-carousel">
-                            <!-- Logo 1 - Microsoft -->
-                            <div class="carousel-slide flex-shrink-0 w-full flex items-center justify-center p-6">
-                                <div class="flex flex-col items-center space-y-3">
-                                    <div
-                                        class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
-                                        <svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor">
-                                            <path
-                                                d="M11.4 24H0V12.6h11.4V24zM24 24H12.6V12.6H24V24zM11.4 11.4H0V0h11.4v11.4zM24 11.4H12.6V0H24v11.4z" />
-                                        </svg>
-                                    </div>
-                                    <span class="text-xs font-medium text-neutral-700 dark:text-gray-300">Microsoft</span>
-                                </div>
-                            </div>
+                    <div class="relative overflow-hidden rounded-lg bg-gradient-to-br from-neutral-50 to-white dark:from-gray-700/30 dark:to-gray-800/30">
+                        <div class="carousel-container flex transition-transform duration-500 ease-in-out" id="partners-carousel">
+                            @php
+                            $partners = [
+                                ['name' => 'FPI', 'logo' => 'fpi.png'],
+                                ['name' => 'ANAPI', 'logo' => 'anapi.png'],
+                                ['name' => 'ANADEC', 'logo' => 'anadec.png'],
+                                ['name' => 'BCC', 'logo' => 'bcc.png'],
+                                ['name' => 'DGI', 'logo' => 'dgi.png'],
+                                ['name' => 'DGDA', 'logo' => 'dgda.jpg'],
+                                ['name' => 'Commerce', 'logo' => 'commerce.png'],
+                                ['name' => 'SEGUCE', 'logo' => 'seguce.png'],
+                                ['name' => 'AZES', 'logo' => 'azes.jpg'],
+                                ['name' => 'ZELCAF', 'logo' => 'zelcaf.jpg'],
+                            ];
+                            @endphp
 
-                            <!-- Logo 2 - Google -->
+                            @foreach($partners as $partner)
+                            <!-- {{ $partner['name'] }} -->
                             <div class="carousel-slide flex-shrink-0 w-full flex items-center justify-center p-6">
-                                <div class="flex flex-col items-center space-y-3">
-                                    <div
-                                        class="w-16 h-16 bg-gradient-to-br from-red-500 via-yellow-500 to-blue-500 rounded-lg flex items-center justify-center shadow-lg">
-                                        <span class="text-white font-bold text-lg">G</span>
+                                <div class="flex flex-col items-center space-y-3 group">
+                                    <div class="relative w-24 h-24 rounded-xl bg-white dark:bg-gray-700 border-2 border-neutral-100 dark:border-gray-600 flex items-center justify-center p-3 shadow-sm group-hover:shadow-md group-hover:border-[#073066]/30 dark:group-hover:border-blue-500/30 transition-all duration-300">
+                                        <img src="{{ asset('img/partenaires/' . $partner['logo']) }}" 
+                                             alt="{{ $partner['name'] }}" 
+                                             class="max-w-full max-h-full object-contain transition-transform duration-300 group-hover:scale-105">
+                                        <!-- Shine effect on hover -->
+                                        <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/0 to-transparent group-hover:via-white/10 transition-all duration-300 rounded-xl"></div>
                                     </div>
-                                    <span class="text-xs font-medium text-neutral-700 dark:text-gray-300">Google</span>
+                                    <span class="text-xs font-semibold text-neutral-700 dark:text-gray-300 group-hover:text-[#073066] dark:group-hover:text-blue-400 transition-colors duration-300">
+                                        {{ $partner['name'] }}
+                                    </span>
                                 </div>
                             </div>
-
-                            <!-- Logo 3 - Amazon -->
-                            <div class="carousel-slide flex-shrink-0 w-full flex items-center justify-center p-6">
-                                <div class="flex flex-col items-center space-y-3">
-                                    <div
-                                        class="w-16 h-16 bg-gradient-to-br from-orange-400 to-orange-500 rounded-lg flex items-center justify-center shadow-lg">
-                                        <svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor">
-                                            <path
-                                                d="M.045 18.02c.072-.116.187-.124.348-.022 3.636 2.11 7.594 3.166 11.87 3.166 2.852 0 5.668-.533 8.447-1.595l.315-.14c.138-.06.234-.1.293-.13.226-.088.39-.046.525.13.12.174.09.336-.12.48-.256.19-.6.41-1.006.654-1.244.743-2.64 1.316-4.185 1.726-1.548.41-3.156.615-4.83.615-2.424 0-4.73-.315-6.914-.946-2.185-.63-4.17-1.54-5.955-2.73-.195-.13-.285-.285-.225-.465l.437-.743z" />
-                                            <path
-                                                d="M18.78 16.826c-.885-.442-2.942-.21-4.067.066-.344.084-.398-.258-.043-.473 1.988-1.4 5.248-1.004 5.63-.53.382.472-.1 3.74-1.963 5.3-.32.267-.625.125-.483-.23.465-1.16 1.51-3.75.926-4.133z" />
-                                        </svg>
-                                    </div>
-                                    <span class="text-xs font-medium text-neutral-700 dark:text-gray-300">Amazon</span>
-                                </div>
-                            </div>
-
-                            <!-- Logo 4 - Apple -->
-                            <div class="carousel-slide flex-shrink-0 w-full flex items-center justify-center p-6">
-                                <div class="flex flex-col items-center space-y-3">
-                                    <div
-                                        class="w-16 h-16 bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg flex items-center justify-center shadow-lg">
-                                        <svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor">
-                                            <path
-                                                d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
-                                        </svg>
-                                    </div>
-                                    <span class="text-xs font-medium text-neutral-700 dark:text-gray-300">Apple</span>
-                                </div>
-                            </div>
-
-                            <!-- Logo 5 - Meta -->
-                            <div class="carousel-slide flex-shrink-0 w-full flex items-center justify-center p-6">
-                                <div class="flex flex-col items-center space-y-3">
-                                    <div
-                                        class="w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
-                                        <span class="text-white font-bold text-lg">M</span>
-                                    </div>
-                                    <span class="text-xs font-medium text-neutral-700 dark:text-gray-300">Meta</span>
-                                </div>
-                            </div>
+                            @endforeach
                         </div>
 
+                        <!-- Navigation Arrows -->
+                        <button id="prev-partner" class="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white dark:bg-gray-700 border border-neutral-200 dark:border-gray-600 shadow-md flex items-center justify-center hover:bg-[#073066] hover:border-[#073066] dark:hover:bg-[#073066] hover:text-white transition-all duration-200 group z-10">
+                            <i data-lucide="chevron-left" class="h-4 w-4 text-neutral-600 dark:text-gray-300 group-hover:text-white"></i>
+                        </button>
+                        <button id="next-partner" class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white dark:bg-gray-700 border border-neutral-200 dark:border-gray-600 shadow-md flex items-center justify-center hover:bg-[#073066] hover:border-[#073066] dark:hover:bg-[#073066] hover:text-white transition-all duration-200 group z-10">
+                            <i data-lucide="chevron-right" class="h-4 w-4 text-neutral-600 dark:text-gray-300 group-hover:text-white"></i>
+                        </button>
+
                         <!-- Indicateurs de navigation -->
-                        <div class="flex justify-center mt-4 space-x-2">
-                            <button class="carousel-dot w-2 h-2 rounded-full bg-[#073066] transition-all duration-200"
-                                data-slide="0"></button>
-                            <button
-                                class="carousel-dot w-2 h-2 rounded-full bg-neutral-300 hover:bg-neutral-400 transition-all duration-200"
-                                data-slide="1"></button>
-                            <button
-                                class="carousel-dot w-2 h-2 rounded-full bg-neutral-300 hover:bg-neutral-400 transition-all duration-200"
-                                data-slide="2"></button>
-                            <button
-                                class="carousel-dot w-2 h-2 rounded-full bg-neutral-300 hover:bg-neutral-400 transition-all duration-200"
-                                data-slide="3"></button>
-                            <button
-                                class="carousel-dot w-2 h-2 rounded-full bg-neutral-300 hover:bg-neutral-400 transition-all duration-200"
-                                data-slide="4"></button>
+                        <div class="flex justify-center mt-4 space-x-1.5 pb-2">
+                            @foreach($partners as $index => $partner)
+                            <button class="carousel-dot w-1.5 h-1.5 rounded-full transition-all duration-200 {{ $index === 0 ? 'bg-[#073066] w-6' : 'bg-neutral-300 dark:bg-gray-600 hover:bg-neutral-400 dark:hover:bg-gray-500' }}" data-slide="{{ $index }}"></button>
+                            @endforeach
                         </div>
                     </div>
                 </div>
@@ -191,7 +217,8 @@
     <main class="lg:col-span-6 space-y-6">
         <div class="space-y-4">
             <div class="relative">
-                <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-400 dark:text-gray-500 dark:text-gray-400">
+                <span
+                    class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-400 dark:text-gray-500 dark:text-gray-400">
                     <i data-lucide="search" class="h-5 w-5"></i>
                 </span>
                 <input type="text" id="search-input"
@@ -229,9 +256,9 @@
         </div>
 
         <!-- Chambers List -->
-        <div class="space-y-4" id="chambers-list">
+        <div class="space-y-3" id="chambers-list">
             @foreach($chambers as $chamber)
-            <div class="chamber-card group rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 hover:shadow-sm transition-all duration-200 relative"
+            <div class="chamber-card group rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-blue-200 dark:hover:border-blue-800 hover:shadow-md transition-all duration-200 overflow-hidden"
                 data-name="{{ strtolower($chamber['name']) }}"
                 data-description="{{ strtolower($chamber['description']) }}"
                 data-activity-level="{{ $chamber['activity_level'] }}"
@@ -239,69 +266,27 @@
                 data-members-count="{{ $chamber['members_count'] }}"
                 data-certified="{{ $chamber['is_certified'] ? 'true' : 'false' }}"
                 data-created="{{ isset($chamber['created_at']) ? $chamber['created_at'] : '2024-01-01' }}">
-                
-                <!-- Statut d'adhésion dans le coin supérieur droit -->
-                <div class="absolute top-4 right-4">
-                    @auth
-                        @php
-                            // Vérifier si l'utilisateur est déjà membre de cette chambre
-                            $isMember = auth()->user()->chambers()->where('chambers.id', $chamber['id'] ?? 0)->exists();
-                        @endphp
-                        
-                        @if(!$isMember)
-                            <!-- Bouton Adhérer discret -->
-                            <form action="{{ route('chambers.members.join', $chamber['slug']) }}" method="POST" class="inline">
-                                @csrf
-                                <button type="submit"
-                                    class="inline-flex items-center gap-1.5 rounded-full bg-[#073066] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#052347] transition-all duration-200 shadow-sm hover:shadow-md"
-                                    title="Adhérer à cette chambre">
-                                    <i data-lucide="plus" class="h-3.5 w-3.5"></i>
-                                    Adhérer
-                                </button>
-                            </form>
-                        @else
-                            <!-- Badge membre discret -->
-                            <div class="inline-flex items-center gap-1.5 rounded-full bg-green-100 dark:bg-green-900/30 px-3 py-1.5 text-xs font-medium text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800">
-                                <i data-lucide="check" class="h-3.5 w-3.5"></i>
-                                Membre
-                            </div>
-                        @endif
-                    @else
-                        <!-- Bouton pour utilisateurs non connectés -->
-                        <button onclick="openModal('signin-modal')"
-                            class="inline-flex items-center gap-1.5 rounded-full bg-[#073066] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#052347] transition-all duration-200 shadow-sm hover:shadow-md">
-                            <i data-lucide="plus" class="h-3.5 w-3.5"></i>
-                            Adhérer
-                        </button>
-                    @endauth
-                </div>
 
-                <div class="flex items-start gap-4 flex-1 pr-20">
-                        <div class="relative">
+                <div class="p-5">
+                    <div class="flex items-start gap-4">
+                        <!-- Logo -->
+                        <div class="flex-shrink-0 relative">
                             @auth
                             <a href="{{ route('chamber.show', $chamber['slug']) }}" class="block">
                                 @else
                                 <button onclick="openModal('signin-modal')" class="block">
                                     @endauth
                                     @if($chamber['logo_path'])
-                                    <img src="{{ asset('storage/' . $chamber['logo_path']) }}"
-                                        alt="{{ $chamber['name'] }}"
-                                        class="h-14 w-14 rounded-lg object-cover shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+                                    <div
+                                        class="relative w-16 h-16 rounded-xl overflow-hidden bg-white dark:bg-gray-700 border border-gray-100 dark:border-gray-600">
+                                        <img src="{{ asset('storage/' . $chamber['logo_path']) }}"
+                                            alt="{{ $chamber['name'] }}" class="w-full h-full object-cover">
+                                    </div>
                                     @else
                                     <div
-                                        class="relative flex h-14 w-14 items-center justify-center rounded-lg bg-gradient-to-br from-[#073066] to-[#052347] text-white shadow-sm hover:shadow-md transition-shadow cursor-pointer">
-                                        <div class="flex flex-col items-center text-sm font-semibold leading-none">
-                                            <span>{{ substr($chamber['code'], 0, 2) }}</span>
-                                            <span class="mt-0.5 text-white/80">{{ substr($chamber['code'], -2) }}</span>
-                                        </div>
-                                    </div>
-                                    @endif
-                                    @if($chamber['is_certified'])
-                                    <div class="absolute -right-1 -top-1 rounded-full bg-white dark:bg-gray-800 p-0.5 shadow-sm">
-                                        <div
-                                            class="flex h-5 w-5 items-center justify-center rounded-full bg-[#fcb357] text-white">
-                                            <i data-lucide="shield-check" class="h-3 w-3"></i>
-                                        </div>
+                                        class="relative w-16 h-16 rounded-xl bg-blue-600 flex items-center justify-center">
+                                        <span class="text-white text-xl font-bold">{{ substr($chamber['code'], 0, 2)
+                                            }}</span>
                                     </div>
                                     @endif
                                     @auth
@@ -309,67 +294,110 @@
                             @else
                             </button>
                             @endauth
-                        </div>
-                        <div class="flex-1">
-                            <div class="flex items-center gap-2 flex-wrap">
-                                @auth
-                                <a href="{{ route('chamber.show', $chamber['slug']) }}"
-                                    class="hover:text-[#073066] dark:hover:text-blue-400 transition-colors">
-                                    <h3 class="text-base font-medium cursor-pointer">{{ $chamber['name'] }}</h3>
-                                </a>
-                                @else
-                                <button onclick="openModal('signin-modal')"
-                                    class="hover:text-[#073066] dark:hover:text-blue-400 transition-colors">
-                                    <h3 class="text-base font-medium cursor-pointer">{{ $chamber['name'] }}</h3>
-                                </button>
-                                @endauth
-                                @if($chamber['is_certified'])
-                                <span
-                                    class="inline-flex items-center gap-1 rounded-full bg-[#fcb357]/10 px-2 py-0.5 text-xs font-medium text-[#fcb357]"><i
-                                        data-lucide="shield-check" class="h-3.5 w-3.5"></i> Agréée</span>
-                                @endif
+                            @if($chamber['is_certified'])
+                            <div
+                                class="absolute -bottom-1 -right-1 w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center border-2 border-white dark:border-gray-800">
+                                <i data-lucide="shield-check" class="h-3 w-3 text-white"></i>
                             </div>
-                            <p class="mt-1 text-sm text-neutral-600 dark:text-gray-400 text-justify break-all line-clamp-2 max-h-12 overflow-hidden">
-                                {{ Str::limit($chamber['description'], 150, '...') }}
-                            </p>
-                            <div class="mt-3 space-y-2">
-                                <!-- Première ligne : Membres et Événements -->
-                                <div class="flex items-center flex-wrap gap-4">
-                                    <span class="inline-flex items-center gap-1.5 text-sm text-neutral-600 dark:text-gray-400">
-                                        <i data-lucide="users" class="h-4 w-4 text-neutral-400 dark:text-gray-500 dark:text-gray-400"></i>
-                                        {{ number_format($chamber['members_count']) }} membres
-                                    </span>
-                                    <span class="inline-flex items-center gap-1.5 text-sm text-neutral-600 dark:text-gray-400">
-                                        <i data-lucide="calendar" class="h-4 w-4 text-neutral-400 dark:text-gray-500 dark:text-gray-400"></i>
-                                        {{ $chamber['upcoming_events'] }} événements
-                                    </span>
-                                    @if($chamber['upcoming_events'] > 0)
-                                    <div
-                                        class="inline-flex items-center gap-1.5 rounded-full bg-[#fcb357]/10 px-2.5 py-1 text-xs font-medium text-[#fcb357]">
-                                        <i data-lucide="calendar-clock" class="h-3.5 w-3.5"></i>
-                                        {{ $chamber['activity_level'] }}
-                                    </div>
-                                    @endif
+                            @endif
+                        </div>
+
+                        <!-- Contenu -->
+                        <div class="flex-1 min-w-0">
+                            <!-- En-tête -->
+                            <div class="flex items-start justify-between gap-3 mb-2">
+                                <div class="flex-1 min-w-0">
+                                    @auth
+                                    <a href="{{ route('chamber.show', $chamber['slug']) }}"
+                                        class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                                        <h3 class="text-base font-semibold text-gray-900 dark:text-white truncate">
+                                            {{ $chamber['name'] }}
+                                        </h3>
+                                    </a>
+                                    @else
+                                    <button onclick="openModal('signin-modal')"
+                                        class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors text-left w-full">
+                                        <h3 class="text-base font-semibold text-gray-900 dark:text-white truncate">
+                                            {{ $chamber['name'] }}
+                                        </h3>
+                                    </button>
+                                    @endauth
+                                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+                                        {{ $chamber['code'] }}
+                                    </p>
                                 </div>
 
-                                <!-- Deuxième ligne : Date de création et Localisation -->
-                                <div class="flex items-center flex-wrap gap-4">
-                                    <span class="inline-flex items-center gap-1.5 text-sm text-neutral-500 dark:text-gray-500 dark:text-gray-400">
-                                        <i data-lucide="calendar-plus" class="h-4 w-4 text-neutral-400 dark:text-gray-500 dark:text-gray-400"></i>
-                                        Fondée en
-                                        @if($chamber['certification_date'])
-                                        {{ \Carbon\Carbon::parse($chamber['certification_date'])->format('Y') }}
-                                        @else
-                                        {{ \Carbon\Carbon::parse($chamber['created_at'])->format('Y') }}
-                                        @endif
-                                    </span>
-                                    <span class="inline-flex items-center gap-1.5 text-sm text-neutral-500 dark:text-gray-500 dark:text-gray-400">
-                                        <i data-lucide="map-pin" class="h-4 w-4 text-neutral-400 dark:text-gray-500 dark:text-gray-400"></i>
-                                        {{ $chamber['location'] ?? 'Non spécifiée' }}
-                                    </span>
+                                <!-- Bouton Adhérer / Badge Membre -->
+                                <div class="flex-shrink-0">
+                                    @auth
+                                    @php
+                                    $isMember = auth()->user()->chambers()->where('chambers.id', $chamber['id'] ??
+                                    0)->exists();
+                                    @endphp
+
+                                    @if(!$isMember)
+                                    <form action="{{ route('chambers.members.join', $chamber['slug']) }}" method="POST"
+                                        class="inline">
+                                        @csrf
+                                        <button type="submit"
+                                            class="inline-flex items-center gap-1.5 rounded-full bg-blue-600 px-4 py-1.5 text-xs font-medium text-white hover:bg-blue-700 transition-all duration-200">
+                                            <i data-lucide="plus" class="h-3.5 w-3.5"></i>
+                                            Adhérer
+                                        </button>
+                                    </form>
+                                    @else
+                                    <div
+                                        class="inline-flex items-center gap-1.5 rounded-full bg-green-50 dark:bg-green-900/30 px-3 py-1.5 text-xs font-medium text-green-700 dark:text-green-400">
+                                        <i data-lucide="check" class="h-3.5 w-3.5"></i>
+                                        Membre
+                                    </div>
+                                    @endif
+                                    @else
+                                    <button onclick="openModal('signin-modal')"
+                                        class="inline-flex items-center gap-1.5 rounded-full bg-blue-600 px-4 py-1.5 text-xs font-medium text-white hover:bg-blue-700 transition-all duration-200">
+                                        <i data-lucide="plus" class="h-3.5 w-3.5"></i>
+                                        Adhérer
+                                    </button>
+                                    @endauth
                                 </div>
                             </div>
+
+                            <!-- Description -->
+                            <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-3">
+                                {{ $chamber['description'] }}
+                            </p>
+
+                            <!-- Métadonnées -->
+                            <div
+                                class="flex items-center flex-wrap gap-x-4 gap-y-2 text-xs text-gray-500 dark:text-gray-400">
+                                <span class="inline-flex items-center gap-1.5">
+                                    <i data-lucide="users" class="h-3.5 w-3.5"></i>
+                                    {{ number_format($chamber['members_count']) }} membres
+                                </span>
+                                <span class="inline-flex items-center gap-1.5">
+                                    <i data-lucide="calendar" class="h-3.5 w-3.5"></i>
+                                    {{ $chamber['upcoming_events'] }} événements
+                                </span>
+                                <span class="inline-flex items-center gap-1.5">
+                                    <i data-lucide="map-pin" class="h-3.5 w-3.5"></i>
+                                    {{ $chamber['location'] ?? 'Non spécifiée' }}
+                                </span>
+                                @if($chamber['is_certified'])
+                                <span
+                                    class="inline-flex items-center gap-1 rounded-full bg-orange-50 dark:bg-orange-900/30 px-2 py-0.5 text-xs font-medium text-orange-700 dark:text-orange-400">
+                                    <i data-lucide="shield-check" class="h-3 w-3"></i>
+                                    Agréée
+                                </span>
+                                @endif
+                                @if($chamber['upcoming_events'] > 0 && $chamber['activity_level'] === 'Très active')
+                                <span
+                                    class="inline-flex items-center gap-1 rounded-full bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 text-xs font-medium text-blue-700 dark:text-blue-400">
+                                    Modérée
+                                </span>
+                                @endif
+                            </div>
                         </div>
+                    </div>
                 </div>
             </div>
             @endforeach
@@ -441,7 +469,8 @@
                                     class="text-sm font-medium text-neutral-900 dark:text-white group-hover:text-[#073066] dark:group-hover:text-blue-400 transition-colors">
                                     {{ $event['title'] }}
                                 </h4>
-                                <div class="mt-1 flex items-center gap-2 text-xs text-neutral-500 dark:text-gray-500 dark:text-gray-400">
+                                <div
+                                    class="mt-1 flex items-center gap-2 text-xs text-neutral-500 dark:text-gray-500 dark:text-gray-400">
                                     <span class="inline-flex items-center gap-1">
                                         <i data-lucide="building-2" class="h-3 w-3"></i>
                                         {{ $event['chamber'] }}
@@ -452,7 +481,8 @@
                                     </span>
                                 </div>
                                 <div class="mt-2 flex items-center justify-between">
-                                    <span class="inline-flex items-center gap-1 text-xs text-neutral-600 dark:text-gray-400">
+                                    <span
+                                        class="inline-flex items-center gap-1 text-xs text-neutral-600 dark:text-gray-400">
                                         <i data-lucide="users" class="h-3 w-3"></i>
                                         {{ $event['participants'] }} participants
                                     </span>
@@ -471,8 +501,10 @@
                             class="flex h-12 w-12 items-center justify-center rounded-full bg-neutral-100 dark:bg-gray-700 text-neutral-400 dark:text-gray-500 dark:text-gray-400 mx-auto mb-4">
                             <i data-lucide="calendar-x" class="h-6 w-6"></i>
                         </div>
-                        <h3 class="text-sm font-medium text-neutral-900 dark:text-white mb-2">Aucun événement ce mois</h3>
-                        <p class="text-xs text-neutral-600 dark:text-gray-400 mb-4">Aucun événement prévu pour {{ now()->format('F Y') }}.
+                        <h3 class="text-sm font-medium text-neutral-900 dark:text-white mb-2">Aucun événement ce mois
+                        </h3>
+                        <p class="text-xs text-neutral-600 dark:text-gray-400 mb-4">Aucun événement prévu pour {{
+                            now()->format('F Y') }}.
                         </p>
                         <a href="{{ route('events') }}"
                             class="inline-flex items-center gap-1 text-xs text-[#073066] dark:text-blue-400 hover:text-[#052347] font-medium transition-colors">
@@ -673,8 +705,10 @@
         // Gestion du carrousel des partenaires
         const carousel = document.getElementById('partners-carousel');
         const dots = document.querySelectorAll('.carousel-dot');
+        const prevBtn = document.getElementById('prev-partner');
+        const nextBtn = document.getElementById('next-partner');
         let currentSlide = 0;
-        const totalSlides = 5;
+        const totalSlides = 10; // 10 partenaires
         let carouselInterval;
         
         // Fonction pour aller à une slide spécifique
@@ -686,11 +720,11 @@
             // Mettre à jour les indicateurs
             dots.forEach((dot, index) => {
                 if (index === slideIndex) {
-                    dot.classList.remove('bg-neutral-300');
-                    dot.classList.add('bg-[#073066]');
+                    dot.classList.remove('bg-neutral-300', 'dark:bg-gray-600', 'w-1.5');
+                    dot.classList.add('bg-[#073066]', 'w-6');
                 } else {
-                    dot.classList.remove('bg-[#073066]');
-                    dot.classList.add('bg-neutral-300');
+                    dot.classList.remove('bg-[#073066]', 'w-6');
+                    dot.classList.add('bg-neutral-300', 'dark:bg-gray-600', 'w-1.5');
                 }
             });
         }
@@ -701,9 +735,15 @@
             goToSlide(currentSlide);
         }
         
+        // Fonction pour aller à la slide précédente
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+            goToSlide(currentSlide);
+        }
+        
         // Démarrer le carrousel automatique
         function startCarousel() {
-            carouselInterval = setInterval(nextSlide, 3000); // Change toutes les 3 secondes
+            carouselInterval = setInterval(nextSlide, 3500); // Change toutes les 3.5 secondes
         }
         
         // Arrêter le carrousel automatique
@@ -719,6 +759,23 @@
                 setTimeout(startCarousel, 5000); // Redémarre après 5 secondes
             });
         });
+        
+        // Event listeners pour les boutons de navigation
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => {
+                stopCarousel();
+                prevSlide();
+                setTimeout(startCarousel, 5000);
+            });
+        }
+        
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                stopCarousel();
+                nextSlide();
+                setTimeout(startCarousel, 5000);
+            });
+        }
         
         // Pause au survol du carrousel
         const carouselContainer = carousel.parentElement;
@@ -789,7 +846,7 @@
         const isAuth = {{ auth()->check() ? 'true' : 'false' }};
         
         return `
-            <div class="chamber-card group rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 hover:shadow-sm transition-all duration-200 relative"
+            <div class="chamber-card group rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-blue-200 dark:hover:border-blue-800 hover:shadow-md transition-all duration-200 overflow-hidden"
                 data-name="${chamber.name.toLowerCase()}"
                 data-description="${chamber.description.toLowerCase()}"
                 data-activity-level="${chamber.activity_level}"
@@ -798,104 +855,111 @@
                 data-certified="${chamber.is_certified ? 'true' : 'false'}"
                 data-created="${chamber.created_at}">
                 
-                <!-- Statut d'adhésion dans le coin supérieur droit -->
-                <div class="absolute top-4 right-4">
-                    ${isAuth ? (
-                        !isMember ? `
-                            <form action="/chambers/${chamber.slug}/join" method="POST" class="inline">
-                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                <button type="submit"
-                                    class="inline-flex items-center gap-1.5 rounded-full bg-[#073066] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#052347] transition-all duration-200 shadow-sm hover:shadow-md"
-                                    title="Adhérer à cette chambre">
-                                    <i data-lucide="plus" class="h-3.5 w-3.5"></i>
-                                    Adhérer
-                                </button>
-                            </form>
-                        ` : `
-                            <div class="inline-flex items-center gap-1.5 rounded-full bg-green-100 dark:bg-green-900/30 px-3 py-1.5 text-xs font-medium text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800">
-                                <i data-lucide="check" class="h-3.5 w-3.5"></i>
-                                Membre
-                            </div>
-                        `
-                    ) : `
-                        <button onclick="openModal('signin-modal')"
-                            class="inline-flex items-center gap-1.5 rounded-full bg-[#073066] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#052347] transition-all duration-200 shadow-sm hover:shadow-md">
-                            <i data-lucide="plus" class="h-3.5 w-3.5"></i>
-                            Adhérer
-                        </button>
-                    `}
-                </div>
-
-                <div class="flex items-start gap-4 flex-1 pr-20">
-                    <div class="relative">
-                        ${isAuth ? `<a href="/chamber/${chamber.slug}" class="block">` : `<button onclick="openModal('signin-modal')" class="block">`}
-                            ${chamber.logo_path ? `
-                                <img src="/storage/${chamber.logo_path}"
-                                    alt="${chamber.name}"
-                                    class="h-14 w-14 rounded-lg object-cover shadow-sm hover:shadow-md transition-shadow cursor-pointer">
-                            ` : `
-                                <div class="relative flex h-14 w-14 items-center justify-center rounded-lg bg-gradient-to-br from-[#073066] to-[#052347] text-white shadow-sm hover:shadow-md transition-shadow cursor-pointer">
-                                    <div class="flex flex-col items-center text-sm font-semibold leading-none">
-                                        <span>${chamber.code.substring(0, 2)}</span>
-                                        <span class="mt-0.5 text-white/80">${chamber.code.substring(chamber.code.length - 2)}</span>
+                <div class="p-5">
+                    <div class="flex items-start gap-4">
+                        <!-- Logo -->
+                        <div class="flex-shrink-0 relative">
+                            ${isAuth ? `<a href="/chamber/${chamber.slug}" class="block">` : `<button onclick="openModal('signin-modal')" class="block">`}
+                                ${chamber.logo_path ? `
+                                    <div class="relative w-16 h-16 rounded-xl overflow-hidden bg-white dark:bg-gray-700 border border-gray-100 dark:border-gray-600">
+                                        <img src="/storage/${chamber.logo_path}"
+                                            alt="${chamber.name}"
+                                            class="w-full h-full object-cover">
                                     </div>
-                                </div>
-                            `}
-                            ${chamber.is_certified ? `
-                                <div class="absolute -right-1 -top-1 rounded-full bg-white dark:bg-gray-800 p-0.5 shadow-sm">
-                                    <div class="flex h-5 w-5 items-center justify-center rounded-full bg-[#fcb357] text-white">
-                                        <i data-lucide="shield-check" class="h-3 w-3"></i>
+                                ` : `
+                                    <div class="relative w-16 h-16 rounded-xl bg-blue-600 flex items-center justify-center">
+                                        <span class="text-white text-xl font-bold">${chamber.code.substring(0, 2)}</span>
                                     </div>
-                                </div>
-                            ` : ''}
-                        ${isAuth ? '</a>' : '</button>'}
-                    </div>
-                    <div class="flex-1">
-                        <div class="flex items-center gap-2 flex-wrap">
-                            ${isAuth ? `
-                                <a href="/chamber/${chamber.slug}" class="hover:text-[#073066] dark:hover:text-blue-400 transition-colors">
-                                    <h3 class="text-base font-medium cursor-pointer">${chamber.name}</h3>
-                                </a>
-                            ` : `
-                                <button onclick="openModal('signin-modal')" class="hover:text-[#073066] dark:hover:text-blue-400 transition-colors">
-                                    <h3 class="text-base font-medium cursor-pointer">${chamber.name}</h3>
-                                </button>
-                            `}
+                                `}
+                            ${isAuth ? '</a>' : '</button>'}
                             ${chamber.is_certified ? `
-                                <span class="inline-flex items-center gap-1 rounded-full bg-[#fcb357]/10 px-2 py-0.5 text-xs font-medium text-[#fcb357]">
-                                    <i data-lucide="shield-check" class="h-3.5 w-3.5"></i> Agréée
-                                </span>
+                                <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center border-2 border-white dark:border-gray-800">
+                                    <i data-lucide="shield-check" class="h-3 w-3 text-white"></i>
+                                </div>
                             ` : ''}
                         </div>
-                        <p class="mt-1 text-sm text-neutral-600 dark:text-gray-400 text-justify break-all line-clamp-2 max-h-12 overflow-hidden">
-                            ${chamber.description.length > 150 ? chamber.description.substring(0, 150) + '...' : chamber.description}
-                        </p>
-                        <div class="mt-3 space-y-2">
-                            <div class="flex items-center flex-wrap gap-4">
-                                <span class="inline-flex items-center gap-1.5 text-sm text-neutral-600 dark:text-gray-400">
-                                    <i data-lucide="users" class="h-4 w-4 text-neutral-400 dark:text-gray-400"></i>
+
+                        <!-- Contenu -->
+                        <div class="flex-1 min-w-0">
+                            <!-- En-tête -->
+                            <div class="flex items-start justify-between gap-3 mb-2">
+                                <div class="flex-1 min-w-0">
+                                    ${isAuth ? `
+                                        <a href="/chamber/${chamber.slug}" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                                            <h3 class="text-base font-semibold text-gray-900 dark:text-white truncate">
+                                                ${chamber.name}
+                                            </h3>
+                                        </a>
+                                    ` : `
+                                        <button onclick="openModal('signin-modal')" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors text-left w-full">
+                                            <h3 class="text-base font-semibold text-gray-900 dark:text-white truncate">
+                                                ${chamber.name}
+                                            </h3>
+                                        </button>
+                                    `}
+                                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+                                        ${chamber.code}
+                                    </p>
+                                </div>
+
+                                <!-- Bouton Adhérer / Badge Membre -->
+                                <div class="flex-shrink-0">
+                                    ${isAuth ? (
+                                        !isMember ? `
+                                            <form action="/chambers/${chamber.slug}/join" method="POST" class="inline">
+                                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                                <button type="submit"
+                                                    class="inline-flex items-center gap-1.5 rounded-full bg-blue-600 px-4 py-1.5 text-xs font-medium text-white hover:bg-blue-700 transition-all duration-200">
+                                                    <i data-lucide="plus" class="h-3.5 w-3.5"></i>
+                                                    Adhérer
+                                                </button>
+                                            </form>
+                                        ` : `
+                                            <div class="inline-flex items-center gap-1.5 rounded-full bg-green-50 dark:bg-green-900/30 px-3 py-1.5 text-xs font-medium text-green-700 dark:text-green-400">
+                                                <i data-lucide="check" class="h-3.5 w-3.5"></i>
+                                                Membre
+                                            </div>
+                                        `
+                                    ) : `
+                                        <button onclick="openModal('signin-modal')"
+                                            class="inline-flex items-center gap-1.5 rounded-full bg-blue-600 px-4 py-1.5 text-xs font-medium text-white hover:bg-blue-700 transition-all duration-200">
+                                            <i data-lucide="plus" class="h-3.5 w-3.5"></i>
+                                            Adhérer
+                                        </button>
+                                    `}
+                                </div>
+                            </div>
+
+                            <!-- Description -->
+                            <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-3">
+                                ${chamber.description}
+                            </p>
+
+                            <!-- Métadonnées -->
+                            <div class="flex items-center flex-wrap gap-x-4 gap-y-2 text-xs text-gray-500 dark:text-gray-400">
+                                <span class="inline-flex items-center gap-1.5">
+                                    <i data-lucide="users" class="h-3.5 w-3.5"></i>
                                     ${chamber.members_count.toLocaleString()} membres
                                 </span>
-                                <span class="inline-flex items-center gap-1.5 text-sm text-neutral-600 dark:text-gray-400">
-                                    <i data-lucide="calendar" class="h-4 w-4 text-neutral-400 dark:text-gray-400"></i>
+                                <span class="inline-flex items-center gap-1.5">
+                                    <i data-lucide="calendar" class="h-3.5 w-3.5"></i>
                                     ${chamber.upcoming_events} événements
                                 </span>
-                                ${chamber.upcoming_events > 0 ? `
-                                    <div class="inline-flex items-center gap-1.5 rounded-full bg-[#fcb357]/10 px-2.5 py-1 text-xs font-medium text-[#fcb357]">
-                                        <i data-lucide="calendar-clock" class="h-3.5 w-3.5"></i>
-                                        ${chamber.activity_level}
-                                    </div>
-                                ` : ''}
-                            </div>
-                            <div class="flex items-center flex-wrap gap-4">
-                                <span class="inline-flex items-center gap-1.5 text-sm text-neutral-500 dark:text-gray-400">
-                                    <i data-lucide="calendar-plus" class="h-4 w-4 text-neutral-400 dark:text-gray-400"></i>
-                                    Fondée en ${new Date(chamber.created_at).getFullYear()}
-                                </span>
-                                <span class="inline-flex items-center gap-1.5 text-sm text-neutral-500 dark:text-gray-400">
-                                    <i data-lucide="map-pin" class="h-4 w-4 text-neutral-400 dark:text-gray-400"></i>
+                                <span class="inline-flex items-center gap-1.5">
+                                    <i data-lucide="map-pin" class="h-3.5 w-3.5"></i>
                                     ${chamber.location || 'Non spécifiée'}
                                 </span>
+                                ${chamber.is_certified ? `
+                                    <span class="inline-flex items-center gap-1 rounded-full bg-orange-50 dark:bg-orange-900/30 px-2 py-0.5 text-xs font-medium text-orange-700 dark:text-orange-400">
+                                        <i data-lucide="shield-check" class="h-3 w-3"></i>
+                                        Agréée
+                                    </span>
+                                ` : ''}
+                                ${chamber.upcoming_events > 0 && chamber.activity_level === 'Très active' ? `
+                                    <span class="inline-flex items-center gap-1 rounded-full bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 text-xs font-medium text-blue-700 dark:text-blue-400">
+                                        Modérée
+                                    </span>
+                                ` : ''}
                             </div>
                         </div>
                     </div>
@@ -937,3 +1001,4 @@
 </script>
 @endpush
 @endsection
+

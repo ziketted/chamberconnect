@@ -63,10 +63,6 @@
                     </div>
                 </div>
                 <div class="flex gap-2">
-                    <button
-                        class="inline-flex items-center gap-2 rounded-md border border-white/60 bg-white/10 px-3 py-2 text-sm font-semibold text-white backdrop-blur hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60">
-                        <i data-lucide="share-2" class="h-4 w-4"></i> Partager
-                    </button>
                     @if(!$isMember)
                     <button onclick="joinChamber('{{ $chamber->slug }}')"
                         class="inline-flex items-center gap-2 rounded-md bg-[#073066] px-3 py-2 text-sm font-semibold text-white hover:bg-[#052347]">
@@ -80,7 +76,7 @@
                     @else
                     <button
                         class="inline-flex items-center gap-2 rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white">
-                        <i data-lucide="check" class="h-4 w-4"></i> Membre
+                        <i data-lucide="user-check" class="h-4 w-4"></i> Membre
                     </button>
                     @endif
                 </div>
@@ -91,19 +87,34 @@
 
 <!-- Sub Nav -->
 <div class="mt-6 rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm">
-    <div class="flex flex-wrap items-center gap-1 border-b border-neutral-200 dark:border-gray-700 px-4 py-2">
-        <button onclick="switchChamberTab('overview')" data-chamber-link="overview"
-            class="cham-link active inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium text-neutral-900 dark:text-white hover:bg-neutral-100 dark:bg-gray-700"><i
-                data-lucide="layout-dashboard" class="h-4 w-4 text-[#073066] dark:text-blue-400"></i> Overview</button>
-        <button onclick="switchChamberTab('events')" data-chamber-link="events"
-            class="cham-link inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium text-neutral-600 dark:text-gray-400 hover:bg-neutral-100 dark:bg-gray-700"><i
-                data-lucide="calendar" class="h-4 w-4"></i> Events</button>
-        <button onclick="switchChamberTab('members')" data-chamber-link="members"
-            class="cham-link inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium text-neutral-600 dark:text-gray-400 hover:bg-neutral-100 dark:bg-gray-700"><i
-                data-lucide="users" class="h-4 w-4"></i> Members</button>
-        <button onclick="switchChamberTab('partners')" data-chamber-link="partners"
-            class="cham-link inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium text-neutral-600 dark:text-gray-400 hover:bg-neutral-100 dark:bg-gray-700"><i
-                data-lucide="handshake" class="h-4 w-4"></i> Partners</button>
+    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-neutral-200 dark:border-gray-700 px-4 py-2">
+        <!-- Tabs Navigation -->
+        <div class="flex flex-wrap items-center gap-1">
+            <button onclick="switchChamberTab('overview')" data-chamber-link="overview"
+                class="cham-link active inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold bg-gradient-to-r from-[#2563eb] to-[#1e40af] text-white shadow-md transition-all duration-200">
+                <i data-lucide="layout-dashboard" class="h-4 w-4"></i> Overview
+            </button>
+            <button onclick="switchChamberTab('events')" data-chamber-link="events"
+                class="cham-link inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-neutral-600 dark:text-gray-400 hover:bg-neutral-100 dark:hover:bg-gray-700 transition-all duration-200">
+                <i data-lucide="calendar" class="h-4 w-4"></i> Events
+            </button>
+            <button onclick="switchChamberTab('members')" data-chamber-link="members"
+                class="cham-link inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-neutral-600 dark:text-gray-400 hover:bg-neutral-100 dark:hover:bg-gray-700 transition-all duration-200">
+                <i data-lucide="users" class="h-4 w-4"></i> Members
+            </button>
+            <button onclick="switchChamberTab('partners')" data-chamber-link="partners"
+                class="cham-link inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-neutral-600 dark:text-gray-400 hover:bg-neutral-100 dark:hover:bg-gray-700 transition-all duration-200">
+                <i data-lucide="handshake" class="h-4 w-4"></i> Partners
+            </button>
+        </div>
+        
+        <!-- Taux de change dans le coin -->
+        @if($exchangeRate)
+        <div class="inline-flex items-center gap-2 rounded-full bg-blue-100 dark:bg-blue-900/30 px-3 py-1 text-xs font-medium text-blue-800 dark:text-blue-300">
+            <i data-lucide="trending-up" class="h-3.5 w-3.5"></i>
+            <span>{{ $exchangeRate['formatted'] }}</span>
+        </div>
+        @endif
     </div>
 
     <!-- Overview -->
@@ -111,44 +122,64 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             <!-- Left -->
             <div class="lg:col-span-7 space-y-6">
-                <section class="space-y-2">
-                    <h3 class="text-lg font-semibold tracking-tight" style="letter-spacing:-0.01em;">À propos de la
-                        chambre</h3>
-                    <p
-                        class="text-sm text-neutral-700 dark:text-gray-300 break-all line-clamp-4 max-h-24 overflow-hidden">
-                        {{ $chamber->description ?: 'Cette chambre de commerce connecte les entreprises avec des
-                        opportunités de croissance et de développement. Nous fournissons un accès aux informations
-                        politiques, à l\'intelligence de marché et au réseautage pour catalyser une croissance durable.'
-                        }}
-                    </p>
-
-                    @if($chamber->verified || $chamber->state_number || $chamber->certification_date)
-                    <div
-                        class="mt-4 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
-                        <h4 class="text-sm font-semibold text-green-800 dark:text-green-300 mb-2">Certifications et
-                            agréments</h4>
-                        <ul class="space-y-2 text-sm text-green-700 dark:text-green-300">
-                            @if($chamber->verified)
-                            <li class="inline-flex items-center gap-2">
-                                <i data-lucide="check-circle" class="h-4 w-4 text-green-600"></i>
-                                Chambre vérifiée et authentifiée
-                            </li>
-                            @endif
-                            @if($chamber->state_number)
-                            <li class="inline-flex items-center gap-2">
-                                <i data-lucide="award" class="h-4 w-4 text-green-600"></i>
-                                Agréée par l'État (N° {{ $chamber->state_number }})
-                            </li>
-                            @endif
-                            @if($chamber->certification_date)
-                            <li class="inline-flex items-center gap-2">
-                                <i data-lucide="calendar-check" class="h-4 w-4 text-green-600"></i>
-                                Certifiée le {{ $chamber->certification_date->format('d/m/Y') }}
-                            </li>
-                            @endif
-                        </ul>
+                <!-- Section À propos - Design Premium -->
+                <section class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-gradient-to-br from-white to-blue-50/30 dark:from-gray-800 dark:to-blue-900/10 overflow-hidden shadow-sm">
+                    <!-- Header avec icône -->
+                    <div class="flex items-center gap-3 px-6 py-4 border-b border-neutral-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm">
+                        <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-[#2563eb] to-[#1e40af] flex items-center justify-center shadow-lg">
+                            <i data-lucide="info" class="h-6 w-6 text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white">À propos de la chambre</h3>
+                            <p class="text-xs text-neutral-600 dark:text-gray-400">Découvrez notre mission et nos valeurs</p>
+                        </div>
                     </div>
-                    @endif
+                    
+                    <!-- Contenu -->
+                    <div class="p-6">
+                        <!-- Certifications et agréments - Design Compact (au-dessus) -->
+                        @if($chamber->verified || $chamber->state_number || $chamber->certification_date)
+                        <div class="flex flex-wrap items-center gap-2 mb-5 pb-5 border-b border-neutral-200 dark:border-gray-700">
+                            @if($chamber->verified)
+                            <div class="inline-flex items-center gap-2 rounded-lg border border-green-200 dark:border-green-700 bg-green-50 dark:bg-green-900/20 px-3 py-2">
+                                <div class="flex-shrink-0 w-6 h-6 rounded bg-green-500 flex items-center justify-center">
+                                    <i data-lucide="shield-check" class="h-3.5 w-3.5 text-white"></i>
+                                </div>
+                                <div class="text-xs">
+                                    <div class="font-bold text-green-800 dark:text-green-200">Vérifiée</div>
+                                </div>
+                            </div>
+                            @endif
+                            
+                            @if($chamber->state_number)
+                            <div class="inline-flex items-center gap-2 rounded-lg border border-blue-200 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20 px-3 py-2">
+                                <div class="flex-shrink-0 w-6 h-6 rounded bg-blue-500 flex items-center justify-center">
+                                    <i data-lucide="award" class="h-3.5 w-3.5 text-white"></i>
+                                </div>
+                                <div class="text-xs">
+                                    <div class="font-bold text-blue-800 dark:text-blue-200">Agréée (N° {{ $chamber->state_number }})</div>
+                                </div>
+                            </div>
+                            @endif
+                            
+                            @if($chamber->certification_date)
+                            <div class="inline-flex items-center gap-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50 px-3 py-2">
+                                <div class="flex-shrink-0 w-6 h-6 rounded bg-gray-500 dark:bg-gray-600 flex items-center justify-center">
+                                    <i data-lucide="calendar-check" class="h-3.5 w-3.5 text-white"></i>
+                                </div>
+                                <div class="text-xs">
+                                    <div class="font-bold text-gray-800 dark:text-gray-200">Certifiée le {{ $chamber->certification_date->format('d/m/Y') }}</div>
+                                </div>
+                            </div>
+                            @endif
+                        </div>
+                        @endif
+
+                        <!-- Description (en dessous) -->
+                        <p class="text-base leading-relaxed text-neutral-700 dark:text-gray-300">
+                            {{ $chamber->description ?: 'Cette chambre de commerce connecte les entreprises avec des opportunités de croissance et de développement. Nous fournissons un accès aux informations politiques, à l\'intelligence de marché et au réseautage pour catalyser une croissance durable.' }}
+                        </p>
+                    </div>
                 </section>
 
                 <section class="space-y-3">
@@ -270,35 +301,95 @@
                 </section>
 
                 <section
-                    class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 shadow-sm">
-                    <h3 class="text-sm font-semibold tracking-tight" style="letter-spacing:-0.01em;">Informations
-                        complémentaires</h3>
-                    <div class="mt-3 space-y-3 text-sm text-neutral-700 dark:text-gray-300">
-                        <div class="flex items-center gap-2">
-                            <i data-lucide="layers" class="h-4 w-4 text-neutral-500 dark:text-gray-400"></i>
-                            <span class="font-medium">Type:</span>
-                            <span class="ml-1">{{ $chamber->type === 'bilateral' ? 'Bilatérale' : 'Nationale' }}</span>
+                    class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-5 shadow-sm">
+                    <h3 class="text-base font-bold text-gray-900 dark:text-white mb-4">Informations complémentaires</h3>
+                    <div class="space-y-4">
+                        <!-- Type -->
+                        <div class="flex items-center gap-3 p-3 rounded-lg bg-neutral-50 dark:bg-gray-700/50 border border-neutral-100 dark:border-gray-600">
+                            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                                <i data-lucide="layers" class="h-5 w-5 text-blue-600 dark:text-blue-400"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="text-xs font-medium text-neutral-500 dark:text-gray-400">Type</div>
+                                <div class="text-sm font-semibold text-gray-900 dark:text-white">
+                                    {{ $chamber->type === 'bilateral' ? 'Bilatérale' : 'Nationale' }}
+                                </div>
+                            </div>
                         </div>
+                        
+                        <!-- Pays -->
                         @if($chamber->type === 'bilateral' && $chamber->embassy_country)
-                        <div class="flex items-center gap-2">
-                            <i data-lucide="flag" class="h-4 w-4 text-neutral-500 dark:text-gray-400"></i>
-                            <span class="font-medium">Pays:</span>
-                            <span class="ml-1">{{ $chamber->embassy_country }}</span>
+                        <div class="flex items-center gap-3 p-3 rounded-lg bg-neutral-50 dark:bg-gray-700/50 border border-neutral-100 dark:border-gray-600">
+                            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+                                <i data-lucide="flag" class="h-5 w-5 text-purple-600 dark:text-purple-400"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="text-xs font-medium text-neutral-500 dark:text-gray-400">Pays</div>
+                                <div class="text-sm font-semibold text-gray-900 dark:text-white">
+                                    {{ $chamber->embassy_country }}
+                                </div>
+                            </div>
                         </div>
                         @endif
+                        
+                        <!-- Téléphone -->
+                        @if($chamber->type === 'bilateral' && $chamber->embassy_phone)
+                        <div class="flex items-start gap-3 p-3 rounded-lg bg-neutral-50 dark:bg-gray-700/50 border border-neutral-100 dark:border-gray-600 group hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
+                            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <i data-lucide="phone" class="h-5 w-5 text-green-600 dark:text-green-400"></i>
+                            </div>
+                            <div class="flex-1 min-w-0 overflow-hidden">
+                                <div class="text-xs font-medium text-neutral-500 dark:text-gray-400">Téléphone de l'ambassade</div>
+                                <a href="tel:{{ $chamber->embassy_phone }}" 
+                                   class="block group/phone">
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="text-sm font-semibold text-blue-600 dark:text-blue-400 group-hover/phone:text-blue-700 dark:group-hover/phone:text-blue-300 transition-colors break-all">
+                                            {{ $chamber->embassy_phone }}
+                                        </span>
+                                        <i data-lucide="phone-call" class="h-3.5 w-3.5 flex-shrink-0 text-blue-600 dark:text-blue-400"></i>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        @endif
+                        
+                        <!-- Site web -->
+                        @if($chamber->type === 'bilateral' && $chamber->embassy_website)
+                        <div class="flex items-start gap-3 p-3 rounded-lg bg-neutral-50 dark:bg-gray-700/50 border border-neutral-100 dark:border-gray-600 group hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
+                            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <i data-lucide="globe" class="h-5 w-5 text-indigo-600 dark:text-indigo-400"></i>
+                            </div>
+                            <div class="flex-1 min-w-0 overflow-hidden">
+                                <div class="text-xs font-medium text-neutral-500 dark:text-gray-400 mb-1">Site web de l'ambassade</div>
+                                <a href="{{ $chamber->embassy_website }}" 
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   class="group/link block">
+                                    <div class="flex items-start gap-1.5">
+                                        <span class="text-sm font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors break-all">
+                                            {{ str_replace(['https://', 'http://'], '', $chamber->embassy_website) }}
+                                        </span>
+                                        <i data-lucide="external-link" class="h-3.5 w-3.5 flex-shrink-0 text-blue-600 dark:text-blue-400 mt-0.5 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform"></i>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        @endif
+                        
+                        <!-- Adresse (en dernier) -->
                         @if($chamber->type === 'bilateral' && $chamber->embassy_address)
-                        <div class="flex items-start gap-2">
-                            <i data-lucide="map-pin" class="h-4 w-4 text-neutral-500 dark:text-gray-400 mt-0.5"></i>
-                            <div>
-                                <div class="font-medium">Adresse de l'ambassade</div>
-                                <div class="text-sm">{{ $chamber->embassy_address }}</div>
-                                <div class="mt-2">
-                                    <button onclick="getDirections('{{ addslashes($chamber->embassy_address) }}')"
-                                        class="inline-flex items-center gap-2 rounded-md border border-neutral-300 bg-white dark:bg-gray-800 px-2.5 py-1.5 text-xs font-medium hover:bg-neutral-50 dark:hover:bg-gray-700">
-                                        <i data-lucide="map" class="h-3.5 w-3.5"></i>
-                                        Itinéraire
-                                    </button>
-                                </div>
+                        <div class="flex items-start gap-3 p-3 rounded-lg bg-neutral-50 dark:bg-gray-700/50 border border-neutral-100 dark:border-gray-600">
+                            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+                                <i data-lucide="map-pin" class="h-5 w-5 text-red-600 dark:text-red-400"></i>
+                            </div>
+                            <div class="flex-1 min-w-0 overflow-hidden">
+                                <div class="text-xs font-medium text-neutral-500 dark:text-gray-400 mb-1">Adresse de l'ambassade</div>
+                                <div class="text-sm text-gray-900 dark:text-white mb-2 break-words">{{ $chamber->embassy_address }}</div>
+                                <button onclick="getDirections('{{ addslashes($chamber->embassy_address) }}')"
+                                    class="inline-flex items-center gap-1.5 rounded-lg border-2 border-blue-200 dark:border-blue-700 bg-white dark:bg-gray-800 px-3 py-1.5 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200">
+                                    <i data-lucide="navigation" class="h-3.5 w-3.5 flex-shrink-0"></i>
+                                    Itinéraire
+                                </button>
                             </div>
                         </div>
                         @endif
@@ -382,108 +473,164 @@
     <!-- Events tab -->
     <div data-chamber-tab="events" class="hidden p-4 sm:p-6">
         @if($chamber->events->count() > 0)
-        <div class="grid gap-5 sm:grid-cols-2">
+        <div class="grid gap-6 sm:grid-cols-2">
             @foreach($chamber->events as $event)
+            @php($isBooked = auth()->check() ? $event->isBookedBy(auth()->user()) : false)
+            @php($bookingStatus = auth()->check() ? $event->getBookingStatus(auth()->user()) : null)
             <article
-                class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
-                {{-- <img
-                    src="{{ $event->image_path ? asset('storage/' . $event->image_path) : 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=1600&auto=format&fit=crop' }}"
-                    class="h-40 w-full object-cover" alt="{{ $event->title }}"> --}}
-                <div class="p-4">
-                    <h4 class="text-base font-semibold tracking-tight" style="letter-spacing:-0.01em;">{{ $event->title
-                        }}</h4>
-                    <p class="mt-1 text-sm text-neutral-600 dark:text-gray-400">{{ $event->description ?: 'Aucune
-                        description disponible.' }}</p>
-                    <div class="mt-3 flex items-center gap-3 text-xs text-neutral-600 dark:text-gray-400">
-                        @if($event->date)
-                        <span class="inline-flex items-center gap-1">
-                            <i data-lucide="calendar" class="h-3.5 w-3.5"></i>
-                            {{ $event->date->format('M j') }}
-                        </span>
-                        @endif
+                class="group rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                <!-- Image de l'événement -->
+                <div class="relative h-48 overflow-hidden bg-gradient-to-br from-[#2563eb] to-[#1e40af]">
+                    @if($event->cover_image_path)
+                        <img src="{{ asset('storage/' . $event->cover_image_path) }}"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
+                            alt="{{ $event->title }}">
+                    @else
+                        <!-- Pattern par défaut si pas d'image -->
+                        <div class="absolute inset-0 opacity-20" style="background-image: url('data:image/svg+xml,%3Csvg width=&quot;60&quot; height=&quot;60&quot; viewBox=&quot;0 0 60 60&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Cg fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;%3E%3Cg fill=&quot;%23ffffff&quot; fill-opacity=&quot;1&quot;%3E%3Cpath d=&quot;M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z&quot;/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <i data-lucide="calendar" class="h-16 w-16 text-white/40"></i>
+                        </div>
+                    @endif
+                    
+                    <!-- Overlay gradient -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+                    
+                    <!-- Badge de statut de réservation -->
+                    @if($isBooked)
+                        <div class="absolute top-3 right-3">
+                            @if($bookingStatus === 'confirmed')
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-green-500 text-white shadow-lg backdrop-blur-sm">
+                                <i data-lucide="check-circle" class="h-3.5 w-3.5"></i>
+                                Confirmé
+                            </span>
+                            @elseif($bookingStatus === 'reserved')
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-blue-500 text-white shadow-lg backdrop-blur-sm">
+                                <i data-lucide="clock" class="h-3.5 w-3.5"></i>
+                                Réservé
+                            </span>
+                            @endif
+                        </div>
+                    @endif
+                    
+                    <!-- Date en overlay -->
+                    @if($event->date)
+                    <div class="absolute bottom-3 left-3 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-lg px-3 py-2 shadow-lg">
+                        <div class="text-xs font-medium text-neutral-600 dark:text-gray-400">{{ $event->date->format('M') }}</div>
+                        <div class="text-2xl font-bold text-gray-900 dark:text-white leading-none">{{ $event->date->format('d') }}</div>
+                    </div>
+                    @endif
+                </div>
+
+                <div class="p-5">
+                    <!-- Titre -->
+                    <h4 class="text-lg font-bold text-gray-900 dark:text-white mb-2 line-clamp-2">
+                        {{ $event->title }}
+                    </h4>
+                    
+                    <!-- Description -->
+                    <p class="text-sm text-neutral-600 dark:text-gray-400 mb-4 line-clamp-2">
+                        {{ $event->description ?: 'Découvrez cet événement organisé par la chambre.' }}
+                    </p>
+                    
+                    <!-- Informations -->
+                    <div class="flex flex-wrap gap-3 mb-4 text-xs text-neutral-600 dark:text-gray-400">
                         @if($event->time)
-                        <span class="inline-flex items-center gap-1">
-                            <i data-lucide="clock" class="h-3.5 w-3.5"></i>
+                        <span class="inline-flex items-center gap-1.5">
+                            <i data-lucide="clock" class="h-3.5 w-3.5 text-blue-500"></i>
                             {{ $event->time }}
                         </span>
                         @endif
                         @if($event->location)
-                        <span class="inline-flex items-center gap-1">
-                            <i data-lucide="map-pin" class="h-3.5 w-3.5"></i>
-                            {{ $event->location }}
+                        <span class="inline-flex items-center gap-1.5">
+                            <i data-lucide="map-pin" class="h-3.5 w-3.5 text-red-500"></i>
+                            <span class="truncate max-w-[150px]">{{ $event->location }}</span>
                         </span>
                         @endif
-                        @if($event->type === 'online')
-                        <span class="inline-flex items-center gap-1">
-                            <i data-lucide="video" class="h-3.5 w-3.5"></i>
+                        @if($event->mode === 'online')
+                        <span class="inline-flex items-center gap-1.5">
+                            <i data-lucide="video" class="h-3.5 w-3.5 text-green-500"></i>
                             En ligne
                         </span>
                         @endif
                     </div>
-                    <div class="mt-4 flex gap-2">
+                    
+                    <!-- Actions -->
+                    <div class="flex flex-wrap gap-2 pt-4 border-t border-neutral-200 dark:border-gray-700">
                         @if(auth()->check())
-                        @php($isBooked = $event->isBookedBy(auth()->user()))
-                        @php($bookingStatus = $event->getBookingStatus(auth()->user()))
-                        @if($isBooked)
-                        <div class="flex items-center gap-2">
-                            @if($bookingStatus === 'reserved')
-                            <form action="{{ route('events.confirm', $event) }}" method="POST" class="inline">
-                                @csrf
-                                @method('PATCH')
-                                <button type="submit"
-                                    class="inline-flex items-center gap-2 rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors">
-                                    <i data-lucide="check" class="h-4 w-4"></i>
-                                    Confirmer
+                            @if($isBooked)
+                                <!-- Actions pour événement réservé -->
+                                @if($bookingStatus === 'reserved')
+                                <form action="{{ route('events.confirm', $event) }}" method="POST" class="flex-1">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button type="submit"
+                                        class="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 px-4 py-2.5 text-sm font-semibold text-white hover:from-blue-700 hover:to-blue-600 transition-all duration-200 shadow-md hover:shadow-lg">
+                                        <i data-lucide="check" class="h-4 w-4"></i>
+                                        Confirmer participation
+                                    </button>
+                                </form>
+                                @endif
+                                
+                                @if($event->mode === 'online' && $event->lien_live && $bookingStatus === 'confirmed')
+                                <a href="{{ $event->lien_live }}" target="_blank"
+                                    class="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-green-600 to-green-500 px-4 py-2.5 text-sm font-semibold text-white hover:from-green-700 hover:to-green-600 transition-all duration-200 shadow-md hover:shadow-lg">
+                                    <i data-lucide="video" class="h-4 w-4"></i>
+                                    Rejoindre en ligne
+                                </a>
+                                @endif
+                                
+                                <!-- Bouton Annuler - Désactivé si confirmé -->
+                                @if($bookingStatus === 'confirmed')
+                                <button type="button" disabled
+                                    class="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 px-4 py-2.5 text-sm font-medium text-gray-400 dark:text-gray-500 cursor-not-allowed opacity-60"
+                                    title="Impossible d'annuler un événement confirmé">
+                                    <i data-lucide="ban" class="h-4 w-4"></i>
+                                    Annulation impossible
                                 </button>
-                            </form>
+                                @else
+                                <button type="button" onclick="openCancelModal({{ $event->id }}, '{{ $event->title }}')"
+                                    class="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-red-200 dark:border-red-800 bg-white dark:bg-gray-800 px-4 py-2.5 text-sm font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-200">
+                                    <i data-lucide="x" class="h-4 w-4"></i>
+                                    Annuler réservation
+                                </button>
+                                <form id="cancel-form-{{ $event->id }}" action="{{ route('events.cancel', $event) }}"
+                                    method="POST" class="hidden">
+                                    @csrf
+                                    @method('DELETE')
+                                </form>
+                                @endif
+                            @else
+                                <!-- Actions pour événement non réservé -->
+                                @if($event->status === 'full')
+                                <button disabled
+                                    class="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-gray-400 px-4 py-2.5 text-sm font-semibold text-white cursor-not-allowed">
+                                    <i data-lucide="users-x" class="h-4 w-4"></i>
+                                    Complet
+                                </button>
+                                @elseif($event->status !== 'cancelled')
+                                <form action="{{ route('events.book', $event) }}" method="POST" class="flex-1">
+                                    @csrf
+                                    <button type="submit"
+                                        class="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#2563eb] to-[#1e40af] px-4 py-2.5 text-sm font-semibold text-white hover:shadow-lg transition-all duration-200">
+                                        <i data-lucide="calendar-plus" class="h-4 w-4"></i>
+                                        Réserver une place
+                                    </button>
+                                </form>
+                                @endif
                             @endif
-                            @if($event->mode === 'online' && $event->lien_live && $bookingStatus === 'confirmed')
-                            <a href="{{ $event->lien_live }}" target="_blank"
-                                class="inline-flex items-center gap-2 rounded-md bg-green-600 px-3 py-2 text-sm font-medium text-white hover:bg-green-700 transition-colors">
-                                <i data-lucide="external-link" class="h-4 w-4"></i>
-                                Rejoindre
-                            </a>
-                            @endif
-                            <button type="button" onclick="openCancelModal({{ $event->id }}, '{{ $event->title }}')"
-                                class="inline-flex items-center gap-2 rounded-md border border-orange-200 dark:border-orange-800 bg-white dark:bg-gray-800 px-3 py-2 text-sm font-medium text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors">
-                                <i data-lucide="x" class="h-4 w-4"></i>
-                                Annuler
-                            </button>
-                            <form id="cancel-form-{{ $event->id }}" action="{{ route('events.cancel', $event) }}"
-                                method="POST" class="hidden">
-                                @csrf
-                                @method('DELETE')
-                            </form>
-                        </div>
                         @else
-                        @if($event->status === 'full')
-                        <button disabled
-                            class="inline-flex items-center gap-2 rounded-md bg-gray-400 px-3 py-2 text-sm font-medium text-white cursor-not-allowed">
-                            <i data-lucide="users-x" class="h-4 w-4"></i>
-                            Complet
-                        </button>
-                        @elseif($event->status !== 'cancelled')
-                        <form action="{{ route('events.book', $event) }}" method="POST" class="inline">
-                            @csrf
-                            <button type="submit"
-                                class="inline-flex items-center gap-2 rounded-md bg-[#073066] px-3 py-2 text-sm font-medium text-white hover:bg-[#052347] transition-colors">
+                            <button onclick="openModal('signin-modal')"
+                                class="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#2563eb] to-[#1e40af] px-4 py-2.5 text-sm font-semibold text-white hover:shadow-lg transition-all duration-200">
                                 <i data-lucide="calendar-plus" class="h-4 w-4"></i>
-                                Réserver place
+                                Réserver une place
                             </button>
-                        </form>
-                        @endif
-                        @endif
-                        @else
-                        <button onclick="openModal('signin-modal')"
-                            class="inline-flex items-center gap-2 rounded-md bg-[#073066] px-3 py-2 text-sm font-medium text-white hover:bg-[#052347] transition-colors">
-                            <i data-lucide="calendar-plus" class="h-4 w-4"></i>
-                            Réserver place
-                        </button>
                         @endif
 
                         <button onclick="viewEventDetails({{ $event->id }})"
-                            class="inline-flex items-center gap-2 rounded-md border border-neutral-300 bg-white dark:bg-gray-800 px-3 py-2 text-sm font-medium hover:bg-neutral-50 dark:hover:bg-gray-700">
-                            <i data-lucide="eye" class="h-4 w-4"></i> Voir détails
+                            class="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-neutral-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-4 py-2.5 text-sm font-medium text-neutral-700 dark:text-gray-300 hover:bg-neutral-50 dark:hover:bg-gray-700 transition-all duration-200">
+                            <i data-lucide="eye" class="h-4 w-4"></i>
+                            Voir détails
                         </button>
                     </div>
                 </div>
@@ -491,14 +638,14 @@
             @endforeach
         </div>
         @else
-        <div class="text-center py-12 text-gray-500 dark:text-gray-400">
-            <svg class="w-16 h-16 mx-auto mb-4 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor"
-                viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-            </svg>
-            <h3 class="text-lg font-medium mb-2">Aucun événement disponible</h3>
-            <p class="text-sm">Cette chambre n'a pas encore organisé d'événements.</p>
+        <div class="text-center py-16 rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+            <div class="w-20 h-20 rounded-full bg-neutral-100 dark:bg-gray-700 flex items-center justify-center mx-auto mb-4">
+                <i data-lucide="calendar-x" class="h-10 w-10 text-neutral-400 dark:text-gray-500"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Aucun événement à venir</h3>
+            <p class="text-sm text-neutral-600 dark:text-gray-400 max-w-md mx-auto">
+                Cette chambre n'a pas d'événements programmés pour le moment. Revenez bientôt pour découvrir les prochaines activités !
+            </p>
         </div>
         @endif
     </div>
@@ -637,15 +784,30 @@
 <script>
     // Chamber tabs
     function switchChamberTab(target) {
+        // Gérer l'affichage des contenus
         document.querySelectorAll('[data-chamber-tab]').forEach(p => {
             p.classList.toggle('hidden', p.getAttribute('data-chamber-tab') !== target);
         });
+        
+        // Gérer le style des tabs
         document.querySelectorAll('[data-chamber-link]').forEach(t => {
             const active = t.getAttribute('data-chamber-link') === target;
-            t.classList.toggle('text-neutral-900 dark:text-white', active);
-            t.classList.toggle('text-neutral-600 dark:text-gray-400', !active);
-            t.querySelector('i')?.classList.toggle('text-[#073066] dark:text-blue-400', active);
+            
+            if (active) {
+                // Style du tab actif
+                t.classList.add('active', 'bg-gradient-to-r', 'from-[#2563eb]', 'to-[#1e40af]', 'text-white', 'shadow-md', 'font-semibold');
+                t.classList.remove('text-neutral-600', 'dark:text-gray-400', 'font-medium', 'hover:bg-neutral-100', 'dark:hover:bg-gray-700');
+            } else {
+                // Style des tabs inactifs
+                t.classList.remove('active', 'bg-gradient-to-r', 'from-[#2563eb]', 'to-[#1e40af]', 'text-white', 'shadow-md', 'font-semibold');
+                t.classList.add('text-neutral-600', 'dark:text-gray-400', 'font-medium', 'hover:bg-neutral-100', 'dark:hover:bg-gray-700');
+            }
         });
+        
+        // Réinitialiser les icônes Lucide
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
     }
 
     // Rejoindre une chambre
@@ -1183,34 +1345,6 @@ function getDirections(address) {
     const encodedAddress = encodeURIComponent(address);
     const url = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
     window.open(url, '_blank');
-}
-
-// Fonction pour changer d'onglet
-function switchChamberTab(tabName) {
-    // Masquer tous les onglets
-    document.querySelectorAll('[data-chamber-tab]').forEach(tab => {
-        tab.classList.add('hidden');
-    });
-
-    // Afficher l'onglet sélectionné
-    const targetTab = document.querySelector(`[data-chamber-tab="${tabName}"]`);
-    if (targetTab) {
-        targetTab.classList.remove('hidden');
-    }
-
-    // Mettre à jour les liens de navigation
-    document.querySelectorAll('.cham-link').forEach(link => {
-        link.classList.remove('active');
-        link.classList.add('text-neutral-600', 'dark:text-gray-400');
-        link.classList.remove('text-neutral-900', 'dark:text-white');
-    });
-
-    const activeLink = document.querySelector(`[data-chamber-link="${tabName}"]`);
-    if (activeLink) {
-        activeLink.classList.add('active');
-        activeLink.classList.remove('text-neutral-600', 'dark:text-gray-400');
-        activeLink.classList.add('text-neutral-900', 'dark:text-white');
-    }
 }
 
 // Fonction de recherche des membres

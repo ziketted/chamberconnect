@@ -1,93 +1,213 @@
 @extends('layouts.app')
 
+@push('styles')
+<style>
+/* Animation du card profil */
+.profile-card-animation {
+    animation: slideInDown 0.6s ease-out;
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Effet hover sur les statistiques */
+.stat-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.stat-card:hover {
+    transform: translateX(4px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Bordure dégradée pour le header */
+.profile-header {
+    position: relative;
+}
+
+.profile-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+}
+
+/* Badge de status pour la photo de profil */
+.profile-avatar {
+    position: relative;
+    transition: transform 0.3s ease;
+}
+
+.profile-avatar:hover {
+    transform: scale(1.05);
+}
+
+.profile-avatar::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 14px;
+    height: 14px;
+    background: #10b981;
+    border: 3px solid white;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Animation des icônes */
+.stat-icon {
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover .stat-icon {
+    transform: scale(1.1) rotate(5deg);
+}
+
+/* Effet glassmorphism sur les stats */
+.stat-glass {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* Animation du séparateur */
+.separator-animated {
+    background: linear-gradient(90deg, transparent, currentColor 20%, currentColor 80%, transparent);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0%, 100% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+/* Effet pulse sur le bouton */
+@keyframes pulse-shadow {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 0 8px rgba(37, 99, 235, 0);
+    }
+}
+
+.profile-edit-btn:hover {
+    animation: pulse-shadow 1.5s infinite;
+}
+
+/* Responsive text truncate avec tooltip */
+.truncate-with-tooltip {
+    position: relative;
+}
+
+.truncate-with-tooltip:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    white-space: nowrap;
+    z-index: 10;
+}
+</style>
+@endpush
+
 @section('content')
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
     <!-- Sidebar Gauche - Mes Chambres -->
     <aside class="lg:col-span-3">
         <div class="sticky top-[88px] space-y-4">
-            <!-- Statistiques rapides -->
-            <div class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4">
-                <h2 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Mes Statistiques</h2>
-                <div class="space-y-3">
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs text-neutral-600 dark:text-gray-400">Chambres rejointes</span>
-                        <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ $userChambersCount
-                            }}</span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs text-neutral-600 dark:text-gray-400">Événements participés</span>
-                        <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ $participatedEventsCount
-                            }}</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Mes Chambres -->
-            <div class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-                <div class="border-b border-neutral-200 dark:border-gray-700 p-4">
-                    <h2 class="text-sm font-semibold text-gray-900 dark:text-white">Mes Chambres</h2>
-                    <p class="mt-1 text-xs text-neutral-600 dark:text-gray-400">{{ $userChambersCount }} chambre(s)
-                        rejointe(s)</p>
-                </div>
-                <!-- Skeleton loading pour les chambres -->
-                <div id="chambers-skeleton" class="p-4 space-y-3" style="display: none;">
-                    @for($i = 0; $i
-                    < 1; $i++) <x-skeleton.chamber-list />
-                    @endfor
-                </div>
-
-                <div class="p-4 space-y-3">
-                    @forelse($userChambers->take(1) as $chamber)
-                    <div
-                        class="flex items-center gap-3 p-3 rounded-lg border border-neutral-100 dark:border-gray-600 hover:border-blue-200 dark:hover:border-blue-500 transition-colors">
-                        <div class="flex-shrink-0">
-                            @if($chamber->logo_path)
-                            <img src="{{ asset('storage/' . $chamber->logo_path) }}" alt="{{ $chamber->name }}"
-                                class="h-10 w-10 rounded-lg object-cover">
-                            @else
-                            <div
-                                class="h-10 w-10 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-sm font-semibold">
-                                {{ substr($chamber->name, 0, 2) }}
+            <!-- Card Profil & Statistiques -->
+            <div class="profile-card-animation rounded-xl border border-neutral-200 dark:border-gray-700 bg-gradient-to-br from-white to-blue-50/30 dark:from-gray-800 dark:to-blue-900/10 overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
+                <!-- Header avec dégradé -->
+                <div class="profile-header h-20 bg-gradient-to-r from-[#2563eb] to-[#1e40af] relative">
+                    <div class="absolute -bottom-10 left-4">
+                        @if($user->avatar || $user->profile_photo_path)
+                            <div class="profile-avatar">
+                                <img src="{{ asset('storage/' . ($user->avatar ?? $user->profile_photo_path)) }}" 
+                                     alt="{{ $user->name }}"
+                                     class="w-20 h-20 rounded-full border-4 border-white dark:border-gray-800 object-cover shadow-lg">
                             </div>
-                            @endif
+                        @else
+                            <div class="profile-avatar w-20 h-20 rounded-full border-4 border-white dark:border-gray-800 bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg">
+                                <span class="text-2xl font-bold text-white">
+                                    {{ substr($user->name, 0, 1) }}{{ substr(explode(' ', $user->name)[1] ?? $user->name, 0, 1) }}
+                                </span>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+                
+                <!-- Informations utilisateur -->
+                <div class="pt-12 px-4 pb-4">
+                    <div class="mb-4">
+                        <h2 class="text-base font-semibold text-gray-900 dark:text-white truncate" title="{{ $user->name }}">
+                            {{ $user->name }}
+                        </h2>
+                        <div class="flex items-center gap-1.5 text-xs text-neutral-600 dark:text-gray-400 mt-1.5 group">
+                            <i data-lucide="mail" class="h-3.5 w-3.5 flex-shrink-0 group-hover:text-blue-500 transition-colors"></i>
+                            <span class="truncate" title="{{ $user->email }}">{{ $user->email }}</span>
                         </div>
-                        <div class="flex-1 min-w-0">
-                            <h4 class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ $chamber->name }}
-                            </h4>
-                            <p class="text-xs text-neutral-600 dark:text-gray-400">{{ $chamber->members_count }} membres
-                            </p>
+                        @if($user->company)
+                        <div class="flex items-center gap-1.5 text-xs text-neutral-600 dark:text-gray-400 mt-1.5 group">
+                            <i data-lucide="building-2" class="h-3.5 w-3.5 flex-shrink-0 group-hover:text-blue-500 transition-colors"></i>
+                            <span class="truncate" title="{{ $user->company }}">{{ $user->company }}</span>
                         </div>
-                        <a href="{{ route('chamber.show', $chamber) }}"
-                            class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
-                            <i data-lucide="external-link" class="h-4 w-4"></i>
+                        @endif
+                    </div>
+                    
+                    <!-- Séparateur animé -->
+                    <div class="h-px separator-animated bg-gradient-to-r from-transparent via-neutral-300 dark:via-gray-600 to-transparent mb-4"></div>
+                    
+                    <!-- Statistiques avec animation -->
+                    <div class="space-y-2.5">
+                        <a href="{{ route('my-chambers') }}" class="stat-card stat-glass flex items-center justify-between p-3 rounded-lg bg-white/50 dark:bg-gray-700/30 border border-neutral-100 dark:border-gray-600/50 hover:bg-white dark:hover:bg-gray-700/50 hover:border-blue-200 dark:hover:border-blue-500 cursor-pointer group">
+                            <div class="flex items-center gap-2.5">
+                                <div class="stat-icon w-9 h-9 rounded-lg bg-gradient-to-br from-blue-100 to-blue-50 dark:from-blue-900/30 dark:to-blue-800/20 flex items-center justify-center group-hover:scale-110">
+                                    <i data-lucide="building" class="h-4 w-4 text-blue-600 dark:text-blue-400"></i>
+                                </div>
+                                <span class="text-xs font-medium text-neutral-700 dark:text-gray-300">Chambres rejointes</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">{{ $userChambersCount }}</span>
+                                <i data-lucide="chevron-right" class="h-4 w-4 text-neutral-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 group-hover:translate-x-1 transition-all"></i>
+                            </div>
+                        </a>
+                        
+                        <a href="{{ route('events.my-bookings') }}" class="stat-card stat-glass flex items-center justify-between p-3 rounded-lg bg-white/50 dark:bg-gray-700/30 border border-neutral-100 dark:border-gray-600/50 hover:bg-white dark:hover:bg-gray-700/50 hover:border-green-200 dark:hover:border-green-500 cursor-pointer group">
+                            <div class="flex items-center gap-2.5">
+                                <div class="stat-icon w-9 h-9 rounded-lg bg-gradient-to-br from-green-100 to-green-50 dark:from-green-900/30 dark:to-green-800/20 flex items-center justify-center group-hover:scale-110">
+                                    <i data-lucide="calendar-check" class="h-4 w-4 text-green-600 dark:text-green-400"></i>
+                                </div>
+                                <span class="text-xs font-medium text-neutral-700 dark:text-gray-300">Événements participés</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xl font-bold bg-gradient-to-r from-green-600 to-green-500 bg-clip-text text-transparent">{{ $participatedEventsCount }}</span>
+                                <i data-lucide="chevron-right" class="h-4 w-4 text-neutral-400 dark:text-gray-500 group-hover:text-green-600 dark:group-hover:text-green-400 group-hover:translate-x-1 transition-all"></i>
+                            </div>
                         </a>
                     </div>
-                    @empty
-                    <div class="text-center py-6">
-                        <div
-                            class="h-12 w-12 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center mx-auto mb-3">
-                            <i data-lucide="building" class="h-6 w-6 text-gray-400"></i>
-                        </div>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Aucune chambre rejointe</p>
-                        <a href="{{ route('chambers') }}"
-                            class="text-xs text-blue-600 dark:text-blue-400 hover:underline">
-                            Découvrir les chambres
-                        </a>
-                    </div>
-                    @endforelse
-
-                    @if($userChambersCount > 0)
-                    <!-- Bouton Voir mes chambres -->
-                    <div class="pt-3 border-t border-neutral-200 dark:border-gray-700">
-                        <a href="{{ route('my-chambers') }}"
-                            class="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md text-sm font-medium transition-colors">
-                            Voir mes chambres
-                        </a>
-                    </div>
-                    @endif
                 </div>
             </div>
-
             <!-- Taux de Change -->
             <div class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4">
                 <div class="flex items-center justify-between mb-3">

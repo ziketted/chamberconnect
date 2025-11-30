@@ -55,6 +55,14 @@ class EventBookingController extends Controller
             return back()->with('error', 'Vous n\'avez pas de réservation pour cet événement.');
         }
 
+        // Récupérer le statut de la réservation
+        $bookingStatus = $event->getBookingStatus($user);
+
+        // Empêcher l'annulation si l'événement a été confirmé
+        if ($bookingStatus === 'confirmed') {
+            return back()->with('error', 'Vous ne pouvez pas annuler un événement confirmé. Veuillez contacter l\'organisateur si vous ne pouvez plus y participer.');
+        }
+
         // Supprimer la réservation
         $user->events()->detach($event->id);
 
@@ -92,17 +100,19 @@ class EventBookingController extends Controller
     {
         $user = Auth::user();
         
+        // Événements à venir - Sans pagination (généralement peu nombreux)
         $upcomingEvents = $user->events()
             ->where('date', '>=', now())
             ->with('chamber')
             ->orderBy('date', 'asc')
             ->get();
 
+        // Événements passés - Avec pagination (peuvent être nombreux)
         $pastEvents = $user->events()
             ->where('date', '<', now())
             ->with('chamber')
             ->orderBy('date', 'desc')
-            ->get();
+            ->paginate(10); // 10 événements passés par page
          
 
         return view('events.my-bookings', compact('upcomingEvents', 'pastEvents'));

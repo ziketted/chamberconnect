@@ -320,3 +320,5 @@ php artisan optimize:images
 
 **Dernière mise à jour** : 29 Novembre 2025
 
+
+

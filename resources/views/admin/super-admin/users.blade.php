@@ -35,8 +35,8 @@
                 <tr>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex items-center">
-                            @if($user->avatar)
-                                <img class="h-10 w-10 rounded-full" src="{{ $user->avatar }}" alt="{{ $user->name }}">
+                            @if($user->avatar || $user->profile_photo_path)
+                                <img class="h-10 w-10 rounded-full object-cover" src="{{ asset('storage/' . ($user->avatar ?? $user->profile_photo_path)) }}" alt="{{ $user->name }}">
                             @else
                                 <div class="h-10 w-10 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
                                     <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ strtoupper(substr($user->name, 0, 1)) }}</span>

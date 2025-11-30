@@ -78,7 +78,8 @@ class ChamberController extends Controller
                 $q->latest();
             },
             'events' => function ($q) {
-                $q->latest();
+                $q->where('date', '>=', now()->startOfDay())
+                  ->orderBy('date', 'asc');
             },
             'approvedMembers' => function ($q) {
                 $q->take(10);
@@ -117,7 +118,14 @@ class ChamberController extends Controller
             });
         }
 
-        return view('chamber', compact('chamber', 'membersCount', 'isMember', 'membershipStatus'));
+        // Obtenir le taux de change si c'est une chambre bilatérale
+        $exchangeRate = null;
+        if ($chamber->type === 'bilateral' && $chamber->embassy_country) {
+            $exchangeRateService = app(\App\Services\ExchangeRateService::class);
+            $exchangeRate = $exchangeRateService->getExchangeRateByCountry($chamber->embassy_country);
+        }
+
+        return view('chamber', compact('chamber', 'membersCount', 'isMember', 'membershipStatus', 'exchangeRate'));
     }
 
     public function edit(Chamber $chamber)
