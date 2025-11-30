@@ -1,0 +1,497 @@
+[
+  {
+    "id": "TC001",
+    "title": "Browse and View Chamber Details",
+    "description": "Verify that a user can browse through the list of chambers, select a chamber, and view its detailed information including overview, events, members, and partners tabs.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the Chambers List page"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that list of bilateral and national chambers is displayed"
+      },
+      {
+        "type": "action",
+        "description": "Click on a chamber to view its detail page"
+      },
+      {
+        "type": "assertion",
+        "description": "Check chamber overview tab content is visible including description, logo, and contact info"
+      },
+      {
+        "type": "action",
+        "description": "Switch to the 'Events' tab"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify upcoming events are displayed correctly"
+      },
+      {
+        "type": "action",
+        "description": "Switch to the 'Members' tab"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the member list of the chamber is shown properly"
+      },
+      {
+        "type": "action",
+        "description": "Switch to the 'Partners' tab"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the partners associated with the chamber are listed"
+      }
+    ]
+  },
+  {
+    "id": "TC002",
+    "title": "Chamber Join Request Workflow",
+    "description": "Verify that a user can request to join a chamber and that the membership status transitions from pending to approved upon admin validation, with corresponding badges displayed.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to a chamber's detail page"
+      },
+      {
+        "type": "action",
+        "description": "Click the 'Join' button to request membership"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the membership request is created with status 'pending'"
+      },
+      {
+        "type": "action",
+        "description": "Simulate admin approval of the membership request"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm the user membership status changes to 'approved'"
+      },
+      {
+        "type": "assertion",
+        "description": "Check that the user's chamber membership badge reflects the approved status"
+      }
+    ]
+  },
+  {
+    "id": "TC003",
+    "title": "Event Details Modal Loading with AJAX",
+    "description": "Verify that when a user clicks on an event's 'View Details' button, a premium event details modal is dynamically loaded using AJAX and displays all event data accurately.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to Events List page"
+      },
+      {
+        "type": "action",
+        "description": "Click 'View Details' on an event"
+      },
+      {
+        "type": "assertion",
+        "description": "Inspect the modal opens without full page reload"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify modal displays correct event title, description, date/time, mode, location, max participants, and other details"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm modal includes up-to-date reservation status via API"
+      }
+    ]
+  },
+  {
+    "id": "TC004",
+    "title": "Successful Event Reservation and Confirmation Flow",
+    "description": "Verify that a user can reserve a spot for an event with available seats, confirm participation, and for online events, access the participation link after confirmation.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to an event with available seats"
+      },
+      {
+        "type": "action",
+        "description": "Click 'Reserve a Spot'"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify reservation status is set to 'reserved'"
+      },
+      {
+        "type": "action",
+        "description": "Confirm participation from reservation"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify reservation status changes to 'confirmed'"
+      },
+      {
+        "type": "assertion",
+        "description": "For online events, verify access link to online session is available"
+      }
+    ]
+  },
+  {
+    "id": "TC005",
+    "title": "Event Reservation Failure when No Seats Available",
+    "description": "Verify that when all seats are taken, attempting to reserve an event spot fails gracefully with an appropriate error message.",
+    "category": "error handling",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to an event with zero available seats"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to 'Reserve a Spot'"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the reservation is not created"
+      },
+      {
+        "type": "assertion",
+        "description": "Check that an error message indicates no seats are available"
+      }
+    ]
+  },
+  {
+    "id": "TC006",
+    "title": "Event Cancellation Validations",
+    "description": "Verify that a user can cancel a reservation only when the status is 'reserved', and cancellation is blocked after confirmation with relevant toast notifications.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Make a reservation with status 'reserved'"
+      },
+      {
+        "type": "action",
+        "description": "Cancel the reservation"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm cancellation is successful and status is updated accordingly"
+      },
+      {
+        "type": "action",
+        "description": "Make a reservation and confirm participation (status 'confirmed')"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to cancel the confirmed reservation"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify cancellation is blocked and appropriate toast notification shown"
+      }
+    ]
+  },
+  {
+    "id": "TC007",
+    "title": "Profile Photo Upload and Immediate Frontend Update",
+    "description": "Verify that when a user uploads a new profile photo, it is previewed immediately, uploaded via AJAX, backend updates user records, and the new photo appears across all UI elements with success notification.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to user profile photo upload section"
+      },
+      {
+        "type": "action",
+        "description": "Select a valid photo file"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the photo preview is displayed instantly"
+      },
+      {
+        "type": "action",
+        "description": "Trigger AJAX upload for the photo"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm backend updates the user's profile photo record"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify all UI locations refresh to show the updated profile picture"
+      },
+      {
+        "type": "assertion",
+        "description": "Check that a success toast notification is displayed"
+      }
+    ]
+  },
+  {
+    "id": "TC008",
+    "title": "User Profile Information Update",
+    "description": "Verify users can update their profile information successfully and changes are persisted and reflected consistently across the platform.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Access the profile update form"
+      },
+      {
+        "type": "action",
+        "description": "Modify profile fields (e.g. name, email, company)"
+      },
+      {
+        "type": "action",
+        "description": "Submit the update form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify backend updates the user data accordingly"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm updated information is reflected immediately in header, dashboard, and profile pages"
+      }
+    ]
+  },
+  {
+    "id": "TC009",
+    "title": "Dashboard Displays Joined Chambers and Events with Statistics",
+    "description": "Verify that the user dashboard correctly displays the chambers joined, events participated, upcoming bookings, and personal activity statistics with functional interactive links.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Log in and navigate to user dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify lists of joined chambers are shown"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify events participated and upcoming bookings are displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Check personal statistics (e.g. chambers joined count, events attended) accuracy"
+      },
+      {
+        "type": "action",
+        "description": "Click on links to chambers and events from dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm navigation to respective detail pages"
+      }
+    ]
+  },
+  {
+    "id": "TC010",
+    "title": "Exchange Rate Service Integration and Caching",
+    "description": "Verify that bilateral chambers display live exchange rate information fetched from the ExchangeRateService with caching and error handling in place.",
+    "category": "integration",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to a bilateral chamber detail page"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify exchange rates are displayed prominently"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm rates are fetched from ExchangeRateService API"
+      },
+      {
+        "type": "action",
+        "description": "Trigger multiple reloads within caching interval"
+      },
+      {
+        "type": "assertion",
+        "description": "Check that cached exchange rate data is used instead of new API calls"
+      },
+      {
+        "type": "action",
+        "description": "Simulate API failure or timeout"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify fallback behavior and error message/notification to user"
+      }
+    ]
+  },
+  {
+    "id": "TC011",
+    "title": "Member Approval Notification to Administrators",
+    "description": "Verify that when a user requests to join a chamber, administrators receive proper notifications and can approve or reject membership requests via the admin panel.",
+    "category": "integration",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Submit a new join request for a chamber as a user"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify admins receive notification of pending membership request"
+      },
+      {
+        "type": "action",
+        "description": "Admin logs into admin panel and navigates to membership requests"
+      },
+      {
+        "type": "action",
+        "description": "Admin approves the pending request"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm user membership status updates to 'approved' and notification sent to user"
+      }
+    ]
+  },
+  {
+    "id": "TC012",
+    "title": "Responsive Design and Dark Mode UI Validation",
+    "description": "Verify the web platform's UI adjusts properly across different screen sizes and toggling between dark and light modes applies correct styling and color schemes throughout all pages and components.",
+    "category": "ui",
+    "priority": "Low",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Load the platform on desktop, tablet, and mobile screen sizes"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify layout and navigation adapt fluidly without visual defects"
+      },
+      {
+        "type": "action",
+        "description": "Toggle dark mode on"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify all UI elements use appropriate dark mode colors and contrast"
+      },
+      {
+        "type": "action",
+        "description": "Toggle dark mode off"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify UI returns accurately to light mode colors and styles"
+      }
+    ]
+  },
+  {
+    "id": "TC013",
+    "title": "Forum Posting and Messaging Functionality",
+    "description": "Verify that chamber members can create posts and send messages within the chamber forums, and that posts and messages display correctly with updated timestamps.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to a chamber's forum as a member"
+      },
+      {
+        "type": "action",
+        "description": "Create a new forum post with valid content"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the post appears immediately in the thread with correct author and timestamp"
+      },
+      {
+        "type": "action",
+        "description": "Send a message within a forum discussion"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm message delivery and display in the message list"
+      }
+    ]
+  },
+  {
+    "id": "TC014",
+    "title": "API Data Correctness for Event Details Endpoint",
+    "description": "Verify the /api/events/{event}/details API endpoint returns complete and accurate event details including reservation status that match the UI representation.",
+    "category": "integration",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Send a GET request to /api/events/{event}/details for a known event"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the response contains correct event fields: title, description, date, time, mode, location, max participants, status"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm reservation status matches the user's actual reservation state"
+      },
+      {
+        "type": "assertion",
+        "description": "Check HTTP status code is 200 and response latency is within acceptable limits"
+      }
+    ]
+  },
+  {
+    "id": "TC015",
+    "title": "Toast Notifications for Success and Error States",
+    "description": "Verify that toast notifications appear for success and error events such as profile photo upload success, reservation failure, cancellation restrictions, and form validation errors.",
+    "category": "ui",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Perform a profile photo upload successfully"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify success toast notification appears and disappears automatically"
+      },
+      {
+        "type": "action",
+        "description": "Attempt to reserve an event with no available seats"
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm error toast notification is shown with meaningful message"
+      },
+      {
+        "type": "action",
+        "description": "Try to cancel a confirmed reservation"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify error toast notification about inability to cancel displayed"
+      },
+      {
+        "type": "action",
+        "description": "Leave mandatory fields empty on profile update form and submit"
+      },
+      {
+        "type": "assertion",
+        "description": "Check validation error messages and toast notifications appear"
+      }
+    ]
+  }
+]

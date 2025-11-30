@@ -1,0 +1,350 @@
+{
+  "project_name": "ChamberConnect",
+  "project_type": "web_application",
+  "description": "Plateforme de gestion et mise en réseau des chambres de commerce entre la Suisse et la République Démocratique du Congo",
+  
+  "tech_stack": {
+    "backend": {
+      "framework": "Laravel",
+      "version": "12.35.1",
+      "language": "PHP",
+      "language_version": "8.3.6",
+      "key_packages": [
+        "laravel/sanctum",
+        "laravel/socialite",
+        "laravel/breeze"
+      ]
+    },
+    "frontend": {
+      "frameworks": [
+        "Blade Templates",
+        "Alpine.js",
+        "Tailwind CSS"
+      ],
+      "build_tool": "Vite 5.0",
+      "ui_libraries": [
+        "Lucide Icons",
+        "@tailwindcss/forms"
+      ]
+    },
+    "database": "MySQL/SQLite",
+    "authentication": [
+      "Email/Password",
+      "Google OAuth",
+      "Facebook OAuth"
+    ]
+  },
+  
+  "architecture": {
+    "pattern": "MVC",
+    "key_directories": {
+      "controllers": "app/Http/Controllers",
+      "models": "app/Models",
+      "views": "resources/views",
+      "routes": "routes/web.php",
+      "services": "app/Services"
+    }
+  },
+  
+  "main_features": [
+    {
+      "name": "Gestion des Chambres",
+      "description": "Création, consultation et gestion des chambres de commerce (bilatérales et nationales)",
+      "routes": [
+        "/chambers",
+        "/chamber/{slug}",
+        "/my-chambers"
+      ],
+      "controllers": [
+        "ChamberController",
+        "ChamberListController",
+        "ChamberPortalController"
+      ],
+      "models": ["Chamber", "Partner"]
+    },
+    {
+      "name": "Événements",
+      "description": "Gestion complète des événements avec réservations, confirmations et annulations",
+      "routes": [
+        "/events",
+        "/events/{event}",
+        "/my-bookings",
+        "/events/{event}/book",
+        "/events/{event}/confirm",
+        "/events/{event}/cancel"
+      ],
+      "controllers": [
+        "EventController",
+        "EventBookingController",
+        "EventLikeController",
+        "ChamberEventController"
+      ],
+      "models": ["Event"],
+      "key_functionalities": [
+        "Réservation d'événements",
+        "Confirmation de participation",
+        "Annulation (avec restrictions)",
+        "Système de likes",
+        "Événements en ligne et présentiel",
+        "Gestion des places disponibles"
+      ]
+    },
+    {
+      "name": "Forum & Communications",
+      "description": "Forum de discussion pour les membres des chambres",
+      "routes": [
+        "/chamber/{slug}/forum"
+      ],
+      "controllers": [
+        "ChamberForumController",
+        "ChamberPostController"
+      ],
+      "models": ["Forum", "ForumMessage", "Post"]
+    },
+    {
+      "name": "Membres & Partenaires",
+      "description": "Gestion des membres des chambres et partenaires",
+      "routes": [
+        "/chamber/{slug}/members",
+        "/chamber/{slug}/join"
+      ],
+      "controllers": [
+        "ChamberMemberController",
+        "ChamberPartnerController"
+      ]
+    },
+    {
+      "name": "Dashboard Utilisateur",
+      "description": "Tableau de bord personnel avec statistiques et activités",
+      "routes": [
+        "/dashboard"
+      ],
+      "controllers": ["DashboardController"],
+      "key_metrics": [
+        "Chambres rejointes",
+        "Événements participés",
+        "Statistiques personnelles"
+      ]
+    },
+    {
+      "name": "Profil Utilisateur",
+      "description": "Gestion du profil avec photo, informations personnelles et entreprise",
+      "routes": [
+        "/profile",
+        "/profile/update",
+        "/profile/photo"
+      ],
+      "controllers": ["ProfileController"],
+      "models": ["User"]
+    },
+    {
+      "name": "Opportunités",
+      "description": "Gestion et consultation des opportunités commerciales",
+      "routes": [
+        "/opportunities"
+      ],
+      "controllers": ["OpportunityController"]
+    },
+    {
+      "name": "Administration",
+      "description": "Panneau d'administration pour super admins et gestionnaires de chambres",
+      "routes": [
+        "/admin/*",
+        "/portal/*"
+      ],
+      "controllers": [
+        "SuperAdminController",
+        "SuperAdminUserController",
+        "SuperAdminChamberController",
+        "ChamberAdminController",
+        "ChamberManagerController"
+      ],
+      "features": [
+        "Gestion des utilisateurs",
+        "Gestion des chambres",
+        "Notifications système",
+        "Validation des membres"
+      ]
+    }
+  ],
+  
+  "services": [
+    {
+      "name": "ExchangeRateService",
+      "description": "Service de récupération des taux de change pour les chambres bilatérales",
+      "api_used": "exchangerate-api.com"
+    }
+  ],
+  
+  "ui_components": {
+    "pages": [
+      "Home/Landing",
+      "Chambers List",
+      "Chamber Detail (avec tabs: Overview, Events, Members, Partners)",
+      "Events List",
+      "Event Detail Modal",
+      "My Bookings",
+      "My Chambers",
+      "Dashboard",
+      "Profile",
+      "Forum"
+    ],
+    "key_features": [
+      "Dark Mode Support",
+      "Responsive Design (Mobile, Tablet, Desktop)",
+      "Modals dynamiques (AJAX)",
+      "Animations Tailwind",
+      "Carousels",
+      "Filters & Search",
+      "Toast Notifications",
+      "Loading States"
+    ]
+  },
+  
+  "data_models": {
+    "User": {
+      "key_fields": [
+        "name",
+        "email",
+        "company",
+        "profile_photo_path",
+        "avatar",
+        "role"
+      ]
+    },
+    "Chamber": {
+      "key_fields": [
+        "name",
+        "slug",
+        "type (bilateral/national)",
+        "description",
+        "logo_path",
+        "cover_image_path",
+        "verified",
+        "state_number",
+        "certification_date",
+        "embassy_country",
+        "embassy_phone",
+        "embassy_website",
+        "embassy_address",
+        "email",
+        "phone",
+        "website",
+        "address"
+      ]
+    },
+    "Event": {
+      "key_fields": [
+        "title",
+        "description",
+        "date",
+        "time",
+        "mode (online/offline)",
+        "location",
+        "city",
+        "country",
+        "address",
+        "lien_live",
+        "max_participants",
+        "cover_image_path",
+        "type",
+        "status"
+      ]
+    }
+  },
+  
+  "key_workflows": [
+    {
+      "name": "Réservation d'événement",
+      "steps": [
+        "1. Utilisateur browse les événements",
+        "2. Clique sur 'Voir détails' d'un événement",
+        "3. Modal s'ouvre avec détails complets",
+        "4. Clique sur 'Réserver une place'",
+        "5. Système vérifie les places disponibles",
+        "6. Crée une réservation avec status 'reserved'",
+        "7. Utilisateur peut confirmer sa participation (status → 'confirmed')",
+        "8. Pour événements online confirmés, accès au lien de participation",
+        "9. Annulation possible uniquement si status = 'reserved'"
+      ]
+    },
+    {
+      "name": "Adhésion à une chambre",
+      "steps": [
+        "1. Utilisateur consulte une chambre",
+        "2. Clique sur 'Rejoindre'",
+        "3. Demande d'adhésion créée (status 'pending')",
+        "4. Admin/Manager de la chambre valide",
+        "5. Status passe à 'approved'",
+        "6. Utilisateur devient membre"
+      ]
+    }
+  ],
+  
+  "api_endpoints": [
+    {
+      "endpoint": "/api/events/{event}/details",
+      "method": "GET",
+      "description": "Récupère les détails complets d'un événement avec statut de réservation"
+    }
+  ],
+  
+  "testing_priorities": [
+    {
+      "priority": "high",
+      "area": "Event Booking System",
+      "tests": [
+        "Réservation d'événement",
+        "Confirmation de participation",
+        "Annulation (avec validation du statut)",
+        "Gestion des places disponibles",
+        "Modal de détails avec AJAX"
+      ]
+    },
+    {
+      "priority": "high",
+      "area": "Chamber Management",
+      "tests": [
+        "Consultation des chambres",
+        "Adhésion à une chambre",
+        "Affichage des détails (tabs)",
+        "Taux de change pour bilatérales"
+      ]
+    },
+    {
+      "priority": "medium",
+      "area": "User Profile",
+      "tests": [
+        "Upload de photo de profil",
+        "Mise à jour des informations",
+        "Affichage cohérent du profil (header, dashboard, etc.)"
+      ]
+    },
+    {
+      "priority": "medium",
+      "area": "Dashboard",
+      "tests": [
+        "Affichage des statistiques",
+        "Liens vers chambres et événements"
+      ]
+    },
+    {
+      "priority": "low",
+      "area": "Dark Mode",
+      "tests": [
+        "Basculement dark/light mode",
+        "Cohérence des couleurs"
+      ]
+    }
+  ],
+  
+  "recent_changes": [
+    "Amélioration du système de détails d'événements avec modal premium",
+    "Suppression des badges de certification redondants",
+    "Design épuré de la section 'À propos de la chambre'",
+    "Optimisation de la section Contact & Adresse",
+    "Intégration du service de taux de change",
+    "Logique d'annulation basée sur le statut de confirmation"
+  ]
+}
+
