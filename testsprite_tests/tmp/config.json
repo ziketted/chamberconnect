@@ -1,0 +1,16 @@
+{
+  "status": "commited",
+  "type": "frontend",
+  "scope": "codebase",
+  "localEndpoint": "http://localhost:8000/chamber/nick-kazika",
+  "executionArgs": {
+    "projectName": "chamberconnect",
+    "projectPath": "C:\\laragon\\www\\chamberconnect",
+    "testIds": [],
+    "additionalInstruction": "",
+    "envs": {
+      "API_KEY": "sk-user-2zvjpndjNVRlEzO-2FS40r85aFNkCkT9t2_htvE8HCEaA-IhXEYepX9FrxzeCEEH2WQ0jB0VNGlImffIkhmhyrc16_q6T3NnSs2X-DNDX4n9xzFSYmsf5cZW0g0klG3ZxYQ"
+    }
+  },
+  "proxy": "http://71527ad4-4940-4e8b-9701-1b0c9bb417ec:37lhF2RqRTdRH0xKQMsJahMkmgdAa71Y@tun.testsprite.com:8080"
+}

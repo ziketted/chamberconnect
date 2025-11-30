@@ -5,19 +5,78 @@
     <!-- Sidebar -->
     <aside class="lg:col-span-3">
         <div class="sticky top-[88px] space-y-4">
-            <!-- Photo de profil -->
-            <div class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4">
-                <div class="flex flex-col items-center text-center">
-                    <div class="relative">
-                        <img src="{{ Auth::user()->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) }}"
-                            alt="{{ Auth::user()->name }}" class="h-24 w-24 rounded-xl object-cover">
-                        <button
-                            class="absolute bottom-0 right-0 rounded-full bg-white dark:bg-gray-800 p-1 shadow-sm hover:bg-neutral-50 dark:bg-gray-700">
-                            <i data-lucide="camera" class="h-4 w-4 text-neutral-600 dark:text-gray-400"></i>
-                        </button>
-                    </div>
-                    <h2 class="mt-4 text-base font-semibold">{{ Auth::user()->name }}</h2>
-                    <p class="text-sm text-neutral-600 dark:text-gray-400">{{ Auth::user()->email }}</p>
+            <!-- Photo de profil avec upload professionnel -->
+            <div class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden">
+                <div class="border-b border-neutral-200 dark:border-gray-700 px-4 py-3">
+                    <h3 class="text-sm font-semibold text-neutral-900 dark:text-white">Photo de profil</h3>
+                    <p class="text-xs text-neutral-600 dark:text-gray-400 mt-0.5">Cliquez ou glissez pour modifier</p>
+                </div>
+                <div class="p-4">
+                    <form id="profile-photo-form" enctype="multipart/form-data">
+                        @csrf
+                        <div class="flex flex-col items-center">
+                            <!-- Avatar avec hover effect -->
+                            <div class="relative group cursor-pointer" id="photo-upload-trigger">
+                                <div class="relative w-32 h-32 rounded-2xl overflow-hidden bg-gradient-to-br from-[#2563eb] to-[#1e40af] border-4 border-white dark:border-gray-800 shadow-lg transition-all duration-300 group-hover:shadow-xl group-hover:scale-105">
+                                    @if(Auth::user()->avatar || Auth::user()->profile_photo_path)
+                                        <img id="profile-preview" src="{{ asset('storage/' . (Auth::user()->avatar ?? Auth::user()->profile_photo_path)) }}" 
+                                             alt="{{ Auth::user()->name }}" 
+                                             class="w-full h-full object-cover">
+                                    @else
+                                        <div id="profile-preview" class="w-full h-full flex items-center justify-center">
+                                            <span class="text-white text-4xl font-bold">
+                                                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}{{ strtoupper(substr(explode(' ', Auth::user()->name)[1] ?? '', 0, 1)) }}
+                                            </span>
+                                        </div>
+                                    @endif
+                                    <!-- Overlay au hover -->
+                                    <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                        <div class="text-center">
+                                            <i data-lucide="camera" class="h-8 w-8 text-white mx-auto mb-2"></i>
+                                            <p class="text-white text-xs font-medium">Changer la photo</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Input file caché -->
+                                <input type="file" id="profile_photo" name="profile_photo" accept="image/*" class="hidden">
+                            </div>
+                            
+                            <!-- Informations -->
+                            <div class="mt-4 text-center">
+                                <h4 class="text-base font-semibold text-gray-900 dark:text-white">{{ Auth::user()->name }}</h4>
+                                <p class="text-sm text-neutral-600 dark:text-gray-400 mt-0.5">{{ Auth::user()->email }}</p>
+                            </div>
+                            
+                            <!-- Instructions -->
+                            <div class="mt-4 w-full">
+                                <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/50 rounded-lg p-3">
+                                    <div class="flex items-start gap-2">
+                                        <i data-lucide="info" class="h-4 w-4 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0"></i>
+                                        <div class="text-xs text-blue-700 dark:text-blue-300">
+                                            <p class="font-medium">Formats acceptés : JPG, PNG, GIF</p>
+                                            <p class="mt-1 text-blue-600 dark:text-blue-400">Taille maximale : 2 Mo</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Boutons d'action -->
+                            <div class="mt-4 flex gap-2 w-full" id="photo-actions" style="display: none;">
+                                <button type="button" id="upload-btn" class="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-[#2563eb] to-[#1e40af] px-4 py-2.5 text-sm font-semibold text-white hover:shadow-lg hover:scale-105 transition-all duration-200">
+                                    <i data-lucide="upload" class="h-4 w-4"></i>
+                                    Enregistrer
+                                </button>
+                                <button type="button" id="cancel-btn" class="flex-1 inline-flex items-center justify-center gap-2 rounded-lg border border-neutral-300 dark:border-gray-600 bg-white/50 dark:bg-gray-700/50 backdrop-blur-sm px-4 py-2.5 text-sm font-medium text-neutral-700 dark:text-gray-300 hover:bg-neutral-50 dark:hover:bg-gray-600 transition-colors">
+                                    <i data-lucide="x" class="h-4 w-4"></i>
+                                    Annuler
+                                </button>
+                            </div>
+                            
+                            <!-- Message de succès/erreur -->
+                            <div id="upload-message" class="mt-3 w-full" style="display: none;"></div>
+                        </div>
+                    </form>
                 </div>
             </div>
 
@@ -102,7 +161,7 @@
 
                 <div class="flex items-center gap-4 pt-4 border-t border-neutral-200 dark:border-gray-700">
                     <button type="submit"
-                        class="inline-flex items-center gap-2 rounded-md bg-[#073066] px-4 py-2 text-sm font-semibold text-white hover:bg-[#052347] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#073066] dark:focus-visible:ring-blue-500/50">
+                        class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#2563eb] to-[#1e40af] px-5 py-2.5 text-sm font-semibold text-white hover:shadow-lg hover:scale-105 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563eb] dark:focus-visible:ring-blue-500/50">
                         <i data-lucide="save" class="h-4 w-4"></i>
                         Enregistrer les modifications
                     </button>
@@ -162,7 +221,7 @@
 
                 <div class="flex items-center gap-4 pt-4 border-t border-neutral-200 dark:border-gray-700">
                     <button type="submit"
-                        class="inline-flex items-center gap-2 rounded-md bg-[#073066] px-4 py-2 text-sm font-semibold text-white hover:bg-[#052347] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#073066] dark:focus-visible:ring-blue-500/50">
+                        class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#2563eb] to-[#1e40af] px-5 py-2.5 text-sm font-semibold text-white hover:shadow-lg hover:scale-105 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563eb] dark:focus-visible:ring-blue-500/50">
                         <i data-lucide="key" class="h-4 w-4"></i>
                         Mettre à jour le mot de passe
                     </button>
@@ -243,6 +302,174 @@
                 'stroke-width': 1.5
             }
         });
+
+        // Éléments du DOM
+        const photoUploadTrigger = document.getElementById('photo-upload-trigger');
+        const profilePhotoInput = document.getElementById('profile_photo');
+        const profilePreview = document.getElementById('profile-preview');
+        const photoActions = document.getElementById('photo-actions');
+        const uploadBtn = document.getElementById('upload-btn');
+        const cancelBtn = document.getElementById('cancel-btn');
+        const uploadMessage = document.getElementById('upload-message');
+        const profilePhotoForm = document.getElementById('profile-photo-form');
+        
+        let selectedFile = null;
+        let originalPreview = profilePreview.innerHTML;
+
+        // Clic sur l'avatar pour ouvrir le sélecteur de fichier
+        photoUploadTrigger.addEventListener('click', () => {
+            profilePhotoInput.click();
+        });
+
+        // Gestion de la sélection de fichier
+        profilePhotoInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                handleFileSelection(file);
+            }
+        });
+
+        // Drag and drop
+        photoUploadTrigger.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            photoUploadTrigger.classList.add('ring-2', 'ring-[#073066]', 'ring-offset-2');
+        });
+
+        photoUploadTrigger.addEventListener('dragleave', () => {
+            photoUploadTrigger.classList.remove('ring-2', 'ring-[#073066]', 'ring-offset-2');
+        });
+
+        photoUploadTrigger.addEventListener('drop', (e) => {
+            e.preventDefault();
+            photoUploadTrigger.classList.remove('ring-2', 'ring-[#073066]', 'ring-offset-2');
+            
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                handleFileSelection(file);
+            }
+        });
+
+        // Fonction pour gérer la sélection de fichier
+        function handleFileSelection(file) {
+            // Validation de la taille (2 Mo max)
+            const maxSize = 2 * 1024 * 1024; // 2 Mo
+            if (file.size > maxSize) {
+                showMessage('La taille du fichier ne doit pas dépasser 2 Mo.', 'error');
+                return;
+            }
+
+            // Validation du type
+            const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+            if (!validTypes.includes(file.type)) {
+                showMessage('Format non supporté. Utilisez JPG, PNG ou GIF.', 'error');
+                return;
+            }
+
+            selectedFile = file;
+
+            // Prévisualisation
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                // Si c'est une div avec initiale, on la remplace par une image
+                if (profilePreview.tagName === 'DIV') {
+                    const img = document.createElement('img');
+                    img.id = 'profile-preview';
+                    img.className = 'w-full h-full object-cover';
+                    img.src = e.target.result;
+                    profilePreview.parentNode.replaceChild(img, profilePreview);
+                } else {
+                    profilePreview.src = e.target.result;
+                }
+                
+                // Afficher les boutons d'action
+                photoActions.style.display = 'flex';
+                lucide.createIcons();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Bouton Enregistrer
+        uploadBtn.addEventListener('click', async () => {
+            if (!selectedFile) return;
+
+            const formData = new FormData();
+            formData.append('profile_photo', selectedFile);
+            formData.append('_token', document.querySelector('input[name="_token"]').value);
+
+            // Désactiver le bouton pendant l'upload
+            uploadBtn.disabled = true;
+            uploadBtn.innerHTML = '<i data-lucide="loader-2" class="h-4 w-4 animate-spin"></i> Envoi...';
+            lucide.createIcons();
+
+            try {
+                const response = await fetch('{{ route("profile.photo.update") }}', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showMessage('Photo de profil mise à jour avec succès !', 'success');
+                    photoActions.style.display = 'none';
+                    selectedFile = null;
+                    
+                    // Mettre à jour toutes les images de profil sur la page et dans le header
+                    const newPhotoUrl = data.photo_url + '?t=' + new Date().getTime();
+                    document.querySelectorAll('img[alt="{{ Auth::user()->name }}"]').forEach(img => {
+                        img.src = newPhotoUrl;
+                    });
+                    
+                    // Recharger la page après 1 seconde pour rafraîchir toutes les instances
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    showMessage(data.message || 'Une erreur est survenue.', 'error');
+                    cancelUpload();
+                }
+            } catch (error) {
+                showMessage('Erreur de connexion. Veuillez réessayer.', 'error');
+                cancelUpload();
+            } finally {
+                uploadBtn.disabled = false;
+                uploadBtn.innerHTML = '<i data-lucide="upload" class="h-4 w-4"></i> Enregistrer';
+                lucide.createIcons();
+            }
+        });
+
+        // Bouton Annuler
+        cancelBtn.addEventListener('click', cancelUpload);
+
+        function cancelUpload() {
+            // Recharger la page pour restaurer l'aperçu original
+            window.location.reload();
+        }
+
+        function showMessage(message, type) {
+            const bgColor = type === 'success' ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800/50' : 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800/50';
+            const textColor = type === 'success' ? 'text-green-700 dark:text-green-300' : 'text-red-700 dark:text-red-300';
+            const iconColor = type === 'success' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400';
+            const icon = type === 'success' ? 'check-circle' : 'alert-circle';
+
+            uploadMessage.innerHTML = `
+                <div class="${bgColor} border rounded-lg p-3">
+                    <div class="flex items-start gap-2">
+                        <i data-lucide="${icon}" class="h-4 w-4 ${iconColor} mt-0.5 flex-shrink-0"></i>
+                        <p class="text-xs ${textColor} font-medium">${message}</p>
+                    </div>
+                </div>
+            `;
+            uploadMessage.style.display = 'block';
+            lucide.createIcons();
+
+            setTimeout(() => {
+                uploadMessage.style.display = 'none';
+            }, 5000);
+        }
     });
 </script>
 @endpush

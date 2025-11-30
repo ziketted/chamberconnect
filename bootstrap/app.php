@@ -20,5 +20,20 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        // Gérer l'erreur 419 (CSRF Token Mismatch / Page Expired)
+        $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\HttpException $e, $request) {
+            if ($e->getStatusCode() === 419) {
+                // Si c'est une requête AJAX, retourner une réponse JSON
+                if ($request->expectsJson()) {
+                    return response()->json([
+                        'message' => 'Votre session a expiré. Veuillez vous reconnecter.',
+                        'redirect' => route('login')
+                    ], 419);
+                }
+                
+                // Sinon, rediriger vers la page de login avec un message
+                return redirect()->route('login')
+                    ->with('error', 'Votre session a expiré. Veuillez vous reconnecter.');
+            }
+        });
     })->create();

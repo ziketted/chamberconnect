@@ -154,18 +154,29 @@
                                 </a>
                             @endif
                             
-                            <button type="button" 
-                                    onclick="openCancelModal({{ $event->id }}, '{{ $event->title }}')"
-                                    class="inline-flex items-center gap-1.5 rounded-lg border border-orange-200 dark:border-orange-800 bg-white dark:bg-gray-800 px-3 py-2 text-xs font-medium text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors">
-                                <i data-lucide="x" class="h-3 w-3"></i>
-                                Annuler
-                            </button>
-                            
-                            <!-- Formulaire caché pour l'annulation -->
-                            <form id="cancel-form-{{ $event->id }}" action="{{ route('events.cancel', $event) }}" method="POST" class="hidden">
-                                @csrf
-                                @method('DELETE')
-                            </form>
+                            {{-- Bouton d'annulation - Désactivé si l'événement est confirmé --}}
+                            @if($event->pivot->status === 'confirmed')
+                                <button type="button" 
+                                        disabled
+                                        title="Vous ne pouvez pas annuler un événement confirmé. Contactez l'organisateur."
+                                        class="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 px-3 py-2 text-xs font-medium text-gray-400 dark:text-gray-500 cursor-not-allowed opacity-60">
+                                    <i data-lucide="x" class="h-3 w-3"></i>
+                                    Annuler
+                                </button>
+                            @else
+                                <button type="button" 
+                                        onclick="openCancelModal({{ $event->id }}, '{{ $event->title }}')"
+                                        class="inline-flex items-center gap-1.5 rounded-lg border border-orange-200 dark:border-orange-800 bg-white dark:bg-gray-800 px-3 py-2 text-xs font-medium text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors">
+                                    <i data-lucide="x" class="h-3 w-3"></i>
+                                    Annuler
+                                </button>
+                                
+                                <!-- Formulaire caché pour l'annulation -->
+                                <form id="cancel-form-{{ $event->id }}" action="{{ route('events.cancel', $event) }}" method="POST" class="hidden">
+                                    @csrf
+                                    @method('DELETE')
+                                </form>
+                            @endif
                         </div>
                         
                         <!-- Date de réservation -->
@@ -255,6 +266,13 @@
             </div>
             @endforeach
         </div>
+        
+        {{-- Pagination pour les événements passés --}}
+        @if($pastEvents->hasPages())
+        <div class="mt-6">
+            {{ $pastEvents->links() }}
+        </div>
+        @endif
     </div>
     @endif
 

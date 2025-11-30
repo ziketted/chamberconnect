@@ -52,6 +52,18 @@
                     class="mt-1 w-full rounded-md border border-neutral-300 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-[#073066] dark:focus:border-blue-500 focus:ring-2 focus:ring-[#073066]/20 dark:focus:ring-blue-500/20" />
             </div>
             <div>
+                <label class="text-xs font-medium text-neutral-700 dark:text-gray-300">Téléphone de l'ambassade (si
+                    bilatérale)</label>
+                <input name="embassy_phone" data-bilateral-create
+                    class="mt-1 w-full rounded-md border border-neutral-300 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-[#073066] dark:focus:border-blue-500 focus:ring-2 focus:ring-[#073066]/20 dark:focus:ring-blue-500/20" />
+            </div>
+            <div>
+                <label class="text-xs font-medium text-neutral-700 dark:text-gray-300">Site web de l'ambassade (si
+                    bilatérale)</label>
+                <input name="embassy_website" data-bilateral-create
+                    class="mt-1 w-full rounded-md border border-neutral-300 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-[#073066] dark:focus:border-blue-500 focus:ring-2 focus:ring-[#073066]/20 dark:focus:ring-blue-500/20" />
+            </div>
+            <div>
                 <label class="text-xs font-medium text-neutral-700 dark:text-gray-300">Website</label>
                 <input name="website"
                     class="mt-1 w-full rounded-md border border-neutral-300 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-[#073066] dark:focus:border-blue-500 focus:ring-2 focus:ring-[#073066]/20 dark:focus:ring-blue-500/20" />

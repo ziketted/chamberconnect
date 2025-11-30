@@ -1,5 +1,106 @@
 @extends('layouts.app')
 
+@push('styles')
+<style>
+/* Animations fluides pour les boutons d'action */
+.like-btn,
+.inline-flex {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Animation scale fluide */
+.scale-95 {
+    transform: scale(0.95);
+}
+
+.scale-110 {
+    animation: pulse-scale 0.3s ease-in-out;
+}
+
+@keyframes pulse-scale {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+/* Effet glassmorphism sur les boutons */
+.backdrop-blur-sm {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+/* Hover effect professionnel */
+.like-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.like-btn:active {
+    transform: translateY(0);
+}
+
+/* Animation pour le compteur de likes */
+.likes-count {
+    transition: all 0.2s ease;
+}
+
+/* Style du cœur */
+.like-btn i[data-lucide="heart"] {
+    transition: all 0.3s ease;
+}
+
+.like-btn i[data-lucide="heart"].fill-current {
+    fill: currentColor;
+}
+
+/* Effet hover sur les icônes */
+.group:hover i {
+    transform: scale(1.1);
+}
+
+/* Bordures fluides */
+.event-card {
+    transition: all 0.3s ease;
+}
+
+.event-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Séparateur élégant */
+.h-10.w-px {
+    background: linear-gradient(to bottom, transparent, currentColor 20%, currentColor 80%, transparent);
+}
+
+/* Animation d'entrée pour les événements */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.event-card {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+/* Responsive touch feedback sur mobile */
+@media (hover: none) and (pointer: coarse) {
+    .like-btn:active {
+        transform: scale(0.95);
+    }
+}
+</style>
+@endpush
+
 @section('content')
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
     <!-- Main Content -->
@@ -75,29 +176,29 @@
         <div class="border-b border-neutral-200 dark:border-gray-700 mb-6">
             <nav class="flex gap-1">
                 <a href="{{ route('events', ['tab' => 'for-you']) }}"
-                    class="px-4 py-2 text-sm font-medium transition-colors {{ $tab === 'for-you' ? 'text-[#073066] dark:text-blue-400 border-b-2 border-[#073066] dark:border-blue-500' : 'text-neutral-600 dark:text-gray-400 hover:text-neutral-900 dark:hover:text-white' }}">
+                    class="px-4 py-2 text-sm font-medium transition-colors {{ $tab === 'for-you' ? 'text-[#2563eb] dark:text-blue-400 border-b-2 border-[#2563eb] dark:border-blue-500' : 'text-neutral-600 dark:text-gray-400 hover:text-neutral-900 dark:hover:text-white' }}">
                     For you
                     @if(isset($stats['for_you_count']) && $stats['for_you_count'] > 0)
                     <span
-                        class="ml-1 inline-flex items-center justify-center w-5 h-5 text-xs font-medium bg-[#073066] text-white rounded-full">{{
+                        class="ml-1 inline-flex items-center justify-center w-5 h-5 text-xs font-medium bg-[#2563eb] text-white rounded-full">{{
                         $stats['for_you_count'] }}</span>
                     @endif
                 </a>
                 <a href="{{ route('events', ['tab' => 'following']) }}"
-                    class="px-4 py-2 text-sm font-medium transition-colors {{ $tab === 'following' ? 'text-[#073066] dark:text-blue-400 border-b-2 border-[#073066] dark:border-blue-500' : 'text-neutral-600 dark:text-gray-400 hover:text-neutral-900 dark:hover:text-white' }}">
+                    class="px-4 py-2 text-sm font-medium transition-colors {{ $tab === 'following' ? 'text-[#2563eb] dark:text-blue-400 border-b-2 border-[#2563eb] dark:border-blue-500' : 'text-neutral-600 dark:text-gray-400 hover:text-neutral-900 dark:hover:text-white' }}">
                     Following
                     @if(isset($stats['following_count']) && $stats['following_count'] > 0)
                     <span
-                        class="ml-1 inline-flex items-center justify-center w-5 h-5 text-xs font-medium bg-green-600 text-white rounded-full">{{
+                        class="ml-1 inline-flex items-center justify-center w-5 h-5 text-xs font-medium bg-[#2563eb] text-white rounded-full">{{
                         $stats['following_count'] }}</span>
                     @endif
                 </a>
                 <a href="{{ route('events', ['tab' => 'events']) }}"
-                    class="px-4 py-2 text-sm font-medium transition-colors {{ $tab === 'events' ? 'text-[#073066] dark:text-blue-400 border-b-2 border-[#073066] dark:border-blue-500' : 'text-neutral-600 dark:text-gray-400 hover:text-neutral-900 dark:hover:text-white' }}">
+                    class="px-4 py-2 text-sm font-medium transition-colors {{ $tab === 'events' ? 'text-[#2563eb] dark:text-blue-400 border-b-2 border-[#2563eb] dark:border-blue-500' : 'text-neutral-600 dark:text-gray-400 hover:text-neutral-900 dark:hover:text-white' }}">
                     Events
                     @if(isset($stats['events_count']) && $stats['events_count'] > 0)
                     <span
-                        class="ml-1 inline-flex items-center justify-center w-5 h-5 text-xs font-medium bg-neutral-600 text-white rounded-full">{{
+                        class="ml-1 inline-flex items-center justify-center w-5 h-5 text-xs font-medium bg-[#2563eb] text-white rounded-full">{{
                         $stats['events_count'] }}</span>
                     @endif
                 </a>
@@ -148,7 +249,7 @@
                             class="h-48 w-full object-cover sm:h-full">
                         @else
                         <div
-                            class="h-48 sm:h-full bg-gradient-to-br from-[#073066] to-[#052347] flex items-center justify-center">
+                            class="h-48 sm:h-full bg-gradient-to-br from-[#1e40af] to-[#2563eb] flex items-center justify-center">
                             <div class="text-center text-white">
                                 @if($event->type === 'forum')
                                 <i data-lucide="users" class="h-12 w-12 mx-auto mb-2"></i>
@@ -175,7 +276,7 @@
                                         class="h-10 w-10 rounded-lg object-cover shadow-sm">
                                     @else
                                     <div
-                                        class="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[#073066] to-[#052347] text-white shadow-sm">
+                                        class="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[#1e40af] to-[#2563eb] text-white shadow-sm">
                                         <span class="text-sm font-medium">{{ strtoupper(substr($event->chamber->name, 0,
                                             2)) }}</span>
                                     </div>
@@ -261,12 +362,40 @@
                             @endif
 
                             <!-- Actions -->
-                            <div class="flex items-center gap-3">
-                                <button onclick="toggleLike(this)" data-likes="{{ rand(10, 50) }}"
-                                    class="like-btn inline-flex items-center justify-center w-9 h-9 rounded-full text-neutral-400 dark:text-gray-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-200">
-                                    <i data-lucide="heart" class="h-4 w-4"></i>
+                            <div class="flex items-center gap-2">
+                                {{-- Bouton J'aime avec compteur --}}
+                                @auth
+                                <button onclick="toggleEventLike(this, {{ $event->id }})" 
+                                        data-event-id="{{ $event->id }}"
+                                        data-liked="{{ $event->is_liked ?? false ? 'true' : 'false' }}"
+                                        data-likes-count="{{ $event->likes_count ?? 0 }}"
+                                        class="like-btn inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-neutral-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm transition-all duration-200 hover:bg-neutral-50 dark:hover:bg-gray-700/50 hover:border-neutral-300 dark:hover:border-gray-600 group">
+                                    <i data-lucide="heart" class="h-4 w-4 text-neutral-600 dark:text-gray-400 group-hover:scale-110 transition-transform {{ ($event->is_liked ?? false) ? 'fill-current' : '' }}"></i>
+                                    <span class="likes-count text-sm font-medium text-neutral-700 dark:text-gray-300">{{ $event->likes_count ?? 0 }}</span>
+                                </button>
+                                @else
+                                <button onclick="openModal('signin-modal')" 
+                                        class="like-btn inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-neutral-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm transition-all duration-200 hover:bg-neutral-50 dark:hover:bg-gray-700/50 hover:border-neutral-300 dark:hover:border-gray-600 group">
+                                    <i data-lucide="heart" class="h-4 w-4 text-neutral-600 dark:text-gray-400 group-hover:scale-110 transition-transform"></i>
+                                    <span class="likes-count text-sm font-medium text-neutral-700 dark:text-gray-300">{{ $event->likes_count ?? 0 }}</span>
+                                </button>
+                                @endauth
+                                
+                                {{-- Bouton Partager --}}
+                                <button onclick="shareEvent({{ $event->id }})"
+                                        class="inline-flex items-center justify-center w-10 h-10 rounded-lg border border-neutral-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm transition-all duration-200 hover:bg-neutral-50 dark:hover:bg-gray-700/50 hover:border-neutral-300 dark:hover:border-gray-600">
+                                    <i data-lucide="share-2" class="h-4 w-4 text-neutral-600 dark:text-gray-400"></i>
+                                </button>
+                                
+                                {{-- Bouton Vues --}}
+                                <button onclick="viewEvent({{ $event->id }})"
+                                        class="inline-flex items-center justify-center w-10 h-10 rounded-lg border border-neutral-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm transition-all duration-200 hover:bg-neutral-50 dark:hover:bg-gray-700/50 hover:border-neutral-300 dark:hover:border-gray-600">
+                                    <i data-lucide="eye" class="h-4 w-4 text-neutral-600 dark:text-gray-400"></i>
                                 </button>
 
+                                {{-- Séparateur visuel --}}
+                                <div class="h-10 w-px bg-neutral-200 dark:bg-gray-700"></div>
+                                
                                 @auth
                                 @if($event->is_booked)
                                 <!-- Utilisateur déjà inscrit -->
@@ -276,9 +405,9 @@
                                         @csrf
                                         @method('PATCH')
                                         <button type="submit"
-                                            class="inline-flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700 transition-colors shadow-sm">
-                                            <i data-lucide="check" class="h-4 w-4"></i>
-                                            Confirmer
+                                            class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#2563eb] to-[#1e40af] px-5 py-2.5 text-sm font-semibold text-white hover:shadow-lg hover:scale-105 transition-all duration-200">
+                                            <i data-lucide="check-circle" class="h-4 w-4"></i>
+                                            Confirmer participation
                                         </button>
                                     </form>
                                     @endif
@@ -286,17 +415,27 @@
                                     @if($event->mode === 'online' && $event->lien_live && $event->booking_status ===
                                     'confirmed')
                                     <a href="{{ $event->lien_live }}" target="_blank"
-                                        class="inline-flex items-center gap-2 rounded-md bg-green-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-green-700 transition-colors shadow-sm">
-                                        <i data-lucide="external-link" class="h-4 w-4"></i>
-                                        Rejoindre
+                                        class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-green-600 to-emerald-600 px-5 py-2.5 text-sm font-semibold text-white hover:shadow-lg hover:scale-105 transition-all duration-200">
+                                        <i data-lucide="video" class="h-4 w-4"></i>
+                                        Rejoindre en ligne
                                     </a>
                                     @endif
 
+                                    {{-- Bouton d'annulation - Désactivé si confirmé --}}
+                                    @if($event->booking_status === 'confirmed')
+                                    <button type="button" 
+                                            disabled
+                                            title="Vous ne pouvez pas annuler un événement confirmé. Contactez l'organisateur."
+                                            class="inline-flex items-center gap-2 rounded-lg border border-neutral-200 dark:border-gray-700 bg-neutral-50 dark:bg-gray-800 px-4 py-2.5 text-sm font-medium text-neutral-400 dark:text-gray-500 cursor-not-allowed opacity-50">
+                                        <i data-lucide="ban" class="h-4 w-4"></i>
+                                        <span class="text-xs">Confirmé</span>
+                                    </button>
+                                    @else
                                     <button type="button" 
                                             onclick="openCancelModal({{ $event->id }}, '{{ $event->title }}')"
-                                            class="inline-flex items-center gap-2 rounded-md border border-orange-200 dark:border-orange-800 bg-white dark:bg-gray-800 px-4 py-2.5 text-sm font-medium text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors">
-                                        <i data-lucide="x" class="h-4 w-4"></i>
-                                        Annuler
+                                            class="inline-flex items-center gap-2 rounded-lg border border-neutral-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm px-4 py-2.5 text-sm font-medium text-neutral-600 dark:text-gray-400 hover:bg-neutral-50 dark:hover:bg-gray-700/50 hover:border-neutral-300 dark:hover:border-gray-600 transition-all duration-200">
+                                        <i data-lucide="x-circle" class="h-4 w-4"></i>
+                                        Annuler réservation
                                     </button>
                                     
                                     <!-- Formulaire caché pour l'annulation -->
@@ -304,39 +443,34 @@
                                         @csrf
                                         @method('DELETE')
                                     </form>
+                                    @endif
                                 </div>
                                 @else
                                 <!-- Utilisateur non inscrit -->
                                 @if($event->status === 'full')
                                 <button disabled
-                                    class="inline-flex items-center gap-2 rounded-md bg-gray-400 px-4 py-2.5 text-sm font-medium text-white cursor-not-allowed">
+                                    class="inline-flex items-center gap-2 rounded-lg border border-neutral-200 dark:border-gray-700 bg-neutral-100 dark:bg-gray-800 px-5 py-2.5 text-sm font-medium text-neutral-400 dark:text-gray-500 cursor-not-allowed opacity-60">
                                     <i data-lucide="users-x" class="h-4 w-4"></i>
-                                    Fin réservations
+                                    Complet
                                 </button>
                                 @else
                                 <form action="{{ route('events.book', $event) }}" method="POST" class="inline">
                                     @csrf
                                     <button type="submit"
-                                        class="inline-flex items-center gap-2 rounded-md bg-[#073066] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#052347] transition-colors shadow-sm">
-                                        <i data-lucide="calendar-plus" class="h-4 w-4"></i>
-                                        Réserver place
+                                        class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#2563eb] to-[#1e40af] px-5 py-2.5 text-sm font-semibold text-white hover:shadow-lg hover:scale-105 transition-all duration-200">
+                                        <i data-lucide="calendar-check" class="h-4 w-4"></i>
+                                        Réserver une place
                                     </button>
                                 </form>
                                 @endif
                                 @endif
                                 @else
                                 <button onclick="openModal('signin-modal')"
-                                    class="inline-flex items-center gap-2 rounded-md bg-[#073066] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#052347] transition-colors shadow-sm">
-                                    <i data-lucide="calendar-plus" class="h-4 w-4"></i>
-                                    Réserver place
+                                    class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#2563eb] to-[#1e40af] px-5 py-2.5 text-sm font-semibold text-white hover:shadow-lg hover:scale-105 transition-all duration-200">
+                                    <i data-lucide="log-in" class="h-4 w-4"></i>
+                                    Se connecter pour réserver
                                 </button>
                                 @endauth
-
-                                <button onclick="incrementViews(this)" data-views="{{ rand(50, 200) }}"
-                                    class="inline-flex items-center gap-2 rounded-md border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2.5 text-sm font-medium text-neutral-600 dark:text-gray-400 hover:bg-neutral-50 dark:hover:bg-gray-700 hover:border-neutral-300 transition-colors">
-                                    <i data-lucide="eye" class="h-4 w-4"></i>
-                                    Voir plus
-                                </button>
                             </div>
                         </div>
                     </div>
@@ -357,7 +491,7 @@
                     @auth
                     @if(auth()->user()->hasAdminPrivileges())
                     <a href="{{ route('chambers.events.create', auth()->user()->chambers()->first() ?? 1) }}"
-                        class="inline-flex items-center gap-2 rounded-lg bg-[#073066] px-4 py-2 text-sm font-medium text-white hover:bg-[#052347] transition-colors">
+                        class="inline-flex items-center gap-2 rounded-lg bg-[#2563eb] px-4 py-2 text-sm font-medium text-white hover:bg-[#1e40af] transition-colors">
                         <i data-lucide="calendar-plus" class="h-4 w-4"></i>
                         Créer un événement
                     </a>
@@ -375,7 +509,7 @@
             <!-- Section Avantages Entrepreneurs -->
             <div class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800">
                 <div class="border-b border-neutral-200 dark:border-gray-700 p-4">
-                    <h2 class="text-sm font-semibold text-[#073066] dark:text-blue-400">Pourquoi participer aux
+                    <h2 class="text-sm font-semibold text-[#2563eb] dark:text-blue-400">Pourquoi participer aux
                         événements ?</h2>
                     <p class="mt-1 text-xs text-neutral-600 dark:text-gray-400">Les avantages clés pour votre entreprise
                     </p>
@@ -384,7 +518,7 @@
                     <div class="space-y-4">
                         <div class="flex items-start gap-3">
                             <div
-                                class="flex-shrink-0 w-8 h-8 rounded-full bg-[#073066]/10 text-[#073066] dark:text-blue-400 flex items-center justify-center">
+                                class="flex-shrink-0 w-8 h-8 rounded-full bg-[#2563eb]/10 text-[#2563eb] dark:text-blue-400 flex items-center justify-center">
                                 <i data-lucide="users" class="h-4 w-4"></i>
                             </div>
                             <div>
@@ -450,7 +584,7 @@
                     @guest
                     <div class="mt-4 pt-4 border-t border-neutral-200 dark:border-gray-700">
                         <a href="{{ route('register') }}"
-                            class="inline-flex items-center gap-2 w-full justify-center rounded-md bg-[#073066] px-3 py-2 text-xs font-semibold text-white hover:bg-[#052347] transition-colors">
+                            class="inline-flex items-center gap-2 w-full justify-center rounded-md bg-[#2563eb] px-3 py-2 text-xs font-semibold text-white hover:bg-[#1e40af] transition-colors">
                             <i data-lucide="user-plus" class="h-3 w-3"></i>
                             Rejoindre maintenant
                         </a>
@@ -459,146 +593,159 @@
                 </div>
             </div>
 
-            <!-- Carrousel des Sponsors Tech -->
+            <!-- Carrousel des Partenaires -->
             <div
                 class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden">
                 <div class="border-b border-neutral-200 dark:border-gray-700 p-4">
-                    <h2 class="text-sm font-semibold text-[#073066] dark:text-blue-400">Nos Sponsors Tech</h2>
-                    <p class="mt-1 text-xs text-neutral-600 dark:text-gray-400">Leaders technologiques qui soutiennent
-                        l'innovation</p>
+                    <h2 class="text-sm font-semibold text-[#2563eb] dark:text-blue-400">Nos Partenaires</h2>
+                    <p class="mt-1 text-xs text-neutral-600 dark:text-gray-400">Institutions qui soutiennent notre
+                        écosystème</p>
                 </div>
                 <div class="p-4">
                     <div class="relative overflow-hidden">
                         <div class="sponsors-carousel flex transition-transform duration-500 ease-in-out"
                             id="sponsors-carousel">
-                            <!-- Sponsor 1 - Microsoft -->
+                            <!-- Partenaire 1 - SEGUCE -->
                             <div class="sponsor-slide flex-shrink-0 w-full flex items-center justify-center p-4">
                                 <div class="flex flex-col items-center space-y-3">
                                     <div
-                                        class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
-                                        <svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor">
-                                            <path
-                                                d="M11.4 24H0V12.6h11.4V24zM24 24H12.6V12.6H24V24zM11.4 11.4H0V0h11.4v11.4zM24 11.4H12.6V0H24v11.4z" />
-                                        </svg>
+                                        class="w-20 h-20 rounded-lg bg-white dark:bg-gray-700 border border-neutral-200 dark:border-gray-600 flex items-center justify-center p-2 shadow-sm">
+                                        <img src="{{ asset('img/partenaires/seguce.png') }}" alt="SEGUCE"
+                                            class="w-full h-full object-contain">
                                     </div>
                                     <div class="text-center">
                                         <span
-                                            class="text-xs font-medium text-neutral-700 dark:text-gray-300">Microsoft</span>
-                                        <p class="text-xs text-neutral-500 dark:text-gray-500 mt-1">Cloud & IA</p>
+                                            class="text-xs font-medium text-neutral-700 dark:text-gray-300">SEGUCE</span>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Sponsor 2 - Google -->
+                            <!-- Partenaire 2 - Commerce -->
                             <div class="sponsor-slide flex-shrink-0 w-full flex items-center justify-center p-4">
                                 <div class="flex flex-col items-center space-y-3">
                                     <div
-                                        class="w-16 h-16 bg-gradient-to-br from-red-500 via-yellow-500 to-blue-500 rounded-lg flex items-center justify-center shadow-lg">
-                                        <span class="text-white font-bold text-2xl">G</span>
+                                        class="w-20 h-20 rounded-lg bg-white dark:bg-gray-700 border border-neutral-200 dark:border-gray-600 flex items-center justify-center p-2 shadow-sm">
+                                        <img src="{{ asset('img/partenaires/commerce.png') }}" alt="Commerce"
+                                            class="w-full h-full object-contain">
                                     </div>
                                     <div class="text-center">
                                         <span
-                                            class="text-xs font-medium text-neutral-700 dark:text-gray-300">Google</span>
-                                        <p class="text-xs text-neutral-500 dark:text-gray-500 mt-1">Search & Ads</p>
+                                            class="text-xs font-medium text-neutral-700 dark:text-gray-300">Commerce</span>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Sponsor 3 - Amazon AWS -->
+                            <!-- Partenaire 3 - DGDA -->
                             <div class="sponsor-slide flex-shrink-0 w-full flex items-center justify-center p-4">
                                 <div class="flex flex-col items-center space-y-3">
                                     <div
-                                        class="w-16 h-16 bg-gradient-to-br from-orange-400 to-orange-500 rounded-lg flex items-center justify-center shadow-lg">
-                                        <svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor">
-                                            <path
-                                                d="M.045 18.02c.072-.116.187-.124.348-.022 3.636 2.11 7.594 3.166 11.87 3.166 2.852 0 5.668-.533 8.447-1.595l.315-.14c.138-.06.234-.1.293-.13.226-.088.39-.046.525.13.12.174.09.336-.12.48-.256.19-.6.41-1.006.654-1.244.743-2.64 1.316-4.185 1.726-1.548.41-3.156.615-4.83.615-2.424 0-4.73-.315-6.914-.946-2.185-.63-4.17-1.54-5.955-2.73-.195-.13-.285-.285-.225-.465l.437-.743z" />
-                                        </svg>
+                                        class="w-20 h-20 rounded-lg bg-white dark:bg-gray-700 border border-neutral-200 dark:border-gray-600 flex items-center justify-center p-2 shadow-sm">
+                                        <img src="{{ asset('img/partenaires/dgda.jpg') }}" alt="DGDA"
+                                            class="w-full h-full object-contain">
                                     </div>
                                     <div class="text-center">
-                                        <span class="text-xs font-medium text-neutral-700 dark:text-gray-300">Amazon
-                                            AWS</span>
-                                        <p class="text-xs text-neutral-500 dark:text-gray-500 mt-1">Cloud Computing</p>
+                                        <span class="text-xs font-medium text-neutral-700 dark:text-gray-300">DGDA</span>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Sponsor 4 - Meta -->
+                            <!-- Partenaire 4 - DGI -->
                             <div class="sponsor-slide flex-shrink-0 w-full flex items-center justify-center p-4">
                                 <div class="flex flex-col items-center space-y-3">
                                     <div
-                                        class="w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
-                                        <span class="text-white font-bold text-2xl">M</span>
+                                        class="w-20 h-20 rounded-lg bg-white dark:bg-gray-700 border border-neutral-200 dark:border-gray-600 flex items-center justify-center p-2 shadow-sm">
+                                        <img src="{{ asset('img/partenaires/dgi.png') }}" alt="DGI"
+                                            class="w-full h-full object-contain">
                                     </div>
                                     <div class="text-center">
-                                        <span
-                                            class="text-xs font-medium text-neutral-700 dark:text-gray-300">Meta</span>
-                                        <p class="text-xs text-neutral-500 dark:text-gray-500 mt-1">Social & VR</p>
+                                        <span class="text-xs font-medium text-neutral-700 dark:text-gray-300">DGI</span>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Sponsor 5 - Apple -->
+                            <!-- Partenaire 5 - AZES -->
                             <div class="sponsor-slide flex-shrink-0 w-full flex items-center justify-center p-4">
                                 <div class="flex flex-col items-center space-y-3">
                                     <div
-                                        class="w-16 h-16 bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg flex items-center justify-center shadow-lg">
-                                        <svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="currentColor">
-                                            <path
-                                                d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
-                                        </svg>
+                                        class="w-20 h-20 rounded-lg bg-white dark:bg-gray-700 border border-neutral-200 dark:border-gray-600 flex items-center justify-center p-2 shadow-sm">
+                                        <img src="{{ asset('img/partenaires/azes.jpg') }}" alt="AZES"
+                                            class="w-full h-full object-contain">
                                     </div>
                                     <div class="text-center">
-                                        <span
-                                            class="text-xs font-medium text-neutral-700 dark:text-gray-300">Apple</span>
-                                        <p class="text-xs text-neutral-500 dark:text-gray-500 mt-1">Innovation Tech</p>
+                                        <span class="text-xs font-medium text-neutral-700 dark:text-gray-300">AZES</span>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Sponsor 6 - IBM -->
+                            <!-- Partenaire 6 - ZELCAF -->
                             <div class="sponsor-slide flex-shrink-0 w-full flex items-center justify-center p-4">
                                 <div class="flex flex-col items-center space-y-3">
                                     <div
-                                        class="w-16 h-16 bg-gradient-to-br from-blue-700 to-blue-800 rounded-lg flex items-center justify-center shadow-lg">
-                                        <span class="text-white font-bold text-lg">IBM</span>
-                                    </div>
-                                    <div class="text-center">
-                                        <span class="text-xs font-medium text-neutral-700 dark:text-gray-300">IBM</span>
-                                        <p class="text-xs text-neutral-500 dark:text-gray-500 mt-1">AI & Analytics</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Sponsor 7 - Oracle -->
-                            <div class="sponsor-slide flex-shrink-0 w-full flex items-center justify-center p-4">
-                                <div class="flex flex-col items-center space-y-3">
-                                    <div
-                                        class="w-16 h-16 bg-gradient-to-br from-red-600 to-red-700 rounded-lg flex items-center justify-center shadow-lg">
-                                        <span class="text-white font-bold text-sm">ORACLE</span>
+                                        class="w-20 h-20 rounded-lg bg-white dark:bg-gray-700 border border-neutral-200 dark:border-gray-600 flex items-center justify-center p-2 shadow-sm">
+                                        <img src="{{ asset('img/partenaires/zelcaf.jpg') }}" alt="ZELCAF"
+                                            class="w-full h-full object-contain">
                                     </div>
                                     <div class="text-center">
                                         <span
-                                            class="text-xs font-medium text-neutral-700 dark:text-gray-300">Oracle</span>
-                                        <p class="text-xs text-neutral-500 dark:text-gray-500 mt-1">Database & Cloud</p>
+                                            class="text-xs font-medium text-neutral-700 dark:text-gray-300">ZELCAF</span>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Sponsor 8 - Salesforce -->
+                            <!-- Partenaire 7 - BCC -->
                             <div class="sponsor-slide flex-shrink-0 w-full flex items-center justify-center p-4">
                                 <div class="flex flex-col items-center space-y-3">
                                     <div
-                                        class="w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-500 rounded-lg flex items-center justify-center shadow-lg">
-                                        <svg class="w-8 h-8 text-white" viewBox="0 0 24 24" fill="currentColor">
-                                            <path
-                                                d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z" />
-                                            <circle cx="12" cy="12" r="3" />
-                                        </svg>
+                                        class="w-20 h-20 rounded-lg bg-white dark:bg-gray-700 border border-neutral-200 dark:border-gray-600 flex items-center justify-center p-2 shadow-sm">
+                                        <img src="{{ asset('img/partenaires/bcc.png') }}" alt="BCC"
+                                            class="w-full h-full object-contain">
+                                    </div>
+                                    <div class="text-center">
+                                        <span class="text-xs font-medium text-neutral-700 dark:text-gray-300">BCC</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Partenaire 8 - ANADEC -->
+                            <div class="sponsor-slide flex-shrink-0 w-full flex items-center justify-center p-4">
+                                <div class="flex flex-col items-center space-y-3">
+                                    <div
+                                        class="w-20 h-20 rounded-lg bg-white dark:bg-gray-700 border border-neutral-200 dark:border-gray-600 flex items-center justify-center p-2 shadow-sm">
+                                        <img src="{{ asset('img/partenaires/anadec.png') }}" alt="ANADEC"
+                                            class="w-full h-full object-contain">
                                     </div>
                                     <div class="text-center">
                                         <span
-                                            class="text-xs font-medium text-neutral-700 dark:text-gray-300">Salesforce</span>
-                                        <p class="text-xs text-neutral-500 dark:text-gray-500 mt-1">CRM & Sales</p>
+                                            class="text-xs font-medium text-neutral-700 dark:text-gray-300">ANADEC</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Partenaire 9 - ANAPI -->
+                            <div class="sponsor-slide flex-shrink-0 w-full flex items-center justify-center p-4">
+                                <div class="flex flex-col items-center space-y-3">
+                                    <div
+                                        class="w-20 h-20 rounded-lg bg-white dark:bg-gray-700 border border-neutral-200 dark:border-gray-600 flex items-center justify-center p-2 shadow-sm">
+                                        <img src="{{ asset('img/partenaires/anapi.png') }}" alt="ANAPI"
+                                            class="w-full h-full object-contain">
+                                    </div>
+                                    <div class="text-center">
+                                        <span
+                                            class="text-xs font-medium text-neutral-700 dark:text-gray-300">ANAPI</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Partenaire 10 - FPI -->
+                            <div class="sponsor-slide flex-shrink-0 w-full flex items-center justify-center p-4">
+                                <div class="flex flex-col items-center space-y-3">
+                                    <div
+                                        class="w-20 h-20 rounded-lg bg-white dark:bg-gray-700 border border-neutral-200 dark:border-gray-600 flex items-center justify-center p-2 shadow-sm">
+                                        <img src="{{ asset('img/partenaires/fpi.png') }}" alt="FPI"
+                                            class="w-full h-full object-contain">
+                                    </div>
+                                    <div class="text-center">
+                                        <span class="text-xs font-medium text-neutral-700 dark:text-gray-300">FPI</span>
                                     </div>
                                 </div>
                             </div>
@@ -606,7 +753,7 @@
 
                         <!-- Indicateurs de navigation -->
                         <div class="flex justify-center mt-4 space-x-2">
-                            <button class="sponsor-dot w-2 h-2 rounded-full bg-[#073066] transition-all duration-200"
+                            <button class="sponsor-dot w-2 h-2 rounded-full bg-[#2563eb] transition-all duration-200"
                                 data-slide="0"></button>
                             <button
                                 class="sponsor-dot w-2 h-2 rounded-full bg-neutral-300 hover:bg-neutral-400 transition-all duration-200"
@@ -629,6 +776,12 @@
                             <button
                                 class="sponsor-dot w-2 h-2 rounded-full bg-neutral-300 hover:bg-neutral-400 transition-all duration-200"
                                 data-slide="7"></button>
+                            <button
+                                class="sponsor-dot w-2 h-2 rounded-full bg-neutral-300 hover:bg-neutral-400 transition-all duration-200"
+                                data-slide="8"></button>
+                            <button
+                                class="sponsor-dot w-2 h-2 rounded-full bg-neutral-300 hover:bg-neutral-400 transition-all duration-200"
+                                data-slide="9"></button>
                         </div>
                     </div>
                 </div>
@@ -639,6 +792,115 @@
 
 @push('scripts')
 <script>
+// Fonction pour gérer les likes d'événements
+function toggleEventLike(button, eventId) {
+    // Vérifier si l'utilisateur est connecté
+    @guest
+    openModal('signin-modal');
+    return;
+    @endguest
+    
+    const isLiked = button.getAttribute('data-liked') === 'true';
+    const likesCountSpan = button.querySelector('.likes-count');
+    const heartIcon = button.querySelector('i[data-lucide="heart"]');
+    let currentCount = parseInt(button.getAttribute('data-likes-count') || '0');
+    
+    // Désactiver le bouton temporairement
+    button.disabled = true;
+    
+    // Animation optimiste
+    button.classList.add('scale-95');
+    setTimeout(() => {
+        button.classList.remove('scale-95');
+    }, 150);
+    
+    // Appel AJAX
+    fetch(`/events/${eventId}/like`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Mettre à jour l'état
+        button.setAttribute('data-liked', data.liked ? 'true' : 'false');
+        button.setAttribute('data-likes-count', data.likes_count);
+        
+        // Mettre à jour le compteur avec animation
+        if (likesCountSpan) {
+            likesCountSpan.classList.add('scale-110');
+            likesCountSpan.textContent = data.likes_count;
+            setTimeout(() => {
+                likesCountSpan.classList.remove('scale-110');
+            }, 200);
+        }
+        
+        // Animer le cœur
+        if (heartIcon) {
+            if (data.liked) {
+                heartIcon.classList.add('fill-current', 'scale-110');
+                setTimeout(() => {
+                    heartIcon.classList.remove('scale-110');
+                }, 200);
+            } else {
+                heartIcon.classList.remove('fill-current');
+            }
+        }
+        
+        // Réinitialiser les icônes
+        lucide.createIcons();
+    })
+    .catch(error => {
+        console.error('Erreur lors du like:', error);
+        showNotification('Une erreur s\'est produite', 'error');
+    })
+    .finally(() => {
+        // Réactiver le bouton
+        button.disabled = false;
+    });
+}
+
+// Fonction pour partager un événement
+function shareEvent(eventId) {
+    if (navigator.share) {
+        navigator.share({
+            title: 'Événement ChamberConnect',
+            text: 'Découvrez cet événement intéressant !',
+            url: window.location.href
+        }).catch(err => console.log('Erreur de partage:', err));
+    } else {
+        // Copier l'URL dans le presse-papiers
+        navigator.clipboard.writeText(window.location.href).then(() => {
+            showNotification('Lien copié dans le presse-papiers !', 'success');
+        });
+    }
+}
+
+// Fonction pour voir un événement
+function viewEvent(eventId) {
+    window.location.href = `/events/${eventId}`;
+}
+
+// Fonction de notification
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg transition-all duration-300 transform translate-x-full ${type === 'error' ? 'bg-red-600' : 'bg-green-600'} text-white`;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.classList.remove('translate-x-full');
+    }, 100);
+    
+    setTimeout(() => {
+        notification.classList.add('translate-x-full');
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+
     document.addEventListener('DOMContentLoaded', function() {
     // Initialiser Lucide
     lucide.createIcons({ attrs: { 'stroke-width': 1.5 } });
@@ -835,7 +1097,7 @@
                         </div>
                         <h3 class="text-lg font-medium text-neutral-900 dark:text-white mb-2">Aucun événement trouvé</h3>
                         <p class="text-sm text-neutral-600 dark:text-gray-400">Essayez de modifier vos critères de recherche ou vos filtres.</p>
-                        <button onclick="eventFilters.clearAllFilters()" class="mt-4 inline-flex items-center gap-2 rounded-md bg-[#073066] px-4 py-2 text-sm font-semibold text-white hover:bg-[#052347] transition-colors">
+                        <button onclick="eventFilters.clearAllFilters()" class="mt-4 inline-flex items-center gap-2 rounded-md bg-[#2563eb] px-4 py-2 text-sm font-semibold text-white hover:bg-[#1e40af] transition-colors">
                             <i data-lucide="refresh-cw" class="h-4 w-4"></i>
                             Réinitialiser les filtres
                         </button>
@@ -864,10 +1126,10 @@
         eventFilters.clearAllFilters();
     };
 
-    // Carrousel des sponsors
+    // Carrousel des partenaires
     const sponsorsCarousel = {
         currentSlide: 0,
-        totalSlides: 8, // Nombre total de sponsors
+        totalSlides: 10, // Nombre total de partenaires
         autoPlayInterval: null,
         
         init() {
@@ -909,9 +1171,9 @@
             dots.forEach((dot, index) => {
                 if (index === slideIndex) {
                     dot.classList.remove('bg-neutral-300');
-                    dot.classList.add('bg-[#073066]');
+                    dot.classList.add('bg-[#2563eb]');
                 } else {
-                    dot.classList.remove('bg-[#073066]');
+                    dot.classList.remove('bg-[#2563eb]');
                     dot.classList.add('bg-neutral-300');
                 }
             });

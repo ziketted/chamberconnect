@@ -20,17 +20,17 @@ class DashboardController extends Controller
             $chambers = Chamber::withCount('members')->get();
             $popular_chambers = $chambers->take(3);
 
-            // Récupérer les événements populaires avec les likes
+            // Récupérer les événements populaires NON RÉSERVÉS par le SuperAdmin
             $popularEvents = Event::with(['chamber', 'creator', 'participants', 'likes'])
+                ->whereHas('chamber') // Seulement les événements avec une chambre
                 ->where('date', '>=', now())
+                ->where('status', 'upcoming')
+                ->whereDoesntHave('participants', function ($query) use ($user) {
+                    $query->where('user_id', $user->id);
+                })
                 ->orderBy('date', 'asc')
                 ->limit(5)
-                ->get()
-                ->map(function ($event) use ($user) {
-                    $userChamberIds = $user->chambers()->pluck('chambers.id');
-                    $isUserChamber = $userChamberIds->contains($event->chamber_id);
-                    return $this->formatEventForDisplay($event, $isUserChamber);
-                });
+                ->get();
 
             return view('dashboard', compact('chambers', 'popular_chambers', 'popularEvents'));
         } else {
@@ -166,25 +166,28 @@ class DashboardController extends Controller
         $userChambers = $user->chambers()->withCount('members')->get();
         $userChambersCount = $userChambers->count();
 
-        // Nombre d'événements auxquels l'utilisateur a participé (simulé pour l'instant)
-        $participatedEventsCount = 0; // À implémenter quand le système d'événements sera prêt
+        // Nombre d'événements auxquels l'utilisateur a participé/réservé
+        $participatedEventsCount = Event::whereHas('participants', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })->count();
 
         // Récupérer les événements réels de la base de données
         $userChamberIds = $userChambers->pluck('id');
 
         // Événements des chambres de l'utilisateur seulement
-        // Filtrer pour ne montrer que ceux non réservés par l'utilisateur et à venir
+        // Filtrer pour ne montrer que ceux NON RÉSERVÉS par l'utilisateur et à venir
         $allEvents = Event::with(['chamber', 'creator', 'participants', 'likes'])
+            ->whereHas('chamber') // Seulement les événements avec une chambre
             ->whereIn('chamber_id', $userChamberIds)
             ->where('date', '>=', now())
             ->whereDoesntHave('participants', function ($query) use ($user) {
                 $query->where('user_id', $user->id);
             })
             ->orderBy('date', 'asc')
-            ->get()
-            ->map(function ($event) {
-                return $this->formatEventForDisplay($event, true);
-            });
+            ->get();
+
+        // Événements populaires pour la sidebar (5 premiers non réservés)
+        $popularEvents = $allEvents->take(5);
 
         // Chambres dont l'utilisateur n'est pas membre (pour la sidebar droite)
         $suggestedChambers = Chamber::withCount('members')
@@ -228,6 +231,7 @@ class DashboardController extends Controller
             'userChambersCount',
             'participatedEventsCount',
             'allEvents',
+            'popularEvents',
             'suggestedChambers',
             'investmentInfo'
         ));

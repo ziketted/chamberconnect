@@ -38,6 +38,42 @@ class ProfileController extends Controller
     }
 
     /**
+     * Update the user's profile photo.
+     */
+    public function updatePhoto(Request $request)
+    {
+        $request->validate([
+            'profile_photo' => ['required', 'image', 'max:2048'], // 2MB max
+        ]);
+
+        $user = $request->user();
+
+        // Supprimer l'ancienne photo si elle existe
+        if ($user->avatar) {
+            \Storage::disk('public')->delete($user->avatar);
+        }
+        
+        // Supprimer aussi profile_photo_path si existe
+        if ($user->profile_photo_path) {
+            \Storage::disk('public')->delete($user->profile_photo_path);
+        }
+
+        // Sauvegarder la nouvelle photo
+        $path = $request->file('profile_photo')->store('profile-photos', 'public');
+        
+        // Mettre à jour les deux champs pour compatibilité
+        $user->avatar = $path;
+        $user->profile_photo_path = $path;
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Photo de profil mise à jour avec succès',
+            'photo_url' => asset('storage/' . $path)
+        ]);
+    }
+
+    /**
      * Delete the user's account.
      */
     public function destroy(Request $request): RedirectResponse

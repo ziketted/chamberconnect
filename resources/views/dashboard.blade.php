@@ -218,6 +218,61 @@
                     <div class="w-2 h-2 bg-gray-500 rounded-full"></div>
                 </div>
             </div>
+
+            <!-- Taux de Change -->
+            <div class="rounded-xl bg-gray-800 dark:bg-gray-900 p-4">
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-sm font-semibold text-white">Taux de Change</h2>
+                    <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <p class="text-xs text-gray-300 mb-4">Devises vers CDF</p>
+
+                <div id="exchange-rates-loading-admin" class="space-y-3">
+                    <div class="animate-pulse">
+                        <div class="h-10 bg-gray-700 rounded-lg"></div>
+                    </div>
+                    <div class="animate-pulse">
+                        <div class="h-10 bg-gray-700 rounded-lg"></div>
+                    </div>
+                </div>
+
+                <div id="exchange-rates-content-admin" class="space-y-3 hidden">
+                    <!-- USD -->
+                    <div class="flex items-center justify-between p-3 rounded-lg bg-gray-700/50 border border-gray-600">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-full bg-green-900/30 flex items-center justify-center">
+                                <span class="text-xs font-bold text-green-400">$</span>
+                            </div>
+                            <span class="text-sm font-medium text-white">1 USD</span>
+                        </div>
+                        <span id="rate-usd-admin" class="text-sm font-semibold text-white">-</span>
+                    </div>
+
+                    <!-- EUR -->
+                    <div class="flex items-center justify-between p-3 rounded-lg bg-gray-700/50 border border-gray-600">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-full bg-blue-900/30 flex items-center justify-center">
+                                <span class="text-xs font-bold text-blue-400">€</span>
+                            </div>
+                            <span class="text-sm font-medium text-white">1 EUR</span>
+                        </div>
+                        <span id="rate-eur-admin" class="text-sm font-semibold text-white">-</span>
+                    </div>
+                </div>
+
+                <div id="exchange-rates-error-admin" class="hidden text-center py-3">
+                    <p class="text-xs text-red-400">Erreur de chargement</p>
+                </div>
+
+                <div class="mt-3 pt-3 border-t border-gray-700">
+                    <p class="text-xs text-gray-500 text-center" id="last-update-admin">
+                        Mise à jour en cours...
+                    </p>
+                </div>
+            </div>
         </div>
     </aside>
 
@@ -406,235 +461,23 @@
 
                 <div class="space-y-4">
                     @forelse($popularEvents ?? [] as $event)
-                    <!-- Événement dynamique -->
-                    <div class="bg-gray-800 dark:bg-gray-900 border border-gray-700 rounded-lg p-4">
-                        <!-- Header avec logo et badge -->
-                        <div class="flex items-center justify-between mb-3">
-                            <div class="flex items-center gap-3">
-                                <div
-                                    class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <span class="text-white font-bold text-sm">{{
-                                        strtoupper(substr($event['chamber_name'], 0, 2)) }}</span>
-                                </div>
-                                <div>
-                                    @if($event['is_user_chamber'])
-                                    <div class="text-xs text-yellow-400 font-medium">⭐ Ma chambre</div>
-                                    @else
-                                    <div class="text-xs text-gray-400 font-medium">{{ $event['chamber_name'] }}</div>
-                                    @endif
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-1 text-xs text-gray-400">
-                                <i data-lucide="clock" class="h-3 w-3"></i>
-                                @if($event['max_participants'])
-                                <span>{{ $event['max_participants'] - $event['participants'] }} places</span>
-                                @else
-                                <span>Places illimitées</span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <!-- Titre -->
-                        <h3 class="text-lg font-semibold text-white mb-3">{{ $event['title'] }}</h3>
-
-                        <!-- Détails -->
-                        <div class="space-y-2 mb-4">
-                            <div class="flex items-center gap-2 text-sm text-gray-300">
-                                <i data-lucide="calendar" class="h-4 w-4"></i>
-                                <span>{{ $event['date'] }} à {{ $event['time'] }}</span>
-                            </div>
-                            <div class="flex items-center gap-2 text-sm text-gray-300">
-                                <i data-lucide="map-pin" class="h-4 w-4"></i>
-                                <span>{{ $event['location'] }}</span>
-                            </div>
-                            <div class="flex items-center gap-2 text-sm text-gray-300">
-                                <i data-lucide="users" class="h-4 w-4"></i>
-                                <span>{{ $event['participants'] }}@if($event['max_participants'])/{{
-                                    $event['max_participants'] }}@endif participants</span>
-                            </div>
-                            <div class="flex items-center gap-2 text-sm text-gray-300">
-                                <i data-lucide="tag" class="h-4 w-4"></i>
-                                <span>{{ ucfirst($event['type']) }}</span>
-                            </div>
-                        </div>
-
-                        <!-- Description -->
-                        <p class="text-sm text-gray-400 mb-4">{{ Str::limit($event['description'], 100) }}</p>
-
-                        <!-- Actions -->
-                        <div class="flex items-center gap-3">
-                            <button onclick="toggleEventLike(this, {{ $event['id'] }})"
-                                data-event-id="{{ $event['id'] }}"
-                                class="like-btn flex items-center gap-2 px-3 py-2 text-sm text-gray-300 hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-200 rounded-lg border border-gray-600 {{ $event['is_liked'] ? 'liked' : '' }}"
-                                style="{{ $event['is_liked'] ? 'color: #f87171; border-color: #f87171; background-color: rgba(254, 226, 226, 0.3);' : '' }}">
-                                <i data-lucide="heart"
-                                    class="h-4 w-4 {{ $event['is_liked'] ? 'fill-current' : '' }}"></i>
-                                <span class="like-count">{{ $event['likes_count'] }}</span>
-                            </button>
-                            @if($event['status'] !== 'complet')
-                            <button data-action="reserve" data-event-id="{{ $event['id'] }}"
-                                data-event-title="{{ $event['title'] }}"
-                                class="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors">
-                                <i data-lucide="calendar-plus" class="h-4 w-4"></i>
-                                <span>Réserver place</span>
-                            </button>
-                            @else
-                            <button disabled
-                                class="flex items-center gap-2 px-4 py-2 bg-gray-600 text-gray-400 text-sm font-medium rounded-md cursor-not-allowed">
-                                <i data-lucide="users-x" class="h-4 w-4"></i>
-                                <span>Complet</span>
-                            </button>
-                            @endif
-                            <button onclick="viewEventDetails('{{ $event['id'] }}')"
-                                class="flex items-center gap-2 px-3 py-2 text-sm text-gray-300 hover:text-white transition-colors">
-                                <i data-lucide="eye" class="h-4 w-4"></i>
-                                <span>Voir plus</span>
-                            </button>
-                        </div>
-                    </div>
+                    <x-event-card :event="$event" />
                     @empty
                     <!-- Message si aucun événement -->
-                    <div class="bg-gray-800 dark:bg-gray-900 border border-gray-700 rounded-lg p-6 text-center">
-                        <div class="w-12 h-12 bg-gray-700 rounded-lg flex items-center justify-center mx-auto mb-3">
-                            <i data-lucide="calendar-x" class="h-6 w-6 text-gray-400"></i>
+                    <div class="bg-gray-900 border border-gray-800 rounded-2xl p-8 text-center">
+                        <div class="w-16 h-16 bg-gray-800 rounded-xl flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
                         </div>
-                        <h3 class="text-sm font-medium text-white mb-2">Aucun événement disponible</h3>
-                        <p class="text-xs text-gray-400">Les événements apparaîtront ici une fois créés.</p>
+                        <h3 class="text-base font-semibold text-white mb-2">Aucun événement disponible</h3>
+                        <p class="text-sm text-gray-400">Les événements apparaîtront ici une fois créés par les
+                            chambres.</p>
                     </div>
                     @endforelse
-
-                    <!-- Événement statique pour démonstration -->
-                    <div class="bg-gray-800 dark:bg-gray-900 border border-gray-700 rounded-lg p-4">
-                        <!-- Header avec logo et badge -->
-                        <div class="flex items-center justify-between mb-3">
-                            <div class="flex items-center gap-3">
-                                <div
-                                    class="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <span class="text-white font-bold text-sm">CH</span>
-                                </div>
-                                <div>
-                                    <div class="text-xs text-yellow-400 font-medium">⭐ Ma chambre</div>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-1 text-xs text-gray-400">
-                                <i data-lucide="clock" class="h-3 w-3"></i>
-                                <span>14 places</span>
-                            </div>
-                        </div>
-
-                        <!-- Titre -->
-                        <h3 class="text-lg font-semibold text-white mb-3">Forum Entrepreneurial Jeunes</h3>
-
-                        <!-- Détails -->
-                        <div class="space-y-2 mb-4">
-                            <div class="flex items-center gap-2 text-sm text-gray-300">
-                                <i data-lucide="calendar" class="h-4 w-4"></i>
-                                <span>14 Nov à 16:30:00</span>
-                            </div>
-                            <div class="flex items-center gap-2 text-sm text-gray-300">
-                                <i data-lucide="map-pin" class="h-4 w-4"></i>
-                                <span>Salle de Conférences BCDC</span>
-                            </div>
-                            <div class="flex items-center gap-2 text-sm text-gray-300">
-                                <i data-lucide="users" class="h-4 w-4"></i>
-                                <span>29/87 participants</span>
-                            </div>
-                            <div class="flex items-center gap-2 text-sm text-gray-300">
-                                <i data-lucide="tag" class="h-4 w-4"></i>
-                                <span>Conférence</span>
-                            </div>
-                        </div>
-
-                        <!-- Description -->
-                        <p class="text-sm text-gray-400 mb-4">Événement de networking professionnel pour étendre votre
-                            réseau et créer de nouvelles opportunités d'affaires. Organisé...</p>
-
-                        <!-- Actions -->
-                        <div class="flex items-center gap-3">
-                            <button data-action="like" data-event-id="demo"
-                                class="flex items-center gap-2 px-3 py-2 text-sm text-gray-300 hover:text-white transition-colors">
-                                <i data-lucide="heart" class="h-4 w-4"></i>
-                                <span>J'aime</span>
-                            </button>
-                            <button data-action="reserve" data-event-id="demo"
-                                data-event-title="Forum Entrepreneurial Jeunes"
-                                class="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors">
-                                <i data-lucide="calendar-plus" class="h-4 w-4"></i>
-                                <span>Réserver place</span>
-                            </button>
-                            <button
-                                class="flex items-center gap-2 px-3 py-2 text-sm text-gray-300 hover:text-white transition-colors">
-                                <i data-lucide="eye" class="h-4 w-4"></i>
-                                <span>Voir plus</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Forum d'Affaires Kinshasa -->
-                    <div class="bg-gray-800 dark:bg-gray-900 border border-gray-700 rounded-lg p-4">
-                        <!-- Header avec logo et badge -->
-                        <div class="flex items-center justify-between mb-3">
-                            <div class="flex items-center gap-3">
-                                <div
-                                    class="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <span class="text-white font-bold text-sm">CH</span>
-                                </div>
-                                <div>
-                                    <div class="text-xs text-yellow-400 font-medium">⭐ Ma chambre</div>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-1 text-xs text-gray-400">
-                                <i data-lucide="clock" class="h-3 w-3"></i>
-                                <span>16 places</span>
-                            </div>
-                        </div>
-
-                        <!-- Titre -->
-                        <h3 class="text-lg font-semibold text-white mb-3">Forum d'Affaires Kinshasa</h3>
-
-                        <!-- Détails -->
-                        <div class="space-y-2 mb-4">
-                            <div class="flex items-center gap-2 text-sm text-gray-300">
-                                <i data-lucide="calendar" class="h-4 w-4"></i>
-                                <span>16 Nov à 14:00:00</span>
-                            </div>
-                            <div class="flex items-center gap-2 text-sm text-gray-300">
-                                <i data-lucide="map-pin" class="h-4 w-4"></i>
-                                <span>Centre de Conférences</span>
-                            </div>
-                            <div class="flex items-center gap-2 text-sm text-gray-300">
-                                <i data-lucide="users" class="h-4 w-4"></i>
-                                <span>45/165 participants</span>
-                            </div>
-                            <div class="flex items-center gap-2 text-sm text-gray-300">
-                                <i data-lucide="tag" class="h-4 w-4"></i>
-                                <span>Forum</span>
-                            </div>
-                        </div>
-
-                        <!-- Description -->
-                        <p class="text-sm text-gray-400 mb-4">Grand forum d'affaires pour développer les opportunités
-                            commerciales et les partenariats stratégiques en RDC...</p>
-
-                        <!-- Actions -->
-                        <div class="flex items-center gap-3">
-                            <button data-action="like" data-event-id="3"
-                                class="flex items-center gap-2 px-3 py-2 text-sm text-gray-300 hover:text-white transition-colors">
-                                <i data-lucide="heart" class="h-4 w-4"></i>
-                                <span>J'aime</span>
-                            </button>
-                            <button data-action="reserve" data-event-id="3" data-event-title="Forum d'Affaires Kinshasa"
-                                class="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors">
-                                <i data-lucide="calendar-plus" class="h-4 w-4"></i>
-                                <span>Réserver place</span>
-                            </button>
-                            <button
-                                class="flex items-center gap-2 px-3 py-2 text-sm text-gray-300 hover:text-white transition-colors">
-                                <i data-lucide="eye" class="h-4 w-4"></i>
-                                <span>Voir plus</span>
-                            </button>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -1081,6 +924,55 @@
         // Pour l'instant, on peut juste afficher une notification
         showNotification(`Détails de l'événement ${eventId} - Fonctionnalité à venir`, 'info');
     };
+
+    // Fonction pour récupérer les taux de change (SuperAdmin)
+    function fetchExchangeRatesAdmin() {
+        const loadingDiv = document.getElementById('exchange-rates-loading-admin');
+        const contentDiv = document.getElementById('exchange-rates-content-admin');
+        const errorDiv = document.getElementById('exchange-rates-error-admin');
+        const lastUpdateElement = document.getElementById('last-update-admin');
+
+        // API gratuite pour les taux de change (USD et EUR vers CDF)
+        fetch('https://api.exchangerate-api.com/v4/latest/USD')
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.rates && data.rates.CDF) {
+                    // Calculer 1 USD = X CDF et 1 EUR = X CDF
+                    const usdToCdf = data.rates.CDF;
+
+                    // Pour EUR vers CDF, on fait: (CDF/USD) * (USD/EUR) = CDF/EUR
+                    const eurToUsd = data.rates.EUR;
+                    const eurToCdf = usdToCdf / eurToUsd;
+
+                    // Afficher les taux avec formatage
+                    document.getElementById('rate-usd-admin').textContent = usdToCdf.toFixed(2) + ' CDF';
+                    document.getElementById('rate-eur-admin').textContent = eurToCdf.toFixed(2) + ' CDF';
+
+                    // Mettre à jour la date
+                    const now = new Date();
+                    lastUpdateElement.textContent = `Mis à jour: ${now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`;
+
+                    // Afficher le contenu
+                    loadingDiv.classList.add('hidden');
+                    contentDiv.classList.remove('hidden');
+                    errorDiv.classList.add('hidden');
+                } else {
+                    throw new Error('Format de données invalide');
+                }
+            })
+            .catch(error => {
+                console.error('Erreur lors de la récupération des taux:', error);
+                loadingDiv.classList.add('hidden');
+                errorDiv.classList.remove('hidden');
+                lastUpdateElement.textContent = 'Échec de la mise à jour';
+            });
+    }
+
+    // Charger les taux au chargement de la page
+    fetchExchangeRatesAdmin();
+
+    // Actualiser toutes les 5 minutes
+    setInterval(fetchExchangeRatesAdmin, 5 * 60 * 1000);
 </script>
 @endpush
 @endsection

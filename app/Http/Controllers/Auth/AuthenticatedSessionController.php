@@ -30,11 +30,21 @@ class AuthenticatedSessionController extends Controller
 
         // Redirect based on user role
         $user = Auth::user();
-        
+
         if ($user->isSuperAdmin()) {
             return redirect()->intended(route('admin.chambers', absolute: false));
         } elseif ($user->isChamberManager()) {
-            return redirect()->intended(route('chamber-manager.dashboard', absolute: false));
+            // Récupérer la première chambre que l'utilisateur gère
+            $managedChamber = $user->chambers()
+                ->wherePivot('role', 'manager')
+                ->first();
+
+            if ($managedChamber) {
+                return redirect()->intended(route('chamber-manager.dashboard', $managedChamber, absolute: false));
+            }
+
+            // Si aucune chambre trouvée, rediriger vers le dashboard normal
+            return redirect()->intended(route('dashboard', absolute: false));
         }
 
         return redirect()->intended(route('dashboard', absolute: false));

@@ -141,6 +141,13 @@ class ChamberListController extends Controller
             ],
         ];
 
+        // Ajouter les statistiques de l'utilisateur si connecté
+        if (auth()->check()) {
+            $user = auth()->user();
+            $data['userChambersCount'] = $user->chambers()->count();
+            $data['participatedEventsCount'] = $user->events()->count();
+        }
+
         return view('chambers.index', $data);
     }
 }

@@ -63,13 +63,15 @@ class EventController extends Controller
                 $events = $baseQuery->get();
         }
 
-        // Ajouter les informations de réservation
+        // Ajouter les informations de réservation et likes
         $upcoming_events = $events->map(function ($event) use ($user) {
             $event->is_booked = $user ? $event->isBookedBy($user) : false;
             $event->booking_status = $user ? $event->getBookingStatus($user) : null;
             $event->participants_count = $event->participants()->count();
             $event->available_spots = $event->availableSpots();
             $event->is_user_chamber_member = $user ? in_array($event->chamber_id, $user->chambers()->pluck('chambers.id')->toArray()) : false;
+            $event->is_liked = $user ? $event->isLikedBy($user) : false;
+            $event->likes_count = $event->likes()->count();
             return $event;
         })->sortBy('date');
 
@@ -150,5 +152,23 @@ class EventController extends Controller
                 'message' => 'Erreur lors de la récupération des détails de l\'événement'
             ], 500);
         }
+    }
+    /**
+     * Afficher les détails d'un événement
+     */
+    public function show(Event $event)
+    {
+        $user = Auth::user();
+        
+        // Charger les relations nécessaires
+        $event->load(['chamber', 'participants', 'likes']);
+        
+        // Ajouter les informations de réservation si l'utilisateur est connecté
+        if ($user) {
+            $event->is_booked = $event->isBookedBy($user);
+            $event->booking_status = $event->getBookingStatus($user);
+        }
+        
+        return view('events.detail', compact('event'));
     }
 }

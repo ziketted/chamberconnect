@@ -9,6 +9,7 @@ use App\Http\Controllers\ChamberListController;
 use App\Http\Controllers\ChamberController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\OpportunityController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
 // Language Switcher
@@ -17,9 +18,7 @@ Route::get('language/{locale}', [LanguageController::class, 'switch'])
     ->where('locale', 'en|fr');
 
 // Public Routes
-Route::get('/', function () {
-    return view('home');
-})->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Chambers Routes
 Route::get('/chambers', [ChamberListController::class, 'index'])->name('chambers');
@@ -27,6 +26,9 @@ Route::get('/chamber/{chamber}', [ChamberController::class, 'show'])->name('cham
 
 // Events Routes
 Route::get('/events', [EventController::class, 'index'])->name('events');
+Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
+Route::get('/events/{event}/details', [EventController::class, 'show'])->name('events.detail');
+Route::get('/events/{event}/booking', [EventController::class, 'showBooking'])->name('events.booking');
 
 // Opportunities Routes
 Route::get('/opportunities', [OpportunityController::class, 'index'])->name('opportunities');
@@ -39,6 +41,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Super Admin Routes (is_admin = 1)

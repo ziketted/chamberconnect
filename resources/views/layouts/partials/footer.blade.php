@@ -11,10 +11,10 @@
                 </div>
             </div>
             <div class="flex items-center gap-6 text-sm">
-                <a href="#" class="text-neutral-700 dark:text-gray-300 hover:text-neutral-900 dark:text-white">{{ __('messages.about') }}</a>
-                <a href="#" class="text-neutral-700 dark:text-gray-300 hover:text-neutral-900 dark:text-white">{{ __('messages.events') }}</a>
-                <a href="#" class="text-neutral-700 dark:text-gray-300 hover:text-neutral-900 dark:text-white">{{ __('messages.partners') }}</a>
-                <a href="#" class="text-neutral-700 dark:text-gray-300 hover:text-neutral-900 dark:text-white">{{ __('messages.support') }}</a>
+                <a href="{{ route('home') }}" class="text-neutral-700 dark:text-gray-300 hover:text-neutral-900 dark:hover:text-white">{{ __('messages.about') }}</a>
+                <a href="{{ route('chambers') }}" class="text-neutral-700 dark:text-gray-300 hover:text-neutral-900 dark:hover:text-white">{{ __('messages.chambers') }}</a>
+                <a href="{{ route('opportunities') }}" class="text-neutral-700 dark:text-gray-300 hover:text-neutral-900 dark:hover:text-white">{{ __('messages.opportunities') }}</a>
+                <a href="{{ route('events') }}" class="text-neutral-700 dark:text-gray-300 hover:text-neutral-900 dark:hover:text-white">{{ __('messages.events') }}</a>
             </div>
         </div>
         <div class="mt-6 flex items-center justify-between border-t border-neutral-200 dark:border-gray-700 pt-6">
