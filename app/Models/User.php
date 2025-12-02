@@ -56,9 +56,35 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
+    /**
+     * Relation avec les chambres dont l'utilisateur est membre
+     * Inclut tous les champs pivot: role, status, position
+     */
     public function chambers()
     {
-        return $this->belongsToMany(Chamber::class)->withPivot('role')->withTimestamps();
+        return $this->belongsToMany(Chamber::class)
+            ->withPivot(['role', 'status', 'position'])
+            ->withTimestamps();
+    }
+
+    /**
+     * Chambres où l'utilisateur est membre approuvé (pas applicant)
+     */
+    public function approvedChambers()
+    {
+        return $this->chambers()
+            ->wherePivot('status', 'approved')
+            ->whereIn('chamber_user.role', ['member', 'manager']);
+    }
+
+    /**
+     * Chambres où l'utilisateur a fait une demande en attente
+     */
+    public function pendingChamberRequests()
+    {
+        return $this->chambers()
+            ->wherePivot('role', 'applicant')
+            ->wherePivot('status', 'pending');
     }
 
     public function managesChamber(Chamber $chamber): bool

@@ -114,7 +114,7 @@ class SuperAdminController extends Controller
             'verified' => true,
         ]);
 
-        return redirect()->back()->with('success', "Chambre '{$chamber->name}' certifiée!");
+        return redirect()->back()->with('success', "Chambre '{$chamber->name}' agréée!");
     }
 
     /**
@@ -228,11 +228,28 @@ class SuperAdminController extends Controller
 
     /**
      * Approuve une demande de création de chambre
+     * Met à jour le statut de la chambre ET le rôle de l'applicant en manager
      */
     public function approveChamberRequest(Chamber $chamber)
     {
+        // Mettre à jour le statut de la chambre
         $chamber->update(['verified' => true]);
-        return redirect()->back()->with('success', "Demande approuvée pour '{$chamber->name}'");
+        
+        // Mettre à jour tous les applicants en managers avec status approved
+        $applicants = $chamber->members()->wherePivot('role', 'applicant')->get();
+        foreach ($applicants as $applicant) {
+            $chamber->members()->updateExistingPivot($applicant->id, [
+                'role' => 'manager',
+                'status' => 'approved',
+            ]);
+            
+            // Mettre à jour le rôle de l'utilisateur en gestionnaire de chambre
+            if ($applicant->is_admin === User::ROLE_USER) {
+                $applicant->update(['is_admin' => User::ROLE_CHAMBER_MANAGER]);
+            }
+        }
+        
+        return redirect()->back()->with('success', "Demande approuvée pour '{$chamber->name}'. L'applicant est maintenant manager.");
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Chamber;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class SuperAdminChamberController extends Controller
@@ -129,24 +130,40 @@ class SuperAdminChamberController extends Controller
         ]);
 
         return redirect()->route('super-admin.chambers.show-request', $chamber->id)
-            ->with('success', "✅ Chambre '{$chamber->name}' certifiée avec succès! Numéro d'état: {$validated['state_number']}");
+            ->with('success', "✅ Chambre '{$chamber->name}' agréée avec succès! Numéro d'état: {$validated['state_number']}");
     }
 
     /**
      * Approuve une demande de création de chambre
+     * Met à jour le statut de la chambre ET le rôle de l'applicant en manager
      */
     public function approve(Request $request, $id)
     {
         $chamber = Chamber::findOrFail($id);
         
+        // Mettre à jour le statut de la chambre
         $chamber->update([
             'verified' => true,
         ]);
 
+        // Mettre à jour tous les applicants en managers avec status approved
+        $applicants = $chamber->members()->wherePivot('role', 'applicant')->get();
+        foreach ($applicants as $applicant) {
+            $chamber->members()->updateExistingPivot($applicant->id, [
+                'role' => 'manager',
+                'status' => 'approved',
+            ]);
+            
+            // Mettre à jour le rôle de l'utilisateur en gestionnaire de chambre
+            if ($applicant->is_admin === User::ROLE_USER) {
+                $applicant->update(['is_admin' => User::ROLE_CHAMBER_MANAGER]);
+            }
+        }
+
         // TODO: Envoyer email de notification
 
         return redirect()->route('super-admin.chambers.index')
-            ->with('success', "Demande approuvée pour '{$chamber->name}'");
+            ->with('success', "Demande approuvée pour '{$chamber->name}'. L'applicant est maintenant manager.");
     }
 
     /**

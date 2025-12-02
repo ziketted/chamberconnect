@@ -9,7 +9,7 @@ class ChamberAdminController extends Controller
 {
     public function index()
     {
-        $chambers = Chamber::latest()->get();
+        $chambers = Chamber::latest()->paginate(15);
         return view('admin.chambers.admins', compact('chambers'));
     }
 }

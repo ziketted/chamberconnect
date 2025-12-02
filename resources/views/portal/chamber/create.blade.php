@@ -314,19 +314,6 @@
                                 @enderror
                             </div>
 
-                            <!-- NINA -->
-                            <div class="md:col-span-2">
-                                <label for="nina_number"
-                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                    Numéro d'identification nationale (NINA) *
-                                </label>
-                                <input type="text" name="nina_number" id="nina_number" required
-                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:text-white"
-                                    placeholder="Numéro NINA" value="{{ old('nina_number') }}">
-                                @error('nina_number')
-                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                                @enderror
-                            </div>
                         </div>
                     </div>
 
@@ -397,21 +384,6 @@
                                 <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Noms, fonctions, coordonnées,
                                     signatures</p>
                                 @error('liste_membres')
-                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            <!-- Plan d'action -->
-                            <div>
-                                <label for="plan_action"
-                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                    Plan d'action ou programme d'activités * <span class="text-xs text-gray-500">(PDF -
-                                        Max 10MB)</span>
-                                </label>
-                                <input type="file" name="plan_action" id="plan_action" accept=".pdf" required
-                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100">
-                                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Prévisions sur 1 à 3 ans</p>
-                                @error('plan_action')
                                 <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                                 @enderror
                             </div>
@@ -625,13 +597,12 @@
 
         // Documents
         html += '<div class="mt-4"><strong>Documents téléversés:</strong><ul class="list-disc list-inside mt-2 space-y-1">';
-        const documents = ['statuts', 'reglement_interieur', 'pv_assemblee', 'liste_membres', 'plan_action', 'pieces_identite', 'lettre_demande'];
+        const documents = ['statuts', 'reglement_interieur', 'pv_assemblee', 'liste_membres', 'pieces_identite', 'lettre_demande'];
         const documentLabels = {
             'statuts': 'Statuts signés',
             'reglement_interieur': 'Règlement intérieur',
             'pv_assemblee': 'PV Assemblée constitutive',
             'liste_membres': 'Liste des membres fondateurs',
-            'plan_action': 'Plan d\'action',
             'pieces_identite': 'Pièces d\'identité',
             'lettre_demande': 'Lettre de demande'
         };

@@ -1,5 +1,72 @@
 @extends('layouts.app')
 
+@push('styles')
+<!-- Quill.js CSS -->
+<link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+<style>
+    /* Personnalisation de l'éditeur Quill */
+    .ql-toolbar.ql-snow {
+        border: none !important;
+        padding: 8px 12px;
+    }
+    .ql-container.ql-snow {
+        border: none !important;
+        font-size: 14px;
+    }
+    .ql-editor {
+        min-height: 200px;
+        padding: 16px;
+    }
+    .ql-editor.ql-blank::before {
+        font-style: normal;
+        color: #9ca3af;
+    }
+    /* Dark mode support */
+    .dark .ql-toolbar {
+        background: #374151 !important;
+    }
+    .dark .ql-stroke {
+        stroke: #d1d5db !important;
+    }
+    .dark .ql-fill {
+        fill: #d1d5db !important;
+    }
+    .dark .ql-picker-label {
+        color: #d1d5db !important;
+    }
+    .dark .ql-picker-options {
+        background: #374151 !important;
+    }
+    .dark .ql-picker-item {
+        color: #d1d5db !important;
+    }
+    .dark .ql-editor {
+        color: #f3f4f6;
+    }
+    .dark .ql-editor.ql-blank::before {
+        color: #6b7280;
+    }
+    /* Boutons actifs */
+    .ql-snow .ql-toolbar button:hover,
+    .ql-snow .ql-toolbar button:focus,
+    .ql-snow .ql-toolbar button.ql-active,
+    .ql-snow .ql-toolbar .ql-picker-label:hover,
+    .ql-snow .ql-toolbar .ql-picker-label.ql-active {
+        color: #073066 !important;
+    }
+    .ql-snow .ql-toolbar button:hover .ql-stroke,
+    .ql-snow .ql-toolbar button:focus .ql-stroke,
+    .ql-snow .ql-toolbar button.ql-active .ql-stroke {
+        stroke: #073066 !important;
+    }
+    .ql-snow .ql-toolbar button:hover .ql-fill,
+    .ql-snow .ql-toolbar button:focus .ql-fill,
+    .ql-snow .ql-toolbar button.ql-active .ql-fill {
+        fill: #073066 !important;
+    }
+</style>
+@endpush
+
 @section('content')
 <div class="max-w-3xl mx-auto">
     <div class="mb-6">
@@ -88,9 +155,47 @@
         </div>
 
         <div>
-            <label class="text-xs font-medium text-neutral-700 dark:text-gray-300">Description</label>
-            <textarea name="description" rows="4"
-                class="mt-1 w-full rounded-md border border-neutral-300 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:border-[#073066] dark:focus:border-blue-500 focus:ring-2 focus:ring-[#073066]/20 dark:focus:ring-blue-500/20">{{ old('description', $chamber->description) }}</textarea>
+            <label class="text-xs font-medium text-neutral-700 dark:text-gray-300 mb-2 block">Description</label>
+            <!-- Éditeur de texte riche Quill -->
+            <div class="rounded-md border border-neutral-300 dark:border-gray-600 overflow-hidden">
+                <!-- Barre d'outils personnalisée -->
+                <div id="toolbar" class="bg-neutral-50 dark:bg-gray-700 border-b border-neutral-300 dark:border-gray-600">
+                    <span class="ql-formats">
+                        <select class="ql-header">
+                            <option value="1">Titre 1</option>
+                            <option value="2">Titre 2</option>
+                            <option value="3">Titre 3</option>
+                            <option selected>Normal</option>
+                        </select>
+                    </span>
+                    <span class="ql-formats">
+                        <button class="ql-bold" title="Gras"></button>
+                        <button class="ql-italic" title="Italique"></button>
+                        <button class="ql-underline" title="Souligné"></button>
+                        <button class="ql-strike" title="Barré"></button>
+                    </span>
+                    <span class="ql-formats">
+                        <select class="ql-color" title="Couleur du texte"></select>
+                        <select class="ql-background" title="Couleur de fond"></select>
+                    </span>
+                    <span class="ql-formats">
+                        <button class="ql-list" value="ordered" title="Liste numérotée"></button>
+                        <button class="ql-list" value="bullet" title="Liste à puces"></button>
+                        <select class="ql-align" title="Alignement"></select>
+                    </span>
+                    <span class="ql-formats">
+                        <button class="ql-link" title="Lien"></button>
+                        <button class="ql-blockquote" title="Citation"></button>
+                    </span>
+                    <span class="ql-formats">
+                        <button class="ql-clean" title="Supprimer le formatage"></button>
+                    </span>
+                </div>
+                <!-- Zone d'édition -->
+                <div id="editor" class="bg-white dark:bg-gray-800 min-h-[200px]">{!! old('description', $chamber->description) !!}</div>
+            </div>
+            <!-- Champ caché pour soumettre la description -->
+            <input type="hidden" name="description" id="description-input">
         </div>
 
         <div class="grid sm:grid-cols-2 gap-4">
@@ -321,6 +426,8 @@
 @endsection
 
 @push('scripts')
+<!-- Quill.js Library -->
+<script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         // Afficher/masquer champs bilatérale
@@ -338,6 +445,29 @@
         if (typeof lucide !== 'undefined') {
             lucide.createIcons();
         }
+
+        // Initialisation de l'éditeur Quill
+        const quill = new Quill('#editor', {
+            modules: {
+                toolbar: '#toolbar'
+            },
+            theme: 'snow',
+            placeholder: 'Décrivez votre chambre de commerce... Vous pouvez utiliser les outils ci-dessus pour formater le texte.'
+        });
+
+        // Synchroniser le contenu avec le champ caché avant la soumission
+        const form = document.querySelector('form');
+        const descriptionInput = document.getElementById('description-input');
+        
+        form.addEventListener('submit', function(e) {
+            // Récupérer le contenu HTML de l'éditeur
+            descriptionInput.value = quill.root.innerHTML;
+        });
+
+        // Optionnel: Synchroniser en temps réel
+        quill.on('text-change', function() {
+            descriptionInput.value = quill.root.innerHTML;
+        });
     });
 </script>
 @endpush

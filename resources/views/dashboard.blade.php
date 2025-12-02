@@ -344,7 +344,7 @@
                         </div>
                         @else
                         <!-- Chambre non agréée - bouton pour ouvrir le modal -->
-                        <button type="button" onclick="openCertificationModal('{{ $chamber->slug }}')"
+                        <button type="button" onclick="openAgrémentModal('{{ $chamber->slug }}')"
                             class="inline-flex items-center gap-1.5 rounded-full bg-gray-700 dark:bg-gray-600 px-2.5 py-1 text-xs font-medium text-orange-400 hover:bg-gray-600 dark:hover:bg-gray-500">
                             <i data-lucide="shield-check" class="h-3 w-3"></i>
                             Agréer la chambre
@@ -360,8 +360,7 @@
 
                     <div class="mt-3">
                         <h3 class="text-base font-semibold">{{ $chamber->name }}</h3>
-                        <p class="mt-1 text-sm text-neutral-600 dark:text-gray-400">{{ $chamber->description ??
-                            'Description non disponible' }}</p>
+                        <p class="mt-1 text-sm text-neutral-600 dark:text-gray-400 line-clamp-2">{{ Str::limit(strip_tags($chamber->description), 150) ?? 'Description non disponible' }}</p>
                     </div>
 
                     <div class="mt-3 flex flex-wrap gap-2">
@@ -486,7 +485,7 @@
 
 <!-- Modal d'agrément pour super admin -->
 @if(auth()->user()->isSuperAdmin())
-<div id="certificationModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+<div id="agrémentModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
     <div class="flex min-h-screen items-center justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
         <div class="fixed inset-0 transition-opacity" aria-hidden="true">
             <div class="absolute inset-0 bg-gray-50 dark:bg-gray-8000 opacity-75"></div>
@@ -494,7 +493,7 @@
 
         <div
             class="inline-block transform overflow-hidden rounded-lg bg-white dark:bg-gray-800 text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:align-middle">
-            <form id="certificationForm" method="POST">
+            <form id="agrémentForm" method="POST">
                 @csrf
                 <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                     <div class="sm:flex sm:items-start">
@@ -520,11 +519,11 @@
                                 </div>
 
                                 <div>
-                                    <label for="certification_date"
+                                    <label for="agrément_date"
                                         class="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                         Date d'agrément
                                     </label>
-                                    <input type="date" name="certification_date" id="certification_date" required
+                                    <input type="date" name="agrément_date" id="agrément_date" required
                                         value="{{ date('Y-m-d') }}"
                                         class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:border-gray-400 shadow-sm focus:border-[#073066] dark:focus:border-blue-500 focus:ring-[#073066] sm:text-sm">
                                 </div>
@@ -547,7 +546,7 @@
                         class="inline-flex w-full justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm">
                         Agréer la chambre
                     </button>
-                    <button type="button" onclick="closeCertificationModal()"
+                    <button type="button" onclick="closeAgrémentModal()"
                         class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 dark:border-gray-600 dark:border-gray-400 bg-white dark:bg-gray-800 px-4 py-2 text-base font-medium text-gray-700 dark:text-gray-300 shadow-sm hover:bg-gray-50 dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                         Annuler
                     </button>
@@ -806,10 +805,10 @@
     }
 
     // Fonctions pour le modal d'agrément
-    window.openCertificationModal = function(chamberSlug) {
+    window.openAgrémentModal = function(chamberSlug) {
         console.log('Opening modal for:', chamberSlug);
-        const modal = document.getElementById('certificationModal');
-        const form = document.getElementById('certificationForm');
+        const modal = document.getElementById('agrémentModal');
+        const form = document.getElementById('agrémentForm');
 
         if (!modal || !form) {
             console.error('Modal ou formulaire non trouvé');
@@ -841,19 +840,19 @@
         document.body.style.overflow = 'hidden';
     }
 
-    function closeCertificationModal() {
-        const modal = document.getElementById('certificationModal');
+    function closeAgrémentModal() {
+        const modal = document.getElementById('agrémentModal');
         modal.classList.add('hidden');
         document.body.style.overflow = 'auto';
 
         // Réinitialiser le formulaire
-        document.getElementById('certificationForm').reset();
+        document.getElementById('agrémentForm').reset();
     }
 
     // Fermer le modal en cliquant à l'extérieur
-    document.getElementById('certificationModal')?.addEventListener('click', function(e) {
+    document.getElementById('agrémentModal')?.addEventListener('click', function(e) {
         if (e.target === this) {
-            closeCertificationModal();
+            closeAgrémentModal();
         }
     });
 

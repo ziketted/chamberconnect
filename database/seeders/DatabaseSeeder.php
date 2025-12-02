@@ -15,16 +15,26 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Créer d'abord les chambres
+        $this->call([
+            ChamberSeeder::class,
+            BilateralChambersSeeder::class,
+        ]);
 
+        // Créer un utilisateur de test par défaut
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
 
-        // Ajouter les événements d'exemple
+        // Créer les événements d'exemple
         $this->call([
             EventSeeder::class,
+        ]);
+
+        // Créer les utilisateurs de test qui vont interagir avec les événements et chambres
+        $this->call([
+            TestUsersSeeder::class,
         ]);
     }
 }

@@ -31,7 +31,7 @@
                 <div class="space-y-6">
                     @foreach($pendingChambers as $chamber)
                         @php
-                            $applicationData = json_decode($chamber->certification_notes, true) ?? [];
+                            $applicationData = json_decode($chamber->agrément_notes, true) ?? [];
                             $applicant = $chamber->members->first();
                             $submittedAt = isset($applicationData['submitted_at']) ? \Carbon\Carbon::parse($applicationData['submitted_at']) : $chamber->created_at;
                             $isRejected = isset($applicationData['rejected_at']);

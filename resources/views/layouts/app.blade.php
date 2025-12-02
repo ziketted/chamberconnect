@@ -37,6 +37,9 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
+    <!-- Styles additionnels des pages -->
+    @stack('styles')
 </head>
 
 <body class="min-h-screen bg-[#f5f2ee] dark:bg-gray-900 text-neutral-900 dark:text-gray-100 antialiased selection:bg-[#073066]/10 selection:text-[#073066] dark:selection:bg-blue-500/20 dark:selection:text-blue-300"

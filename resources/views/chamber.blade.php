@@ -137,9 +137,17 @@
                     
                     <!-- Contenu -->
                     <div class="p-6">
-                        <p class="text-base leading-relaxed text-neutral-700 dark:text-gray-300">
-                            {{ $chamber->description ?: 'Cette chambre de commerce connecte les entreprises avec des opportunités de croissance et de développement. Nous fournissons un accès aux informations politiques, à l\'intelligence de marché et au réseautage pour catalyser une croissance durable.' }}
-                        </p>
+                        <div class="prose prose-sm dark:prose-invert max-w-none text-neutral-700 dark:text-gray-300
+                            prose-headings:text-gray-900 dark:prose-headings:text-white
+                            prose-h1:text-xl prose-h2:text-lg prose-h3:text-base
+                            prose-p:leading-relaxed prose-p:my-2
+                            prose-ul:my-2 prose-ol:my-2
+                            prose-li:my-0.5
+                            prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline
+                            prose-blockquote:border-l-blue-500 prose-blockquote:bg-blue-50 dark:prose-blockquote:bg-blue-900/20 prose-blockquote:rounded-r-lg prose-blockquote:py-1
+                            prose-strong:text-gray-900 dark:prose-strong:text-white">
+                            {!! $chamber->description ?: '<p>Cette chambre de commerce connecte les entreprises avec des opportunités de croissance et de développement. Nous fournissons un accès aux informations politiques, à l\'intelligence de marché et au réseautage pour catalyser une croissance durable.</p>' !!}
+                        </div>
                     </div>
                 </section>
 
@@ -599,12 +607,12 @@
 
     <!-- Members tab -->
     <div data-chamber-tab="members" class="hidden p-4 sm:p-6">
-        @if($chamber->approvedMembers->count() > 0)
+        @if($approvedMembers->count() > 0)
         <div
             class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm overflow-hidden">
             <div class="border-b border-neutral-200 dark:border-gray-700 px-4 py-3 flex items-center justify-between">
                 <h3 class="text-sm font-semibold tracking-tight" style="letter-spacing:-0.01em;">Membres actifs ({{
-                    $chamber->approvedMembers->count() }})</h3>
+                    $membersCount }})</h3>
                 <div class="relative">
                     <input type="text" id="members-search" placeholder="Rechercher des membres"
                         class="w-48 rounded-md border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 pl-3 pr-9 py-1.5 text-xs focus:border-[#073066] dark:focus:border-blue-500 focus:ring-2 focus:ring-[#073066]/20 dark:focus:ring-blue-500/20">
@@ -625,7 +633,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-neutral-200 dark:divide-gray-700" id="members-table-body">
-                        @foreach($chamber->approvedMembers as $member)
+                        @foreach($approvedMembers as $member)
                         <tr class="hover:bg-neutral-50 dark:hover:bg-gray-700 member-row"
                             data-member-name="{{ strtolower($member->name) }}"
                             data-member-email="{{ strtolower($member->email) }}">
@@ -668,6 +676,13 @@
                     </tbody>
                 </table>
             </div>
+            
+            <!-- Pagination des membres -->
+            @if($approvedMembers->hasPages())
+            <div class="px-4 py-3 border-t border-neutral-200 dark:border-gray-700">
+                {{ $approvedMembers->fragment('members')->links() }}
+            </div>
+            @endif
         </div>
         @else
         <div class="text-center py-12 text-gray-500 dark:text-gray-400">
@@ -1326,4 +1341,4 @@ document.addEventListener('keydown', function(e) {
 });
 </script>
 
-@endsection@endsection
+@endsection

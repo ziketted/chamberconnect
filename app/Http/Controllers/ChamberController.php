@@ -21,6 +21,8 @@ class ChamberController extends Controller
             'type' => ['nullable', 'in:national,bilateral'],
             'embassy_country' => ['nullable', 'string', 'max:255'],
             'embassy_address' => ['nullable', 'string', 'max:255'],
+            'embassy_phone' => ['nullable', 'string', 'max:255'],
+            'embassy_website' => ['nullable', 'string', 'max:255'],
             'location' => ['nullable', 'string', 'max:255'],
             'address' => ['nullable', 'string', 'max:255'],
             'website' => ['nullable', 'string', 'max:255'],
@@ -44,9 +46,12 @@ class ChamberController extends Controller
         if (empty($chamber->type)) {
             $chamber->type = 'national';
         }
+        // Si ce n'est pas une chambre bilatérale, réinitialiser les champs d'ambassade
         if ($chamber->type !== 'bilateral') {
             $chamber->embassy_country = null;
             $chamber->embassy_address = null;
+            $chamber->embassy_phone = null;
+            $chamber->embassy_website = null;
         }
 
         if ($request->hasFile('logo')) {
@@ -80,14 +85,16 @@ class ChamberController extends Controller
             'events' => function ($q) {
                 $q->where('date', '>=', now()->startOfDay())
                   ->orderBy('date', 'asc');
-            },
-            'approvedMembers' => function ($q) {
-                $q->take(10);
             }
         ]);
 
         // Compter les membres approuvés
         $membersCount = $chamber->approvedMembers()->count();
+        
+        // Paginer les membres approuvés séparément
+        $approvedMembers = $chamber->approvedMembers()
+            ->orderBy('name')
+            ->paginate(20, ['*'], 'members_page');
 
         // Vérifier si l'utilisateur actuel est membre
         $isMember = false;
@@ -125,7 +132,7 @@ class ChamberController extends Controller
             $exchangeRate = $exchangeRateService->getExchangeRateByCountry($chamber->embassy_country);
         }
 
-        return view('chamber', compact('chamber', 'membersCount', 'isMember', 'membershipStatus', 'exchangeRate'));
+        return view('chamber', compact('chamber', 'membersCount', 'isMember', 'membershipStatus', 'exchangeRate', 'approvedMembers'));
     }
 
     public function edit(Chamber $chamber)
@@ -141,6 +148,8 @@ class ChamberController extends Controller
             'type' => ['nullable', 'in:national,bilateral'],
             'embassy_country' => ['nullable', 'string', 'max:255'],
             'embassy_address' => ['nullable', 'string', 'max:255'],
+            'embassy_phone' => ['nullable', 'string', 'max:255'],
+            'embassy_website' => ['nullable', 'string', 'max:255'],
             'location' => ['nullable', 'string', 'max:255'],
             'address' => ['nullable', 'string', 'max:255'],
             'website' => ['nullable', 'string', 'max:255'],
@@ -156,9 +165,12 @@ class ChamberController extends Controller
         if (empty($chamber->type)) {
             $chamber->type = 'national';
         }
+        // Si ce n'est pas une chambre bilatérale, réinitialiser les champs d'ambassade
         if ($chamber->type !== 'bilateral') {
             $chamber->embassy_country = null;
             $chamber->embassy_address = null;
+            $chamber->embassy_phone = null;
+            $chamber->embassy_website = null;
         }
         if ($request->hasFile('logo')) {
             $chamber->logo_path = $request->file('logo')->store('chambers/logos', 'public');

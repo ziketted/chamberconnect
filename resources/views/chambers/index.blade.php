@@ -260,7 +260,7 @@
             @foreach($chambers as $chamber)
             <div class="chamber-card group rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-blue-200 dark:hover:border-blue-800 hover:shadow-md transition-all duration-200 overflow-hidden"
                 data-name="{{ strtolower($chamber['name']) }}"
-                data-description="{{ strtolower($chamber['description']) }}"
+                data-description="{{ strtolower(strip_tags($chamber['description'])) }}"
                 data-activity-level="{{ $chamber['activity_level'] }}"
                 data-events-count="{{ $chamber['upcoming_events'] }}"
                 data-members-count="{{ $chamber['members_count'] }}"
@@ -362,9 +362,9 @@
                                 </div>
                             </div>
 
-                            <!-- Description -->
+                            <!-- Description (texte brut pour l'aperçu) -->
                             <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-3">
-                                {{ $chamber['description'] }}
+                                {{ Str::limit(strip_tags($chamber['description']), 150) }}
                             </p>
 
                             <!-- Métadonnées -->
@@ -528,6 +528,20 @@
 
 @push('scripts')
 <script>
+    // Fonctions utilitaires pour nettoyer le HTML
+    function stripTags(html) {
+        if (!html) return '';
+        const tmp = document.createElement('div');
+        tmp.innerHTML = html;
+        return tmp.textContent || tmp.innerText || '';
+    }
+    
+    function truncateText(text, maxLength) {
+        if (!text) return '';
+        if (text.length <= maxLength) return text;
+        return text.substring(0, maxLength) + '...';
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         lucide.createIcons({ attrs: { 'stroke-width': 1.5 } });
         
@@ -848,7 +862,7 @@
         return `
             <div class="chamber-card group rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-blue-200 dark:hover:border-blue-800 hover:shadow-md transition-all duration-200 overflow-hidden"
                 data-name="${chamber.name.toLowerCase()}"
-                data-description="${chamber.description.toLowerCase()}"
+                data-description="${stripTags(chamber.description).toLowerCase()}"
                 data-activity-level="${chamber.activity_level}"
                 data-events-count="${chamber.upcoming_events}"
                 data-members-count="${chamber.members_count}"
@@ -930,9 +944,9 @@
                                 </div>
                             </div>
 
-                            <!-- Description -->
+                            <!-- Description (texte brut pour l'aperçu) -->
                             <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-3">
-                                ${chamber.description}
+                                ${truncateText(stripTags(chamber.description), 150)}
                             </p>
 
                             <!-- Métadonnées -->

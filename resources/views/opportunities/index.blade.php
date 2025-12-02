@@ -696,7 +696,7 @@
                                     <svg class="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                                     </svg>
-                                    <span class="text-sm text-gray-700 dark:text-gray-300">Certification professionnelle</span>
+                                    <span class="text-sm text-gray-700 dark:text-gray-300">Agrément professionnelle</span>
                                 </div>
                                 <div class="flex items-start gap-3">
                                     <svg class="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -722,7 +722,7 @@
                                 </li>
                                 <li class="flex items-center gap-2">
                                     <span class="w-1.5 h-1.5 bg-blue-600 rounded-full"></span>
-                                    Certification reconnue
+                                    Agrément reconnue
                                 </li>
                                 <li class="flex items-center gap-2">
                                     <span class="w-1.5 h-1.5 bg-blue-600 rounded-full"></span>

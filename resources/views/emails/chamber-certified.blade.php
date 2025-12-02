@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Certification de votre chambre</title>
+    <title>Agrément de votre chambre</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -104,8 +104,8 @@
 
 <body>
     <div class="header">
-        <h1>🏆 Certification Délivrée !</h1>
-        <p>Votre chambre a été officiellement certifiée</p>
+        <h1>🏆 Agrément Délivrée !</h1>
+        <p>Votre chambre a été officiellement agréée</p>
     </div>
 
     <div class="content">
@@ -113,10 +113,10 @@
 
         <h2>Bonjour {{ $manager->name }},</h2>
 
-        <p>Nous avons le plaisir de vous informer que votre chambre a été <strong>officiellement certifiée</strong> par
+        <p>Nous avons le plaisir de vous informer que votre chambre a été <strong>officiellement agréée</strong> par
             le Super Administrateur de ChamberConnect DRC.</p>
 
-        <h3>Détails de certification :</h3>
+        <h3>Détails de agrément :</h3>
         <ul>
             <li><strong>Chambre :</strong> {{ $chamber->name }}</li>
             <li><strong>Localisation :</strong> {{ $chamber->location }}</li>
@@ -127,14 +127,14 @@
         <div class="state-number-box">{{ $stateNumber }}</div>
 
         <div class="info-box">
-            <strong>📅 Date de certification :</strong><br>
-            <span class="date-time">{{ $certificationDate }}</span>
+            <strong>📅 Date de agrément :</strong><br>
+            <span class="date-time">{{ $agrémentDate }}</span>
         </div>
 
-        @if($chamber->certification_notes)
+        @if($chamber->agrément_notes)
         <div class="info-box">
             <strong>📝 Notes :</strong><br>
-            {{ $chamber->certification_notes }}
+            {{ $chamber->agrément_notes }}
         </div>
         @endif
 

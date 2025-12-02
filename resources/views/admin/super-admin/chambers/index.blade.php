@@ -24,7 +24,7 @@
                 <p class="text-2xl font-bold text-blue-600 dark:text-blue-400">{{ $stats['verified'] }}</p>
             </div>
             <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border-l-4 border-green-500">
-                <p class="text-sm text-gray-600 dark:text-gray-400">Certifiées</p>
+                <p class="text-sm text-gray-600 dark:text-gray-400">Agréées</p>
                 <p class="text-2xl font-bold text-green-600 dark:text-green-400">{{ $stats['certified'] }}</p>
             </div>
         </div>
@@ -41,7 +41,7 @@
                     <option value="">Tous les statuts</option>
                     <option value="pending" {{ request('filter_status') === 'pending' ? 'selected' : '' }}>En attente</option>
                     <option value="verified" {{ request('filter_status') === 'verified' ? 'selected' : '' }}>Vérifiées</option>
-                    <option value="certified" {{ request('filter_status') === 'certified' ? 'selected' : '' }}>Certifiées</option>
+                    <option value="certified" {{ request('filter_status') === 'certified' ? 'selected' : '' }}>Agréées</option>
                 </select>
 
                 <button type="submit"
@@ -93,7 +93,7 @@
                                 @endif
                                 @if($chamber->state_number)
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-200">
-                                        Certifiée
+                                        Agréée
                                     </span>
                                 @endif
                             </div>
@@ -111,7 +111,7 @@
                                 @if(!$chamber->verified)
                                 <button onclick="openCertifyModal({{ $chamber->id }}, '{{ $chamber->name }}')"
                                     class="text-green-600 dark:text-green-400 hover:underline text-sm">
-                                    Certifier
+                                    Agréer
                                 </button>
                                 @endif
                                 <button onclick="openDeleteModal({{ $chamber->id }}, '{{ $chamber->name }}')"
@@ -139,10 +139,10 @@
     </div>
 </div>
 
-<!-- Modal de certification -->
+<!-- Modal de agrément -->
 <div id="certifyModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
     <div class="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Certifier la chambre</h3>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Agréer la chambre</h3>
         <form id="certifyForm" method="POST">
             @csrf
             <div class="space-y-4">
@@ -155,9 +155,9 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Date de certification
+                        Date de agrément
                     </label>
-                    <input type="date" name="certification_date" required
+                    <input type="date" name="agrément_date" required
                         class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                 </div>
                 <div>
@@ -171,7 +171,7 @@
             <div class="mt-6 flex gap-3">
                 <button type="submit"
                     class="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors">
-                    Certifier
+                    Agréer
                 </button>
                 <button type="button" onclick="closeCertifyModal()"
                     class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">

@@ -36,7 +36,7 @@
                             @elseif($chamber->verified && $chamber->state_number)
                                 <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
                                     <i data-lucide="shield-check" class="h-3 w-3 mr-1"></i>
-                                    Certifiée
+                                    Agréée
                                 </span>
                             @elseif($chamber->verified)
                                 <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
@@ -193,8 +193,8 @@
                     @if($chamber->description)
                     <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
                         <label class="text-sm font-medium text-gray-700 dark:text-gray-300 block mb-2">Description</label>
-                        <div class="max-w-full">
-                            <p class="text-gray-900 dark:text-gray-100 whitespace-pre-wrap break-words">{{ $chamber->description }}</p>
+                        <div class="max-w-full prose prose-sm dark:prose-invert">
+                            {!! $chamber->description !!}
                         </div>
                     </div>
                     @endif
@@ -263,10 +263,10 @@
                         </button>
 
                         @if(!$chamber->verified || !$chamber->state_number)
-                        <button onclick="openCertificationModal('{{ $chamber->id }}')"
+                        <button onclick="openAgrémentModal('{{ $chamber->id }}')"
                             class="w-full px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors flex items-center justify-center">
                             <i data-lucide="shield-check" class="h-4 w-4 mr-2"></i>
-                            Certifier la chambre
+                            Agréer la chambre
                         </button>
                         @endif
                         
@@ -284,12 +284,12 @@
                     </div>
                 </div>
 
-                <!-- Informations de certification -->
+                <!-- Informations de agrément -->
                 @if($chamber->state_number)
                 <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-6">
                     <div class="flex items-center mb-4">
                         <i data-lucide="shield-check" class="h-6 w-6 text-green-600 dark:text-green-400 mr-3"></i>
-                        <h3 class="text-lg font-semibold text-green-900 dark:text-green-200">Certification</h3>
+                        <h3 class="text-lg font-semibold text-green-900 dark:text-green-200">Agrément</h3>
                     </div>
                     
                     <div class="space-y-3 text-sm">
@@ -298,10 +298,10 @@
                             <p class="text-green-900 dark:text-green-200">{{ $chamber->state_number }}</p>
                         </div>
                         
-                        @if($chamber->certification_date)
+                        @if($chamber->agrément_date)
                         <div>
-                            <label class="font-medium text-green-700 dark:text-green-300">Date de certification</label>
-                            <p class="text-green-900 dark:text-green-200">{{ $chamber->certification_date->format('d/m/Y') }}</p>
+                            <label class="font-medium text-green-700 dark:text-green-300">Date de agrément</label>
+                            <p class="text-green-900 dark:text-green-200">{{ $chamber->agrément_date->format('d/m/Y') }}</p>
                         </div>
                         @endif
                     </div>
@@ -496,7 +496,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Fonctions pour les modals
-function openCertificationModal(chamberId) {
+function openAgrémentModal(chamberId) {
     window.location.href = `/super-admin/chambers/${chamberId}/request`;
 }
 

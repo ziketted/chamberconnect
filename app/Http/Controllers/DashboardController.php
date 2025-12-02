@@ -329,15 +329,18 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        // Récupérer toutes les chambres de l'utilisateur avec leurs informations
-        $userChambers = $user->chambers()->withCount('members')->get();
+        // Récupérer toutes les chambres pour les statistiques (sans pagination)
+        $allUserChambers = $user->chambers()->withCount('members')->get();
 
-        // Statistiques
+        // Statistiques basées sur toutes les chambres
         $stats = [
-            'total_chambers' => $userChambers->count(),
-            'verified_chambers' => $userChambers->where('verified', true)->count(),
-            'total_members' => $userChambers->sum('members_count')
+            'total_chambers' => $allUserChambers->count(),
+            'verified_chambers' => $allUserChambers->where('verified', true)->count(),
+            'total_members' => $allUserChambers->sum('members_count')
         ];
+
+        // Récupérer les chambres paginées pour l'affichage
+        $userChambers = $user->chambers()->withCount('members')->paginate(12);
 
         return view('my-chambers', compact('userChambers', 'stats'));
     }

@@ -394,10 +394,10 @@
                         {{ $chamber->name }}
                     </h3>
 
-                    <!-- Description -->
+                    <!-- Description (texte brut pour l'aperçu) -->
                     @if($chamber->description)
                     <p class="text-sm text-neutral-600 dark:text-gray-400 mb-4 line-clamp-2">
-                        {{ $chamber->description }}
+                        {{ Str::limit(strip_tags($chamber->description), 150) }}
                     </p>
                     @else
                     <p class="text-sm italic text-neutral-400 dark:text-gray-500 mb-4">
@@ -445,6 +445,13 @@
             </div>
             @endforeach
         </div>
+
+        <!-- Pagination -->
+        @if($userChambers->hasPages())
+        <div class="mt-8">
+            {{ $userChambers->links() }}
+        </div>
+        @endif
 
         <!-- Message quand aucun résultat de recherche -->
         <div id="noResults" class="hidden">
