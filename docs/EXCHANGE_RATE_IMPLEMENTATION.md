@@ -462,3 +462,6 @@ $1 = {{ number_format($exchangeRate, 0, ',', ' ') }} FC
 
 
 
+
+
+

@@ -41,7 +41,7 @@
                         <select name="filter_status" id="status-filter"
                             class="px-4 py-3 text-sm border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
                             <option value="">Tous les statuts</option>
-                            <option value="certified" {{ request('filter_status') == 'certified' ? 'selected' : '' }}>Certifiées</option>
+                            <option value="certified" {{ request('filter_status') == 'certified' ? 'selected' : '' }}>Agréées</option>
                             <option value="verified" {{ request('filter_status') == 'verified' ? 'selected' : '' }}>Vérifiées</option>
                             <option value="pending" {{ request('filter_status') == 'pending' ? 'selected' : '' }}>En attente</option>
                             <option value="suspended" {{ request('filter_status') == 'suspended' ? 'selected' : '' }}>Suspendues</option>
@@ -98,7 +98,7 @@
                 </div>
                 <div class="ml-5 w-0 flex-1">
                     <dl>
-                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Certifiées</dt>
+                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Agréées</dt>
                         <dd class="text-lg font-medium text-gray-900 dark:text-white">{{ $stats['certified'] ?? 0 }}</dd>
                     </dl>
                 </div>
@@ -196,7 +196,7 @@
                         @elseif($chamber->verified && $chamber->state_number)
                             <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
                                 <i data-lucide="shield-check" class="h-3 w-3 mr-1"></i>
-                                Certifiée
+                                Agréée
                             </span>
                         @elseif($chamber->verified)
                             <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
@@ -243,11 +243,11 @@
                                 <i data-lucide="eye" class="h-4 w-4"></i>
                             </button>
 
-                            <!-- Certifier (si pas encore certifiée) -->
+                            <!-- Agréer (si pas encore agréée) -->
                             @if(!$chamber->verified || !$chamber->state_number)
-                            <button onclick="event.stopPropagation(); openCertificationModal('{{ $chamber->id }}')"
+                            <button onclick="event.stopPropagation(); openAgrémentModal('{{ $chamber->id }}')"
                                 class="p-2 text-green-600 hover:text-green-800 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg transition-colors"
-                                title="Certifier la chambre">
+                                title="Agréer la chambre">
                                 <i data-lucide="shield-check" class="h-4 w-4"></i>
                             </button>
                             @endif
@@ -326,13 +326,13 @@
     @endif
 </div>
 
-<!-- Modal de certification -->
-<div id="certificationModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+<!-- Modal de agrément -->
+<div id="agrémentModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
     <div class="flex min-h-screen items-center justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-        <div class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" onclick="closeCertificationModal()"></div>
+        <div class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" onclick="closeAgrémentModal()"></div>
 
         <div class="inline-block transform overflow-hidden rounded-lg bg-white dark:bg-gray-800 text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:align-middle">
-            <form id="certificationForm" method="POST">
+            <form id="agrémentForm" method="POST">
                 @csrf
                 <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                     <div class="sm:flex sm:items-start">
@@ -341,7 +341,7 @@
                         </div>
                         <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
                             <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">
-                                Certifier la chambre
+                                Agréer la chambre
                             </h3>
                             <div class="mt-4 space-y-4">
                                 <div>
@@ -354,10 +354,10 @@
                                 </div>
 
                                 <div>
-                                    <label for="certification_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                        Date de certification *
+                                    <label for="agrément_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        Date de agrément *
                                     </label>
-                                    <input type="date" name="certification_date" id="certification_date" required
+                                    <input type="date" name="agrément_date" id="agrément_date" required
                                         class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 sm:text-sm"
                                         value="{{ date('Y-m-d') }}">
                                 </div>
@@ -368,7 +368,7 @@
                                     </label>
                                     <textarea name="notes" id="notes" rows="3"
                                         class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md shadow-sm placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 sm:text-sm resize-none"
-                                        placeholder="Notes sur la certification..."></textarea>
+                                        placeholder="Notes sur la agrément..."></textarea>
                                 </div>
                             </div>
                         </div>
@@ -377,9 +377,9 @@
                 <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                     <button type="submit"
                         class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
-                        Certifier
+                        Agréer
                     </button>
-                    <button type="button" onclick="closeCertificationModal()"
+                    <button type="button" onclick="closeAgrémentModal()"
                         class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                         Annuler
                     </button>
@@ -434,10 +434,10 @@ document.addEventListener('DOMContentLoaded', function() {
     lucide.createIcons();
 });
 
-// Fonction pour ouvrir le modal de certification
-function openCertificationModal(chamberId) {
-    const modal = document.getElementById('certificationModal');
-    const form = document.getElementById('certificationForm');
+// Fonction pour ouvrir le modal de agrément
+function openAgrémentModal(chamberId) {
+    const modal = document.getElementById('agrémentModal');
+    const form = document.getElementById('agrémentForm');
     
     // Définir l'action du formulaire avec l'ID de la chambre
     form.action = `/super-admin/chambers/${chamberId}/certify`;
@@ -452,14 +452,14 @@ function openCertificationModal(chamberId) {
     }, 100);
 }
 
-// Fonction pour fermer le modal de certification
-function closeCertificationModal() {
-    const modal = document.getElementById('certificationModal');
+// Fonction pour fermer le modal de agrément
+function closeAgrémentModal() {
+    const modal = document.getElementById('agrémentModal');
     modal.classList.add('hidden');
     document.body.style.overflow = 'auto';
     
     // Réinitialiser le formulaire
-    document.getElementById('certificationForm').reset();
+    document.getElementById('agrémentForm').reset();
 }
 
 // Fonction pour confirmer la suppression
@@ -512,7 +512,7 @@ function closeDeleteModal() {
 // Fermer les modals avec Escape
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
-        closeCertificationModal();
+        closeAgrémentModal();
         closeDeleteModal();
     }
 });
@@ -685,7 +685,7 @@ function closeReactivateModal() {
 // Mettre à jour la fonction de fermeture avec Escape pour inclure les nouveaux modals
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
-        closeCertificationModal();
+        closeAgrémentModal();
         closeDeleteModal();
         closeSuspendModal();
         closeReactivateModal();

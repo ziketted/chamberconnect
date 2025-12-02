@@ -4,7 +4,7 @@
         <div class="lg:col-span-7 space-y-6">
             <section class="space-y-2">
                 <h3 class="text-lg font-semibold tracking-tight">About the Chamber</h3>
-                <p class="text-sm text-neutral-700 dark:text-gray-300">{{ $chamber->description }}</p>
+                <div class="text-sm text-neutral-700 dark:text-gray-300 prose prose-sm dark:prose-invert max-w-none">{!! $chamber->description !!}</div>
                 <ul class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-neutral-700 dark:text-gray-300">
                     @foreach($chamber->features as $feature)
                     <li class="inline-flex items-center gap-2">

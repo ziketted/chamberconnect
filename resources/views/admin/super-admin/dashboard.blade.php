@@ -44,11 +44,11 @@
                 </div>
             </div>
 
-            <!-- Chambres certifiées -->
+            <!-- Chambres agréées -->
             <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 border-l-4 border-purple-500">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Certifiées</p>
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Agréées</p>
                         <p class="text-3xl font-bold text-gray-900 dark:text-white">{{ $stats['certified_chambers'] ?? 0 }}</p>
                     </div>
                     <i data-lucide="check-circle" class="h-12 w-12 text-purple-500 opacity-20"></i>
@@ -66,7 +66,7 @@
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Chambres</h3>
                 </div>
                 <p class="text-gray-600 dark:text-gray-400 text-sm">
-                    Valider, certifier et gérer toutes les chambres du système.
+                    Valider, agréer et gérer toutes les chambres du système.
                 </p>
             </a>
 

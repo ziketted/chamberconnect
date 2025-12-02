@@ -210,3 +210,6 @@ Permettre aux utilisateurs de découvrir, consulter et rejoindre les chambres de
 3. ✅ Gestion des erreurs API
 4. ✅ Validation des membres par admin
 
+
+
+

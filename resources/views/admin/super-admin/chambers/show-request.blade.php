@@ -45,10 +45,27 @@
                     <h1 class="text-3xl font-bold text-gray-900 dark:text-white">{{ $chamber->name }}</h1>
                     <p class="text-gray-600 dark:text-gray-400 mt-1">Demande de création de chambre</p>
                 </div>
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200">
-                    <i data-lucide="clock" class="h-4 w-4 mr-1"></i>
-                    En attente de certification
-                </span>
+                @if($chamber->is_suspended)
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200">
+                        <i data-lucide="pause-circle" class="h-4 w-4 mr-1"></i>
+                        Suspendue
+                    </span>
+                @elseif($chamber->state_number)
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200">
+                        <i data-lucide="badge-check" class="h-4 w-4 mr-1"></i>
+                        Agréée
+                    </span>
+                @elseif($chamber->verified)
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200">
+                        <i data-lucide="check-circle" class="h-4 w-4 mr-1"></i>
+                        Approuvée
+                    </span>
+                @else
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200">
+                        <i data-lucide="clock" class="h-4 w-4 mr-1"></i>
+                        En attente d'agrément
+                    </span>
+                @endif
             </div>
         </div>
 
@@ -121,8 +138,8 @@
             <!-- Description -->
             <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
                 <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
-                <div class="mt-2 max-w-full">
-                    <p class="text-gray-900 dark:text-white whitespace-pre-wrap break-words overflow-hidden text-ellipsis">{{ $chamber->description }}</p>
+                <div class="mt-2 max-w-full prose prose-sm dark:prose-invert">
+                    {!! $chamber->description !!}
                 </div>
             </div>
         </div>
@@ -286,15 +303,15 @@
             <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">🔧 Actions</h2>
             
             @if($chamber->state_number)
-                <!-- Chambre certifiée -->
+                <!-- Chambre agréée -->
                 <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-6">
                     <div class="flex items-center mb-4">
                         <i data-lucide="check-circle" class="h-6 w-6 text-green-600 dark:text-green-400 mr-3"></i>
-                        <h3 class="text-lg font-semibold text-green-900 dark:text-green-200">Chambre Certifiée</h3>
+                        <h3 class="text-lg font-semibold text-green-900 dark:text-green-200">Chambre Agréée</h3>
                     </div>
                     <div class="space-y-2 text-sm text-green-800 dark:text-green-300">
                         <p><strong>Numéro d'état:</strong> {{ $chamber->state_number }}</p>
-                        <p><strong>Date de certification:</strong> {{ $chamber->certification_date?->format('d/m/Y') ?? 'N/A' }}</p>
+                        <p><strong>Date d'agrément:</strong> {{ $chamber->certification_date?->format('d/m/Y') ?? 'N/A' }}</p>
                         @if(isset($requestData['certification_notes']) && $requestData['certification_notes'])
                         <p><strong>Notes:</strong> {{ $requestData['certification_notes'] }}</p>
                         @endif
@@ -310,11 +327,11 @@
                         Approuver
                     </button>
 
-                    <!-- Certifier et attribuer numéro -->
+                    <!-- Agréer et attribuer numéro -->
                     <button onclick="openCertifyModal()"
                         class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors flex items-center justify-center">
                         <i data-lucide="badge" class="h-5 w-5 mr-2"></i>
-                        Certifier & Numéro
+                        Agréer & Numéro
                     </button>
 
                     <!-- Rejeter -->
@@ -360,10 +377,10 @@
         </div>
     </div>
 
-    <!-- Modal: Certifier -->
+    <!-- Modal: Agréer -->
     <div id="certifyModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
         <div class="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Certifier la chambre</h3>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Agréer la chambre</h3>
             <form id="certifyForm" method="POST" action="{{ route('super-admin.chambers.certify', $chamber->id) }}">
                 @csrf
                 <div class="space-y-4">
@@ -377,7 +394,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                            Date de certification <span class="text-red-500">*</span>
+                            Date d'agrément <span class="text-red-500">*</span>
                         </label>
                         <input type="date" name="certification_date" required
                             class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500">
@@ -393,7 +410,7 @@
                 <div class="mt-6 flex gap-3">
                     <button type="submit"
                         class="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors">
-                        Certifier
+                        Agréer
                     </button>
                     <button type="button" onclick="closeCertifyModal()"
                         class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">

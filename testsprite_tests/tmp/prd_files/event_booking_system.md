@@ -174,3 +174,6 @@ Permettre aux utilisateurs de réserver, confirmer et annuler leur participation
 3. ✅ Notifications toast après actions
 4. ✅ Mise à jour en temps réel des places disponibles
 
+
+
+

@@ -147,6 +147,13 @@
             </div>
             @endforeach
         </div>
+        
+        <!-- Pagination -->
+        @if($events->hasPages())
+        <div class="px-6 py-4 border-t border-neutral-200 dark:border-gray-700">
+            {{ $events->links() }}
+        </div>
+        @endif
     </div>
     @else
     <div class="rounded-xl border border-neutral-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-12 text-center">

@@ -52,6 +52,13 @@
                 @endforeach
             </ul>
             @endif
+            
+            <!-- Pagination des demandes en attente -->
+            @if($pendingMembers->hasPages())
+            <div class="mt-4 pt-4 border-t border-neutral-200 dark:border-gray-700">
+                {{ $pendingMembers->links() }}
+            </div>
+            @endif
         </div>
     </div>
 
@@ -152,6 +159,13 @@
                     @endforeach
                 </tbody>
             </table>
+            
+            <!-- Pagination des membres -->
+            @if($members->hasPages())
+            <div class="mt-4 pt-4 border-t border-neutral-200 dark:border-gray-700">
+                {{ $members->links() }}
+            </div>
+            @endif
         </div>
     </div>
 </div>

@@ -12,8 +12,8 @@ class ChamberEventController extends Controller
 {
     public function index(Chamber $chamber)
     {
-        // Load all events for this chamber
-        $events = $chamber->events()->orderBy('date', 'desc')->get();
+        // Load all events for this chamber with pagination
+        $events = $chamber->events()->orderBy('date', 'desc')->paginate(12);
         
         return view('chambers.events.index', compact('chamber', 'events'));
     }
@@ -88,7 +88,7 @@ class ChamberEventController extends Controller
         $participants = $event->participants()
             ->withPivot(['status', 'reserved_at', 'confirmed_at', 'notes'])
             ->orderBy('pivot_reserved_at', 'desc')
-            ->get();
+            ->paginate(20);
 
         return view('chambers.events.participants', compact('chamber', 'event', 'participants'));
     }

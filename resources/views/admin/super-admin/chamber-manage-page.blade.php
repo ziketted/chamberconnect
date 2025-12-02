@@ -151,11 +151,11 @@
                 <dd class="text-sm text-gray-900 dark:text-white font-medium">{{ $chamber->state_number }}</dd>
               </div>
               @endif
-              @if($chamber->certification_date)
+              @if($chamber->agrément_date)
               <div>
                 <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Date d'agrément</dt>
                 <dd class="text-sm text-gray-900 dark:text-white">{{
-                  \Carbon\Carbon::parse($chamber->certification_date)->format('d/m/Y') }}</dd>
+                  \Carbon\Carbon::parse($chamber->agrément_date)->format('d/m/Y') }}</dd>
               </div>
               @endif
             </div>
@@ -163,7 +163,7 @@
             @if($chamber->description)
             <div class="mt-6">
               <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Description</dt>
-              <dd class="text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-800 p-4 rounded-md">{{ $chamber->description }}</dd>
+              <dd class="text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-800 p-4 rounded-md prose prose-sm dark:prose-invert max-w-none">{!! $chamber->description !!}</dd>
             </div>
             @endif
           </div>
@@ -266,7 +266,7 @@
             @if($chamber->verified)
             <!-- Chambre agréée -->
             <div class="space-y-3">
-              <button onclick="showRevokeCertificationConfirm()"
+              <button onclick="showRevokeAgrémentConfirm()"
                 class="w-full bg-[#b81010] text-white px-4 py-3 rounded-lg flex items-center justify-center hover:bg-[#9a0e0e] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#b81010] transition-colors">
                 <i data-lucide="x-circle" class="h-5 w-5 mr-2"></i>
                 Retirer agrément
@@ -279,7 +279,7 @@
             </div>
             @else
             <!-- Chambre non agréée -->
-            <button onclick="showCertificationModal()"
+            <button onclick="showAgrémentModal()"
               class="w-full bg-[#fcb357] text-white px-4 py-3 rounded-lg flex items-center justify-center hover:bg-[#f5a742] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#fcb357] transition-colors">
               <i data-lucide="award" class="h-5 w-5 mr-2"></i>
               Agréer la chambre
@@ -365,9 +365,9 @@
 </div>
 
 <!-- Modal d'agrément -->
-<div id="certificationModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+<div id="agrémentModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
   <div class="flex min-h-screen items-center justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-    <div class="fixed inset-0 transition-opacity bg-gray-900 bg-opacity-75" onclick="closeCertificationModal()"></div>
+    <div class="fixed inset-0 transition-opacity bg-gray-900 bg-opacity-75" onclick="closeAgrémentModal()"></div>
 
     <div
       class="inline-block transform overflow-hidden rounded-2xl bg-white dark:bg-gray-800 text-left align-bottom shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:align-middle">
@@ -384,7 +384,7 @@
           </div>
         </div>
 
-        <form id="certificationForm" method="POST" action="{{ route('admin.chambers.certify', $chamber) }}">
+        <form id="agrémentForm" method="POST" action="{{ route('admin.chambers.certify', $chamber) }}">
           @csrf
           <div class="space-y-4">
             <div>
@@ -396,10 +396,10 @@
                 placeholder="Ex: RDC-CC-1627">
             </div>
             <div>
-              <label for="certification_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label for="agrément_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Date d'agrément *
               </label>
-              <input type="date" name="certification_date" id="certification_date" required
+              <input type="date" name="agrément_date" id="agrément_date" required
                 class="block w-full border-gray-300 dark:border-gray-600 dark:border-gray-400 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"
                 value="{{ date('Y-m-d') }}">
             </div>
@@ -417,12 +417,12 @@
 
       <div
         class="bg-gray-50 dark:bg-gray-800 px-6 py-4 flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-3 space-y-3 space-y-reverse sm:space-y-0">
-        <button type="button" onclick="closeCertificationModal()"
+        <button type="button" onclick="closeAgrémentModal()"
           class="inline-flex w-full justify-center rounded-md border border-gray-300 dark:border-gray-600 dark:border-gray-400 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:bg-gray-800 sm:w-auto sm:text-sm">
           <i data-lucide="x" class="h-4 w-4 mr-2"></i>
           Annuler
         </button>
-        <button type="button" onclick="submitCertification()"
+        <button type="button" onclick="submitAgrément()"
           class="inline-flex w-full justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-[#fcb357] text-base font-medium text-white hover:bg-[#f5a742] sm:ml-3 sm:w-auto sm:text-sm">
           <i data-lucide="award" class="h-4 w-4 mr-2"></i>
           Agréer
@@ -478,7 +478,7 @@
   @method('PATCH')
 </form>
 
-<form id="revoke-certification-form" method="POST" action="{{ route('admin.chambers.uncertify', $chamber) }}"
+<form id="revoke-agrément-form" method="POST" action="{{ route('admin.chambers.uncertify', $chamber) }}"
   style="display: none;">
   @csrf
   @method('PATCH')
@@ -501,22 +501,22 @@ let confirmationCallback = null;
 const chamberSlug = '{{ $chamber->slug }}';
 
 // Gestion du modal d'agrément
-function showCertificationModal() {
-    document.getElementById('certificationModal').classList.remove('hidden');
+function showAgrémentModal() {
+    document.getElementById('agrémentModal').classList.remove('hidden');
     document.body.style.overflow = 'hidden';
 }
 
-function closeCertificationModal() {
-    document.getElementById('certificationModal').classList.add('hidden');
+function closeAgrémentModal() {
+    document.getElementById('agrémentModal').classList.add('hidden');
     document.body.style.overflow = 'auto';
 }
 
-function submitCertification() {
-    const form = document.getElementById('certificationForm');
+function submitAgrément() {
+    const form = document.getElementById('agrémentForm');
     const stateNumber = document.getElementById('state_number').value;
-    const certificationDate = document.getElementById('certification_date').value;
+    const agrémentDate = document.getElementById('agrément_date').value;
     
-    if (!stateNumber || !certificationDate) {
+    if (!stateNumber || !agrémentDate) {
         alert('Veuillez remplir tous les champs obligatoires');
         return;
     }
@@ -574,12 +574,12 @@ document.getElementById('confirmButton').addEventListener('click', function() {
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         const confirmModal = document.getElementById('confirmationModal');
-        const certModal = document.getElementById('certificationModal');
+        const certModal = document.getElementById('agrémentModal');
         
         if (!confirmModal.classList.contains('hidden')) {
             closeConfirmationModal();
         } else if (!certModal.classList.contains('hidden')) {
-            closeCertificationModal();
+            closeAgrémentModal();
         }
     }
 });
@@ -747,14 +747,14 @@ function showUnsuspendConfirm() {
     });
 }
 
-function showRevokeCertificationConfirm() {
+function showRevokeAgrémentConfirm() {
     showConfirmation({
         title: 'Retirer l\'agrément ?',
         message: 'Êtes-vous sûr de vouloir retirer l\'agrément de cette chambre ?',
         confirmText: 'OK',
         type: 'danger',
         callback: function() {
-            document.getElementById('revoke-certification-form').submit();
+            document.getElementById('revoke-agrément-form').submit();
         }
     });
 }

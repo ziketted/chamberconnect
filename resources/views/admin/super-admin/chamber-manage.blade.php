@@ -9,7 +9,7 @@
                     @if($chamber->verified && $chamber->state_number)
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                             <i data-lucide="shield-check" class="h-3 w-3 mr-1"></i>
-                            Certifiée
+                            Agréée
                         </span>
                     @else
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
@@ -35,10 +35,10 @@
                     <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ $chamber->state_number }}</dd>
                 </div>
                 @endif
-                @if($chamber->certification_date)
+                @if($chamber->agrément_date)
                 <div>
-                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Date de certification</dt>
-                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ \Carbon\Carbon::parse($chamber->certification_date)->format('d/m/Y') }}</dd>
+                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Date de agrément</dt>
+                    <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ \Carbon\Carbon::parse($chamber->agrément_date)->format('d/m/Y') }}</dd>
                 </div>
                 @endif
             </div>
@@ -46,14 +46,14 @@
             @if($chamber->description)
             <div class="mb-6">
                 <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Description</dt>
-                <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ $chamber->description }}</dd>
+                <dd class="mt-1 text-sm text-gray-900 dark:text-white prose prose-sm dark:prose-invert max-w-none">{!! $chamber->description !!}</dd>
             </div>
             @endif
 
-            @if($chamber->certification_notes)
+            @if($chamber->agrément_notes)
             <div class="mb-6">
-                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Notes de certification</dt>
-                <dd class="mt-1 text-sm text-gray-900 dark:text-white bg-green-50 p-3 rounded-md">{{ $chamber->certification_notes }}</dd>
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Notes de agrément</dt>
+                <dd class="mt-1 text-sm text-gray-900 dark:text-white bg-green-50 p-3 rounded-md">{{ $chamber->agrément_notes }}</dd>
             </div>
             @endif
         </div>
@@ -111,25 +111,25 @@
 
     <!-- Actions -->
     <div class="space-y-4">
-        <!-- Certification -->
+        <!-- Agrément -->
         <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 p-6">
-            <h4 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Certification</h4>
+            <h4 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Agrément</h4>
             
             @if(!$chamber->verified || !$chamber->state_number)
-                <button onclick="openCertificationModal('{{ $chamber->slug }}')" 
+                <button onclick="openAgrémentModal('{{ $chamber->slug }}')" 
                         class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 mb-3">
                     <i data-lucide="shield-check" class="h-4 w-4 inline mr-2"></i>
-                    Certifier la chambre
+                    Agréer la chambre
                 </button>
             @else
                 <form method="POST" action="{{ route('admin.chambers.uncertify', $chamber->slug) }}" class="mb-3">
                     @csrf
                     @method('PATCH')
                     <button type="submit" 
-                            onclick="return confirm('Êtes-vous sûr de vouloir retirer la certification ?')"
+                            onclick="return confirm('Êtes-vous sûr de vouloir retirer la agrément ?')"
                             class="w-full bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700">
                         <i data-lucide="shield-off" class="h-4 w-4 inline mr-2"></i>
-                        Retirer certification
+                        Retirer agrément
                     </button>
                 </form>
             @endif

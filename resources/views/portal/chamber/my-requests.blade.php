@@ -30,7 +30,7 @@
                 <div class="space-y-6">
                     @foreach($chambers as $chamber)
                         @php
-                            $applicationData = json_decode($chamber->certification_notes, true) ?? [];
+                            $applicationData = json_decode($chamber->agrément_notes, true) ?? [];
                             $submittedAt = isset($applicationData['submitted_at']) ? \Carbon\Carbon::parse($applicationData['submitted_at']) : $chamber->created_at;
                         @endphp
                         
@@ -78,10 +78,10 @@
                                                     <span class="font-mono text-green-600 dark:text-green-400">{{ $chamber->state_number }}</span>
                                                 </div>
                                             @endif
-                                            @if($chamber->certification_date)
+                                            @if($chamber->agrément_date)
                                                 <div>
-                                                    <span class="font-medium">Date de certification:</span>
-                                                    {{ $chamber->certification_date->format('d/m/Y') }}
+                                                    <span class="font-medium">Date de agrément:</span>
+                                                    {{ $chamber->agrément_date->format('d/m/Y') }}
                                                 </div>
                                             @endif
                                         </div>

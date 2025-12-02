@@ -80,14 +80,12 @@ class ChamberPortalController extends Controller
             'website' => 'nullable|url|max:255',
             'description' => 'required|string|max:2000',
             'creation_date' => 'required|date',
-            'nina_number' => 'required|string|max:50',
 
             // Étape 2 - Documents
             'statuts' => 'required|file|mimes:pdf,doc,docx|max:10240',
             'reglement_interieur' => 'required|file|mimes:pdf,doc,docx|max:10240',
             'pv_assemblee' => 'required|file|mimes:pdf|max:10240',
             'liste_membres' => 'required|file|mimes:pdf,xlsx,xls|max:10240',
-            'plan_action' => 'required|file|mimes:pdf|max:10240',
             'pieces_identite' => 'required|file|mimes:pdf|max:20480',
             'lettre_demande' => 'required|file|mimes:pdf,doc,docx|max:10240',
         ]);
@@ -160,7 +158,6 @@ class ChamberPortalController extends Controller
             'reglement_interieur' => 'Règlement intérieur',
             'pv_assemblee' => 'PV Assemblée constitutive',
             'liste_membres' => 'Liste des membres fondateurs',
-            'plan_action' => 'Plan d\'action',
             'pieces_identite' => 'Pièces d\'identité',
             'lettre_demande' => 'Lettre de demande'
         ];
@@ -183,7 +180,6 @@ class ChamberPortalController extends Controller
                 'documents' => $documentPaths,
                 'sigle' => $request->sigle,
                 'creation_date' => $request->creation_date,
-                'nina_number' => $request->nina_number,
                 'submitted_at' => now(),
                 'submitted_by' => Auth::id()
             ])

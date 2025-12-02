@@ -120,7 +120,7 @@ class NotificationService
 
         foreach ($managers as $manager) {
             $subject = "Chambre {$chamber->name} - Certification délivrée";
-            $message = "Votre chambre a été certifiée avec le numéro d'état: {$chamber->state_number}";
+            $message = "Votre chambre a été agréée avec le numéro d'état: {$chamber->state_number}";
 
             $this->sendBulkNotification('email', [$manager], [
                 'subject' => $subject,

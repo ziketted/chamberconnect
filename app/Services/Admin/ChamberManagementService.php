@@ -112,7 +112,7 @@ class ChamberManagementService
     }
 
     /**
-     * Récupère toutes les chambres en attente de certification
+     * Récupère toutes les chambres en attente d'agrément
      */
     public function getPendingChambers()
     {
@@ -125,7 +125,7 @@ class ChamberManagementService
     }
 
     /**
-     * Récupère toutes les chambres certifiées
+     * Récupère toutes les chambres agréées
      */
     public function getCertifiedChambers()
     {

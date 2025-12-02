@@ -216,12 +216,12 @@ class ChamberManagerController extends Controller
         $members = $chamber->members()
             ->withPivot(['role', 'status', 'created_at'])
             ->orderBy('pivot_created_at', 'desc')
-            ->get();
+            ->paginate(20);
 
         $pendingMembers = $chamber->members()
             ->wherePivot('status', 'pending')
             ->withPivot(['role', 'status', 'created_at'])
-            ->get();
+            ->paginate(10, ['*'], 'pending_page');
 
         return view('chamber-manager.members', compact('chamber', 'members', 'pendingMembers'));
     }

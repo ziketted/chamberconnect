@@ -90,7 +90,7 @@
         <ul>
             <li><strong>Nom :</strong> {{ $chamber->name }}</li>
             <li><strong>Province :</strong> {{ $chamber->location }}</li>
-            <li><strong>Date de validation :</strong> {{ $chamber->certification_date->format('d/m/Y') }}</li>
+            <li><strong>Date de validation :</strong> {{ $chamber->agrément_date->format('d/m/Y') }}</li>
         </ul>
 
         <h3>Votre numéro officiel :</h3>

@@ -206,6 +206,13 @@
                         @endforeach
                     </tbody>
                 </table>
+                
+                <!-- Pagination -->
+                @if($participants->hasPages())
+                <div class="px-6 py-4 border-t border-neutral-200 dark:border-gray-700">
+                    {{ $participants->links() }}
+                </div>
+                @endif
             </div>
         @else
             <div class="text-center py-12">
